@@ -1,0 +1,38 @@
+name: Extended validation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 4 * * 1'
+  release:
+    types: [published]
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [core, benchmark]
+    env:
+      RUN_GFMC_BENCH: '1'
+      NETKET_EXPERIMENTAL_SHARDING: '0'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install including training dependencies
+        run: pip install -e './codes[test,netket]'
+      - name: Verify optional training imports
+        run: python -c 'import netket, optax, flax'
+      - name: Run complete suite (including slow tests)
+        working-directory: tests
+        run: pytest ${{ matrix.suite }} -ra --junitxml=validation-${{ matrix.suite }}.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-${{ matrix.suite }}
+          path: tests/validation-*.xml

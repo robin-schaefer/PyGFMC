@@ -1,0 +1,64 @@
+/* Let table cells wrap, so the :widths: of list-tables are honoured and wide
+   formulas are not cut off (the Read-the-Docs theme sets nowrap on cells). */
+.wy-table-responsive table td,
+.wy-table-responsive table th {
+    white-space: normal;
+}
+.wy-table-responsive {
+    overflow: visible;
+}
+
+/* Opt-in: tables with :class: scroll-table keep every cell on one line and
+   get their own horizontal scroll bar instead of wrapping.  The rules act on
+   the table itself, so they do not depend on the theme's JavaScript wrapper. */
+table.scroll-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: scroll;
+    scrollbar-width: auto;
+}
+table.scroll-table td,
+table.scroll-table th {
+    white-space: nowrap;
+}
+/* The theme's `.rst-content code.literal { white-space: normal }` is more
+   specific than the rule above, so inline code needs !important to stay on one line. */
+table.scroll-table code,
+table.scroll-table code span {
+    white-space: nowrap !important;
+    max-width: none !important;
+}
+.wy-table-responsive:has(> table.scroll-table) {
+    overflow: visible;           /* let the table, not the wrapper, scroll */
+}
+
+/* `.. rubric::` with :class: section-heading looks like a section title but
+   stays out of the navigation sidebar and the table of contents. */
+p.rubric.section-heading {
+    font-size: 150%;
+    font-weight: 700;
+    font-family: "Roboto Slab", "ff-tisa-web-pro", "Georgia", Arial, sans-serif;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+}
+
+
+/* Review markup: changes proposed for the author, in red; removed text struck through. */
+span.red, div.red, div.red * {
+    color: #d00000;
+}
+span.del {
+    color: #d00000;
+    text-decoration: line-through;
+}
+/* a link directly after :red: text belongs to the same change */
+span.red + a.reference,
+span.red + a.reference span {
+    color: #d00000;
+}
+
+/* Changed Python lines retain syntax highlighting outside the marked lines. */
+.review-red-lines .hll, .review-red-lines .hll * {
+    color: #d00000;
+    background-color: transparent;
+}

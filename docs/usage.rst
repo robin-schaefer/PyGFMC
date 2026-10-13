@@ -1,0 +1,366 @@
+.. _Usage:
+
+####################
+Running a simulation
+####################
+
+A simulation consists of the following parts:
+
+* a :ref:`Hamiltonian <usage-hamiltonian>`,
+* a :ref:`walker ensemble <usage-walkers>`,
+* a :ref:`guiding wavefunction <usage-guide>` (optional), and
+* a :ref:`set of observables <usage-observables>` (optional).
+
+All of them are combined in the main PyGFMC driver: :ref:`run(...) <usage-run>`.
+
+.. note::
+
+    Code blocks of this page are collected in the notebook :download:`transverse_field_ising_chain.ipynb <../notebooks/transverse_field_ising_chain.ipynb>`.
+
+
+All functions and classes are listed in the :ref:`API reference <API>`.
+
+.. _usage-hamiltonian:
+
+Build a Hamiltonian
+===================
+
+PyGFMC includes five Hamiltonian classes that can be initialized with :code:`.create`:
+
+.. list-table::
+    :header-rows: 1
+    :class: scroll-table
+
+    * - Class
+      - Model
+      - Hamiltonian
+      - Sign-problem-free for
+      - Constructor
+    * - :class:`~pygfmc.hamiltonian.SpinHalf`
+      - Spin-1/2 XYZ model
+      - :math:`H = \sum_{\langle ij\rangle} \left( J^x_{ij} S^x_i S^x_j + J^y_{ij} S^y_i S^y_j + J^z_{ij} S^z_i S^z_j \right) - \sum_i \left( h^z_i S^z_i + h^x_i S^x_i \right)`
+      - :math:`J^\pm = (J^x + J^y)/4 \le 0`, :math:`J^{\pm\pm} = (J^x - J^y)/4 \le 0`, :math:`h^x \ge 0`
+      - :code:`SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None, N=None, sign_check=True)`
+    * - :class:`~pygfmc.hamiltonian.Spin`
+      - Spin-:math:`S` model
+      - :math:`H = \sum_{\langle ij\rangle} \left[ J^z_{ij} S^z_i S^z_j + J^\pm_{ij} \left( S^+_i S^-_j + S^-_i S^+_j \right) + J^{\pm\pm}_{ij} \left( S^+_i S^+_j + S^-_i S^-_j \right) \right] + \sum_i \left[ h^z_i S^z_i + h^\pm_i \left( S^+_i + S^-_i \right) \right]`
+      - :math:`J^\pm \le 0`, :math:`J^{\pm\pm} \le 0`, :math:`h^\pm \le 0`
+      - :code:`Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, sign_check=True)`
+    * - :class:`~pygfmc.hamiltonian.BoseHubbard`
+      - Bose-Hubbard model, occupations :math:`0,\dots,n_\mathrm{max}`
+      - :math:`H = -\sum_{\langle ij\rangle} \left[ t_{ij} \left( b^\dagger_i b_j + \mathrm{h.c.} \right) + \eta_{ij} \left( b^\dagger_i b^\dagger_j + \mathrm{h.c.} \right) \right] + \sum_i \left[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i n_i + h^\pm_i \left( b^\dagger_i + b_i \right) \right]`
+      - :math:`t \ge 0`, :math:`\eta \ge 0`, :math:`h^\pm \le 0`
+      - :code:`BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, sign_check=True)`
+    * - :class:`~pygfmc.hamiltonian.ToricCode`
+      - Toric code on an :math:`L_x \times L_y` torus
+      - :math:`H = -\sum_v A_s^{(v)} \prod_{i \in \star(v)} \sigma^x_i - \sum_p B_p^{(p)} \prod_{i \in \Box(p)} \sigma^z_i - \sum_i h^z_i \sigma^z_i - \sum_i h^x_i \sigma^x_i`
+      - :math:`A_s \ge 0`, :math:`h^x \ge 0`
+      - :code:`ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, sign_check=True)`
+    * - :class:`~pygfmc.hamiltonian.PlaquetteModel`
+      - Ring exchange / Rokhsar-Kivelson model
+      - :math:`H = -\sum_{p=(i,j,\ldots,k)} g_p \left( S^+_i S^-_j \cdots S^-_k + \mathrm{h.c.} \right) + \sum_p \mu_p\, n^\mathrm{flip}_p`
+      - :math:`g \ge 0`
+      - :code:`PlaquetteModel.create(plaquettes, g=None, mu=None, sign_check=True)`
+
+
+:code:`.create` checks the sign conditions and raises if a model is not sign-problem-free.
+The check can be turned off via :code:`sign_check=False`, which is needed for off-diagonal observables.
+Couplings can be scalars or one value per edge (per site for fields or per plaquette).
+We further include some important :ref:`lattices <api-lattices>` such as :func:`~pygfmc.hamiltonian.chain` or :func:`~pygfmc.hamiltonian.pyrochlore`.
+
+As an example, we simulate the spin-1 transverse-field Ising chain at its critical point:
+
+.. math::
+
+    H = -J \sum_{i} S^z_i S^z_{i+1} - h \sum_i S^x_i\,,
+    \qquad J = 1\,,\quad h = h_c = 1.326\,,
+
+with the critical field of `C. West et al., Phys. Rev. B 92, 115103 (2015) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.115103>`_.
+:class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`h_\pm \sum_i (S^+_i + S^-_i) = 2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :code:`h_pm=-h/2`:
+
+.. code-block:: python
+
+    import jax
+    from pygfmc.hamiltonian import Spin, chain, exact_diagonalization
+
+    L = 12
+    lattice = chain(L)
+    H = Spin.create(lattice.edges, S=1.0, J_z=-1.0, h_pm=-1.326 / 2)
+
+
+Within PyGFMC, you can further define your own Hamiltonian. The class must be a JAX pytree and provide
+
+* :code:`M_total`: the number of terms (one diagonal term plus one per **possible** off-diagonal transition),
+* :code:`get_rates(config, return_configs=False)`: the matrix elements of all terms acting on a given basis state :code:`config` (first entry is reserved for the diagonal),
+* :code:`generate_state(config, idx)`: the basis state generated by term :code:`idx` when applied to :code:`config`,
+* :code:`diagonal_weight(config)` (optional): the diagonal element.
+
+
+Below is an example of an :math:`n`-body Hamiltonian on a set of clusters :math:`c` with a longitudinal field :math:`h`,
+
+.. math::
+
+    H = -J_z \sum_{c} \prod_{i\in c} \sigma^z_i - J_x \sum_{c} \prod_{i\in c} \sigma^x_i - h \sum_i \sigma^z_i\,.
+
+.. code-block:: python
+
+    class NBody:
+        def __init__(self, clusters, J_z, J_x, h=0.0):
+            self.clusters = jnp.asarray(clusters)          # (n_terms, n)
+            self.J_z, self.J_x, self.h = J_z, J_x, h
+            self.M_total  = 1 + self.clusters.shape[0]
+
+        def get_rates(self, config, return_configs=False):
+            diag  = self.diagonal_weight(config)
+            off   = jnp.full(self.clusters.shape[0], -self.J_x)
+            rates = jnp.concatenate([jnp.array([diag]), off])
+            if not return_configs:
+                return rates, None
+            flips = jax.vmap(lambda c: config.at[c].multiply(-1))(self.clusters)
+            return rates, jnp.concatenate([config[None, :], flips])
+
+        def generate_state(self, config, idx):
+            flipped = config.at[self.clusters[idx - 1]].multiply(-1)
+            return jnp.where(idx == 0, config, flipped)
+
+        def diagonal_weight(self, config):
+            return (-self.J_z * jnp.sum(jnp.prod(config[self.clusters], axis=1))
+                    - self.h * jnp.sum(config))
+
+    jax.tree_util.register_pytree_node(
+        NBody,
+        lambda h: ((h.clusters,), (h.J_z, h.J_x, h.h)),    # children, aux
+        lambda aux, children: NBody(children[0], *aux))
+
+
+
+.. _usage-walkers:
+
+Prepare walkers
+===============
+
+The walker population is represented by a class holding the configurations (e.g., spins with :math:`\pm 1`), log weights obtained during propagation, and local energies of all walkers.
+Walkers can be created using :code:`pygfmc.walkers`:
+
+.. code-block:: python
+
+    from pygfmc.walkers import prepare_walkers_random, prepare_walkers_sz, prepare_walkers_from_configs
+
+    # the transverse field does not conserve the magnetization: draw every site at random
+    walkers = prepare_walkers_random(1024, L, jax.random.PRNGKey(0), states=(-1.0, 0.0, 1.0))
+
+* :code:`prepare_walkers_random`: every site drawn independently,
+* :code:`prepare_walkers_sz`: every walker has the same total magnetization or particle number :math:`\sum_i x_i`,
+* :code:`prepare_walkers_from_configs`: walkers at given configurations.
+
+
+More details can be found :ref:`here <api-walkers>`.
+
+.. important::
+
+    Each walker configuration must have overlap with the ground state of interest.
+    If the Hamiltonian conserves a quantity (e.g. the total magnetization), no move can leave the sector a walker starts in.
+    This can be used to target the ground state within different symmetry sectors.
+
+.. _usage-guide:
+
+Guiding wavefunction (optional)
+===============================
+
+A guiding wavefunction :math:`\psi_T` biases the moves toward an ansatz wavefunction.
+A good approximation to the ground state leads to smaller statistical errors and faster equilibration.
+
+Here is an example of a simple Jastrow wavefunction for spin-:math:`S` configurations:
+
+.. math::
+
+    \psi_T(x) = \exp\Big( -\sum_{(i,j)} \beta_{ij}\, x_i x_j
+        + \sum_i h_i x_i - \sum_i d_i x_i^2 \Big)\,,
+
+where the sum runs over the given pairs.
+:math:`x_i \in \{-S, \dots, S\}` encode the spin of site :math:`i` in the configuration :math:`x`, and :math:`\beta_{ij}`, :math:`h_i` and :math:`d_i` are variational parameters.
+Positive :math:`\beta_{ij}` favor anti-aligned neighbors, and :math:`d_i` weights :math:`x_i = 0` against :math:`x_i = \pm 1`.
+Our chain is ferromagnetic, so we start from :math:`\beta = -0.1`.
+We pass a single scalar for :math:`\beta` and :math:`d` that is shared by all pairs and sites, respectively.
+We do not pass :math:`h`, so the guide has no field term.
+
+.. code-block:: python
+
+    from pygfmc.wavefunction import JastrowSpin
+
+    guide = JastrowSpin(L, lattice.edges, beta=-0.1, d=0.0)
+
+:code:`pygfmc.wavefunction` provides six guides:
+
+* :class:`~pygfmc.wavefunction.JastrowSpinHalf`: pairwise correlations and optional one-body fields for :class:`~pygfmc.hamiltonian.SpinHalf`,
+* :class:`~pygfmc.wavefunction.JastrowSpin`: the same for :class:`~pygfmc.hamiltonian.Spin`, with an additional single-ion term (shown above),
+* :class:`~pygfmc.wavefunction.JastrowBoseHubbard`: the same idea for :class:`~pygfmc.hamiltonian.BoseHubbard`, where :math:`d` suppresses multiple occupancy (see the :ref:`start page <quickstart-guide>`),
+* :class:`~pygfmc.wavefunction.ClusterCPS`: a cluster correlator product state, a lookup table over the configurations of predefined clusters,
+* :class:`~pygfmc.wavefunction.ClusterMLP`: the same structure but with a small neural network per cluster instead of a lookup table,
+* :class:`~pygfmc.wavefunction.ExactGroundState`: the exact ground state from exact diagonalization, a diagnostic for small systems.
+
+
+:class:`~pygfmc.wavefunction.JastrowSpinHalf`, :class:`~pygfmc.wavefunction.ClusterCPS` and :class:`~pygfmc.wavefunction.ClusterMLP` are for :class:`~pygfmc.hamiltonian.SpinHalf` Hamiltonians, :class:`~pygfmc.wavefunction.JastrowSpin` is for :class:`~pygfmc.hamiltonian.Spin`, and :class:`~pygfmc.wavefunction.JastrowBoseHubbard` is for :class:`~pygfmc.hamiltonian.BoseHubbard`.
+All of them can be saved with :code:`guide.save(path)` and loaded with :code:`Class.load(path)`.
+PyGFMC allows for user-defined guides as discussed in the :ref:`paper <Paper>`.
+
+The guides can be trained by variational Monte Carlo with `NetKet <https://www.netket.org>`__ :
+
+.. code-block:: python
+
+    from pygfmc.wavefunction import train_with_netket, make_hilbert
+    import netket as nk          # after pygfmc, so that everything stays in float32
+
+    # the transverse field changes single spins: sample with single-site updates on the
+    # local states (-1, 0, 1) of Spin (NetKet's own spin-1 space uses 2m instead)
+    sampler = nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, L))
+    guide = train_with_netket(H, guide, sampler=sampler)
+
+The default sempler is :code:`MetropolisExchange`.
+
+.. _usage-observables:
+
+Observables (optional)
+======================
+
+Observables are passed as dictionaries of operators:
+
+* **Diagonal observables** (:code:`diag_operators={name: op}`): The operator only needs a :code:`diagonal_weight(config)` method.
+  They are measured at every step at little extra cost.
+* **Off-diagonal observables** (:code:`off_diag_operators={name: op}`): The operator requires the full Hamiltonian interface, but its off-diagonal elements must be non-negative.
+  For the implemented Hamiltonian classes, the sign check must be turned off with :code:`sign_check=False` (see :ref:`Build a Hamiltonian <usage-hamiltonian>`).
+  Each measurement launches an auxiliary Markov chain, which makes them considerably more expensive.
+  :code:`off_diag_stride=k` measures only every :math:`k`-th step.
+  This helps to reduce the correlation between measurements.
+
+.. code-block:: python
+
+    # nearest-neighbor correlator sum_i S^z_i S^z_i+1: diagonal
+    zz = Spin.create(lattice.edges, S=1.0, J_z=1.0)
+    diag_operators = {"ZZ": zz}
+    # transverse magnetization sum_i S^x_i = 0.5 sum_i (S^+_i + S^-_i): off-diagonal,
+    # non-negative rates need h_pm > 0
+    Sx = Spin.create([], S=1.0, N=L, h_pm=0.5, sign_check=False)
+    off_diag_operators = {"Sx": Sx}
+
+    # exact references for small systems
+    E_ed, diag_ex, off_ex = exact_diagonalization(H, diag_operators=diag_operators,
+                                               off_diag_operators=off_diag_operators)
+    E0 = E_ed[0]    # reuse this eigensolve for the energy reference
+
+
+PyGFMC provides structure factors for the :code:`SpinHalf` class.
+
+* :class:`~pygfmc.hamiltonian.SzSzStructureFactor` :code:`(positions, k_vectors)` is a diagonal observable, measured for many :math:`k` vectors at once (one value per :math:`k`):
+
+  .. math::
+
+      S^{zz}(\mathbf{k}) = \sum_{i<j} 2\cos(\mathbf{k}\cdot\mathbf{r}_{ij})\, S^z_iS^z_j
+
+* :func:`~pygfmc.hamiltonian.StructureFactor` :code:`(positions, k, channel="SpSm")` returns an off-diagonal :code:`SpinHalf` operator for a single :math:`k` vector and allows different channels :code:`"SpSm"` (:math:`A=S^+, B=S^-`), :code:`"SpSp"` (:math:`A=B=S^+`) or :code:`"SpSm+SpSp"`:
+
+  .. math::
+
+      O = \sum_{i<j} \big[1+\cos(\mathbf{k}\cdot\mathbf{r}_{ij})\big]\big(A_iB_j+\mathrm{h.c.}\big) = AB(0)+AB(\mathbf{k})
+
+  Note that the operator computes the structure factor at :math:`k` plus that at :math:`k = 0`.
+  This is necessary to keep the transition rates positive.
+
+
+You may check if a wave vector is valid using :func:`~pygfmc.hamiltonian.is_valid_k`. See the :ref:`paper <Paper>` for more details.
+
+Pass :code:`diag_operators=None` and :code:`off_diag_operators=None` to measure only the energy.
+
+
+.. _usage-run:
+
+Run GFMC
+========
+
+The :func:`~pygfmc.engine.run` function combines all elements above and executes the simulation.
+It returns five objects:
+
+.. code-block:: python
+
+    from pygfmc import run
+
+    walkers, energy, obs, stats, raw = run(
+        walkers, 1000, H, step_size=0.5, guide=guide,
+        p_array=[4, 8, 16, 32, 64], rng_key=jax.random.PRNGKey(1),
+        warmup_steps=500, verbosity=0,
+        diag_operators=diag_operators, off_diag_operators=off_diag_operators,
+        off_diag_stride=4,
+    )
+    print(energy, E0)                        # energy[p] for every window p
+    print(obs["Sx"], off_ex["Sx"])           # obs[name][p], and the exact value
+
+The most important arguments are:
+
+* :code:`n_steps`: number of production steps.
+* :code:`method`: the propagation scheme, :code:`"cont_time"` (default), :code:`"multi_step"` or :code:`"single_step"`.
+* :code:`step_size`: the projection between two branching steps (also referred to as :math:`\beta`). For :code:`"cont_time"` it is a finite positive real number; for the discrete methods it is a positive integer counting powers of :math:`\lambda-H`.
+* :code:`lam`: the diagonal shift :math:`\lambda` (only used by the discrete methods).
+* :code:`p_array`: the number of branching steps :math:`p` defining the projection depth.
+  Each side of an estimate is projected by :math:`\tau = (p/2)\,\beta`.
+  How to choose :code:`p_array` and :code:`step_size` is described in :ref:`Running a good simulation <GoodSimulation>`.
+* :code:`warmup_steps`: warm-up steps before production.
+* :code:`rng_key`: a JAX random key.
+* :code:`diag_operators`, :code:`off_diag_operators`, :code:`off_diag_stride`: the :ref:`observables <usage-observables>`
+* :code:`verbosity`: 0 (silent) to 10 (all observables at every progress line).
+
+All arguments are listed in the :ref:`API reference <api-engine>`.
+
+The returned objects:
+
+* :code:`walkers`: the walker ensemble at the end of the run.
+* :code:`energy`: dict :math:`p \to E_p`.
+* :code:`obs`: dict :math:`\mathrm{name} \to \{p \to \langle O\rangle_p\}` for the measured observables.
+* :code:`stats`: diagnostics.
+* :code:`raw`: the per-step series, used for error bars and storage.
+
+
+Observables and energy can be evaluated from the :code:`raw` dictionary:
+
+.. code-block:: python
+
+    from pygfmc import evaluate_observables
+
+    E, O = evaluate_observables(raw)
+
+The energy can be re-evaluated at any windows with :code:`evaluate_observables(raw, p_array=...)`, whereas the observables are only available at the windows they were measured on.
+Passing :code:`n_blocks` additionally returns error bars from a blocked jackknife.
+
+
+The :code:`run` function uses multiple GPU devices when detected.
+It falls back to a single device when diagonal operators are requested.
+
+.. rubric:: Storing and resuming a calculation
+    :class: section-heading
+
+PyGFMC stores simulation results on disk using HDF5 and can relaunch a simulation from there.
+A large computation can have multiple such breakpoints in case anything fails:
+
+.. code-block:: python
+
+    import os
+    from pygfmc import write_to_HDF5, run_from_HDF5, load_raw_from_HDF5
+
+    if os.path.exists("tfim_spin1.h5"):         # start a fresh file: a file refuses the same run twice
+        os.remove("tfim_spin1.h5")
+    write_to_HDF5("tfim_spin1.h5", stats, walkers=walkers, energy=energy, obs=obs, raw=raw)
+
+    for block in range(3):                      # three more blocks of 2000 steps
+        walkers, energy, obs, stats, raw = run_from_HDF5(
+            "tfim_spin1.h5", H, guide=guide, n_steps=2000,
+            diag_operators=diag_operators, off_diag_operators=off_diag_operators,
+            verbosity=0,
+        )
+        write_to_HDF5("tfim_spin1.h5", stats, walkers=walkers, energy=energy, obs=obs, raw=raw)
+
+    # estimates and error bars from the whole chain in the file: 7000 steps in
+    # 20 blocks of 350 steps, longer than p = 64 and the autocorrelation time
+    E, O, E_err, O_err = evaluate_observables(load_raw_from_HDF5("tfim_spin1.h5"), n_blocks=20)
+
+Appending to the data file is rejected if the Hamiltonian, the guide or the operators differ from those already in the file.
+Details can be found in the :ref:`paper <Paper>`.
+

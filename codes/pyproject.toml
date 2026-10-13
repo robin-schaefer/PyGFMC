@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygfmc"
+version = "0.1.0"
+description = "JAX-based Green's Function Monte Carlo for quantum lattice models"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Robin Schaefer" }]
+requires-python = ">=3.10"
+dependencies = [
+    "jax",
+    "numpy",
+    "scipy",
+    "h5py",
+]
+
+[project.optional-dependencies]
+# Training guides by VMC.  Running GFMC with a trained guide needs none of these.
+netket = ["netket", "optax", "flax"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["pygfmc*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+# Long lines are tolerated (formulas and printed messages); everything else
+# in E/F/W holds.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# The XLA and NetKet environment flags must be set before jax is imported.
+"pygfmc/__init__.py" = ["E402"]

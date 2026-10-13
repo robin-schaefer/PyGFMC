@@ -1,0 +1,1120 @@
+{
+  "bosehubbard_graphN4_eta_coverage": {
+    "contract": {
+      "N": 4,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "bosehubbard_graphN4_eta_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "n2_tot",
+        "n_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 4.0,
+        "eta": 0.5,
+        "mu": 2.0,
+        "n_max": 2,
+        "t": 0.5
+      },
+      "phase": "eta_coverage",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "369dc4e332100c15031863bc4109e4961cc3de62dc802cf00d80caf397cdfaf7"
+  },
+  "bosehubbard_graphN4_superfluid": {
+    "contract": {
+      "N": 4,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "bosehubbard_graphN4_superfluid",
+      "initial_charge": 5,
+      "measured_observables": [
+        "hop_bond",
+        "n2_tot",
+        "n_tot",
+        "pair_bond"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 2.0,
+        "eta": 0.0,
+        "mu": 1.0,
+        "n_max": 2,
+        "t": 1.0
+      },
+      "phase": "superfluid",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "10d7bb17cd0e3a33f827fc723cf7b6587c7d8c95003d0090df5958838f94ca0d"
+  },
+  "bosehubbard_graphN9_eta_coverage": {
+    "contract": {
+      "N": 9,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "bosehubbard_graphN9_eta_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "n2_tot",
+        "n_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 4.0,
+        "eta": 0.5,
+        "mu": 2.0,
+        "n_max": 2,
+        "t": 0.5
+      },
+      "phase": "eta_coverage",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "d446a538d1a36152ea720eddbeba1114c4c44f81d4fa29d0d4308c15149ff5ba"
+  },
+  "bosehubbard_graphN9_superfluid": {
+    "contract": {
+      "N": 9,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "bosehubbard_graphN9_superfluid",
+      "initial_charge": 10,
+      "measured_observables": [
+        "n2_tot",
+        "n_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 2.0,
+        "eta": 0.0,
+        "mu": 1.0,
+        "n_max": 2,
+        "t": 1.0
+      },
+      "phase": "superfluid",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "e38e0851d27c376f41d2e419999dd2c03f885379260eff0fda3d95507e1bdfe4"
+  },
+  "bosehubbard_ladderL50_eta_coverage": {
+    "contract": {
+      "N": 100,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "bosehubbard_ladderL50_eta_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "n2_tot",
+        "n_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 4.0,
+        "eta": 0.5,
+        "mu": 2.0,
+        "n_max": 2,
+        "t": 0.5
+      },
+      "phase": "eta_coverage",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "6d3f814ee18f8afadaeb21aea0e99022bf7f92b2eb24cfbd317366ddd8751b3c"
+  },
+  "bosehubbard_ladderL50_superfluid": {
+    "contract": {
+      "N": 100,
+      "family": "BoseHubbard",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "bosehubbard_ladderL50_superfluid",
+      "initial_charge": 117,
+      "measured_observables": [
+        "n2_tot",
+        "n_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "U": 2.0,
+        "eta": 0.0,
+        "mu": 1.0,
+        "n_max": 2,
+        "t": 1.0
+      },
+      "phase": "superfluid",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "ef1c5a9d62d13e67b87985ccaefc5095875de1a5caed9dd629954d8f079d0baa"
+  },
+  "pyrochlore_N128_ring_exchange": {
+    "contract": {
+      "N": 128,
+      "family": "PlaquetteModel",
+      "geometry": {
+        "plaquettes": "2488b1c8d5482e5de2b69db6cee49d5416c754bea8eb210ec18918a2e66f8273"
+      },
+      "id": "pyrochlore_N128_ring_exchange",
+      "initial_charge": null,
+      "measured_observables": [
+        "flippable_frac"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "g": 1.0,
+        "mu": 0.0
+      },
+      "phase": "ring_exchange",
+      "reference_bond": "first edge",
+      "sector": "zero_flux_ice"
+    },
+    "sha256": "108392dcc6dc8f5fdb300dfd87a444df90441fe2807c72d21eb3e96cadfd76bc"
+  },
+  "pyrochlore_N128_rk_point": {
+    "contract": {
+      "N": 128,
+      "family": "PlaquetteModel",
+      "geometry": {
+        "plaquettes": "2488b1c8d5482e5de2b69db6cee49d5416c754bea8eb210ec18918a2e66f8273"
+      },
+      "id": "pyrochlore_N128_rk_point",
+      "initial_charge": null,
+      "measured_observables": [
+        "flippable_frac",
+        "ring_flip_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "g": 1.0,
+        "mu": 1.0
+      },
+      "phase": "rk_point",
+      "reference_bond": "first edge",
+      "sector": "zero_flux_ice"
+    },
+    "sha256": "b76e2a610d94797b8203a0d5aede0d6f2b8d89787feed2d704f89193297c399f"
+  },
+  "spin_graphN4_field_polarized": {
+    "contract": {
+      "N": 4,
+      "family": "Spin",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spin_graphN4_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_pmpm": -0.5,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -0.5,
+        "h_z": -4.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "8a9d2f3951e748fbfe9a490d2b1142d6882176e7b3818666e732864766d0d84a"
+  },
+  "spin_graphN4_fm_sign_isotropic": {
+    "contract": {
+      "N": 4,
+      "family": "Spin",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spin_graphN4_fm_sign_isotropic",
+      "initial_charge": 0,
+      "measured_observables": [
+        "pm_bond",
+        "pm_tot",
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "258ed25d8228b49be02db66143f8b9b63fba3bd428d7f409e165ad48465c15b0"
+  },
+  "spin_graphN4_transverse_coverage": {
+    "contract": {
+      "N": 4,
+      "family": "Spin",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spin_graphN4_transverse_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -2.0
+      },
+      "phase": "transverse_coverage",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "61417126c218dc1fe703fcc7d54198925caca9ff087b948bf1b11bc70261e91a"
+  },
+  "spin_graphN9_field_polarized": {
+    "contract": {
+      "N": 9,
+      "family": "Spin",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spin_graphN9_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_pmpm": -0.5,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -0.5,
+        "h_z": -4.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "f341a0e75665805e77e3010b42f20f35ecaf6a31da922dba8df9f67fd62e2520"
+  },
+  "spin_graphN9_fm_sign_isotropic": {
+    "contract": {
+      "N": 9,
+      "family": "Spin",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spin_graphN9_fm_sign_isotropic",
+      "initial_charge": 0,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "8333c535561fcde49669d281326e87458caaae325e8d7fa71201c2bbb434e2d1"
+  },
+  "spin_graphN9_transverse_coverage": {
+    "contract": {
+      "N": 9,
+      "family": "Spin",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spin_graphN9_transverse_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -2.0
+      },
+      "phase": "transverse_coverage",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "49dbcfb59fa94cc3844c8d58121149c62e1c4c666333a3ec42c09b319d26f70b"
+  },
+  "spin_ladderL50_field_polarized": {
+    "contract": {
+      "N": 100,
+      "family": "Spin",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spin_ladderL50_field_polarized",
+      "initial_charge": 100,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_pmpm": -0.5,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -0.5,
+        "h_z": -4.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "c69243a5a267065724505e2ec9a14dcaa04ddab2fa644462fa5abbec2c2b8de8"
+  },
+  "spin_ladderL50_fm_sign_isotropic": {
+    "contract": {
+      "N": 100,
+      "family": "Spin",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spin_ladderL50_fm_sign_isotropic",
+      "initial_charge": 0,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "aeb5ec475616bd02e329bef84c1704e341ec89b869c75d9b7e551af67bf8cc7a"
+  },
+  "spin_ladderL50_transverse_coverage": {
+    "contract": {
+      "N": 100,
+      "family": "Spin",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spin_ladderL50_transverse_coverage",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_pm": -1.0,
+        "J_z": 1.0,
+        "S": 1.0,
+        "h_pm": -2.0
+      },
+      "phase": "transverse_coverage",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "667e28287762c2021c93b815ea7757f91746d9231dafd62fa16bbdeeb450da07"
+  },
+  "spinhalf_graphN13_field_polarized": {
+    "contract": {
+      "N": 13,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "596c127e0a64f865d8d81feb49d3313b28d70540189ea608f5a25954ec835389"
+      },
+      "id": "spinhalf_graphN13_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 8.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "cbc0b213520892bd538b5ac1012fdb3c3e92420ab8e43dede8b5265aa67c582f"
+  },
+  "spinhalf_graphN13_fm_sign_isotropic": {
+    "contract": {
+      "N": 13,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "596c127e0a64f865d8d81feb49d3313b28d70540189ea608f5a25954ec835389"
+      },
+      "id": "spinhalf_graphN13_fm_sign_isotropic",
+      "initial_charge": -1,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": -1.0,
+        "J_y": -1.0,
+        "J_z": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "2716deca6dedf23184094ec308cff9479103a5d5d1283c88a112abe3e38f4874"
+  },
+  "spinhalf_graphN13_tfim_disordered": {
+    "contract": {
+      "N": 13,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "596c127e0a64f865d8d81feb49d3313b28d70540189ea608f5a25954ec835389"
+      },
+      "id": "spinhalf_graphN13_tfim_disordered",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 4.0
+      },
+      "phase": "tfim_disordered",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "20a577058fec94092b19c2824001f5dd8737fb702a289c29c509529b291e3882"
+  },
+  "spinhalf_graphN4_field_polarized": {
+    "contract": {
+      "N": 4,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spinhalf_graphN4_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 8.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "d259eb3aa2bdac93b0cbd1300ba3aa7ddd6d708ffd6619d2a1dc12e97a925e84"
+  },
+  "spinhalf_graphN4_fm_sign_isotropic": {
+    "contract": {
+      "N": 4,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spinhalf_graphN4_fm_sign_isotropic",
+      "initial_charge": 0,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": -1.0,
+        "J_y": -1.0,
+        "J_z": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "dd9d1ac362ba7259e89fed17cfa8151d6bb5ee68ab129f35c081a7949c7ee2be"
+  },
+  "spinhalf_graphN4_tfim_disordered": {
+    "contract": {
+      "N": 4,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "26ed3c7fdf671e0b91dd5901e24b78d798c55cfb6adca1493df4ae8128ca754b"
+      },
+      "id": "spinhalf_graphN4_tfim_disordered",
+      "initial_charge": null,
+      "measured_observables": [
+        "pm_bond",
+        "x_tot",
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 4.0
+      },
+      "phase": "tfim_disordered",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "4f8ea436e7771f35c43b964853925a8e6e8315f2805b056344b47c99527f2cc8"
+  },
+  "spinhalf_graphN9_field_polarized": {
+    "contract": {
+      "N": 9,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spinhalf_graphN9_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 8.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "2b368223bd66f97539baccdebccc32b32af2c83816c0b84bffa50d4794bdc5c4"
+  },
+  "spinhalf_graphN9_fm_sign_isotropic": {
+    "contract": {
+      "N": 9,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spinhalf_graphN9_fm_sign_isotropic",
+      "initial_charge": -1,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": -1.0,
+        "J_y": -1.0,
+        "J_z": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "2f3da56ca76f574cdb0beca7d6f03071d0854421c360e9b42ed85f9badb9edfd"
+  },
+  "spinhalf_graphN9_tfim_disordered": {
+    "contract": {
+      "N": 9,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "be75f24e5324715a1bc48c1c26ccf1b6f2792136ebd077164b27ff0ceaa446fb"
+      },
+      "id": "spinhalf_graphN9_tfim_disordered",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 4.0
+      },
+      "phase": "tfim_disordered",
+      "reference_bond": "first edge",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "65d3252d9f4f8054a466fe7443ccf8ec75a493be25f56472ba7dfd7aa3af534e"
+  },
+  "spinhalf_ladderL50_field_polarized": {
+    "contract": {
+      "N": 100,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spinhalf_ladderL50_field_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 8.0
+      },
+      "phase": "field_polarized",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "a293ac6c2a6f83e3e1a366c4f511aeb1236c26e83bdcb892744255b13129780b"
+  },
+  "spinhalf_ladderL50_fm_sign_isotropic": {
+    "contract": {
+      "N": 100,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spinhalf_ladderL50_fm_sign_isotropic",
+      "initial_charge": 0,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": -1.0,
+        "J_y": -1.0,
+        "J_z": 1.0
+      },
+      "phase": "fm_sign_isotropic",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "e5229e317ec2c7c94299503b55e0dab42a57f312027d821bea695b6aab182c87"
+  },
+  "spinhalf_ladderL50_tfim_disordered": {
+    "contract": {
+      "N": 100,
+      "family": "SpinHalf",
+      "geometry": {
+        "edges": "b130d227fd76240b3ea593ace883b4117aa0816ca6b2e587b40e6dc0100c118f"
+      },
+      "id": "spinhalf_ladderL50_tfim_disordered",
+      "initial_charge": null,
+      "measured_observables": [
+        "z_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "J_x": 0.0,
+        "J_y": 0.0,
+        "J_z": -4.0,
+        "h_x": 4.0
+      },
+      "phase": "tfim_disordered",
+      "reference_bond": "middle rung",
+      "sector": "see_initial_charge"
+    },
+    "sha256": "eb22963c1c0639f0dec2a775093a0d85fdc3658dc38d722f01360738174e0a2d"
+  },
+  "toriccode_Lx2Ly2_deep_polarized": {
+    "contract": {
+      "N": 8,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "db5403b0009362f07eac38c24245a758d81501407c8506a4c2aaf6f9030eb1f1",
+        "stars": "aad328fca9c1b6abd817068691f548a98898c1111ef8be51830d02e768834546"
+      },
+      "id": "toriccode_Lx2Ly2_deep_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 2,
+        "h_x": 2.0,
+        "h_z": 2.0
+      },
+      "phase": "deep_polarized",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "d5cfb3cc421ea24d4a45369c1f0b8f3021119a0f061933ccfc30a6b10aaa3347"
+  },
+  "toriccode_Lx2Ly2_pure_topological": {
+    "contract": {
+      "N": 8,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "db5403b0009362f07eac38c24245a758d81501407c8506a4c2aaf6f9030eb1f1",
+        "stars": "aad328fca9c1b6abd817068691f548a98898c1111ef8be51830d02e768834546"
+      },
+      "id": "toriccode_Lx2Ly2_pure_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "As_avg",
+        "Bp_avg",
+        "x_tot"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 2,
+        "h_x": 0.0,
+        "h_z": 0.0
+      },
+      "phase": "pure_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "2fe9b42120fb8e38c670a498e7c364385d0f0a298f7b224e76579fac75ef6bae"
+  },
+  "toriccode_Lx2Ly2_repo_anchored_field": {
+    "contract": {
+      "N": 8,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "db5403b0009362f07eac38c24245a758d81501407c8506a4c2aaf6f9030eb1f1",
+        "stars": "aad328fca9c1b6abd817068691f548a98898c1111ef8be51830d02e768834546"
+      },
+      "id": "toriccode_Lx2Ly2_repo_anchored_field",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 2,
+        "h_x": 0.5,
+        "h_z": 0.5
+      },
+      "phase": "repo_anchored_field",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "387acad15e33d30b91edd9a31b533106dbc5ccf03aff1824e355a96e813b8e08"
+  },
+  "toriccode_Lx2Ly2_weak_field_topological": {
+    "contract": {
+      "N": 8,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "db5403b0009362f07eac38c24245a758d81501407c8506a4c2aaf6f9030eb1f1",
+        "stars": "aad328fca9c1b6abd817068691f548a98898c1111ef8be51830d02e768834546"
+      },
+      "id": "toriccode_Lx2Ly2_weak_field_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 2,
+        "h_x": 0.1,
+        "h_z": 0.1
+      },
+      "phase": "weak_field_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "0621e5ea44467b6cb1cc6dfaddbf0378bd465936c1e6b598144a883dbf3cc388"
+  },
+  "toriccode_Lx2Ly3_deep_polarized": {
+    "contract": {
+      "N": 12,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "d6e2b0fe12ac87f671a4ca671586da80ebd56d996a89d6a0e4e946e86ca03259",
+        "stars": "d394a0d944029517e9e8ee892b2dc7dd941ef93e1202395caeafe9b3db381a6e"
+      },
+      "id": "toriccode_Lx2Ly3_deep_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 3,
+        "h_x": 2.0,
+        "h_z": 2.0
+      },
+      "phase": "deep_polarized",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "28da371e43d22cad3959a9e7b706f682963d2e247e31e08584c398437a2a40de"
+  },
+  "toriccode_Lx2Ly3_pure_topological": {
+    "contract": {
+      "N": 12,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "d6e2b0fe12ac87f671a4ca671586da80ebd56d996a89d6a0e4e946e86ca03259",
+        "stars": "d394a0d944029517e9e8ee892b2dc7dd941ef93e1202395caeafe9b3db381a6e"
+      },
+      "id": "toriccode_Lx2Ly3_pure_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 3,
+        "h_x": 0.0,
+        "h_z": 0.0
+      },
+      "phase": "pure_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "2059bf72dc8071cfb8107784e6cb2ee139128fd23a5025386792970f931627eb"
+  },
+  "toriccode_Lx2Ly3_repo_anchored_field": {
+    "contract": {
+      "N": 12,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "d6e2b0fe12ac87f671a4ca671586da80ebd56d996a89d6a0e4e946e86ca03259",
+        "stars": "d394a0d944029517e9e8ee892b2dc7dd941ef93e1202395caeafe9b3db381a6e"
+      },
+      "id": "toriccode_Lx2Ly3_repo_anchored_field",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 3,
+        "h_x": 0.5,
+        "h_z": 0.5
+      },
+      "phase": "repo_anchored_field",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "9a3787b5400b2ca0cc8657a61b97c340a29b7c0285a2c0b55e8ca93ab256944c"
+  },
+  "toriccode_Lx2Ly3_weak_field_topological": {
+    "contract": {
+      "N": 12,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "d6e2b0fe12ac87f671a4ca671586da80ebd56d996a89d6a0e4e946e86ca03259",
+        "stars": "d394a0d944029517e9e8ee892b2dc7dd941ef93e1202395caeafe9b3db381a6e"
+      },
+      "id": "toriccode_Lx2Ly3_weak_field_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 3,
+        "h_x": 0.1,
+        "h_z": 0.1
+      },
+      "phase": "weak_field_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "0aaf74613f6a063e56d32829eca8cb14eb6717915e5625e805bc62ba304a3cb5"
+  },
+  "toriccode_Lx2Ly4_deep_polarized": {
+    "contract": {
+      "N": 16,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "e19bc84c08cb1c371901375f48c09c1be8ebec2d27c5e347036f4b0d1e722a39",
+        "stars": "a7b789b3ba06146b703b782278704d481f16267c0ac5582bfa0c92e1afe0d97c"
+      },
+      "id": "toriccode_Lx2Ly4_deep_polarized",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 4,
+        "h_x": 2.0,
+        "h_z": 2.0
+      },
+      "phase": "deep_polarized",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "69889b0778c551328aea73067ee316092e476e3add40c083e15d3385cfff8c26"
+  },
+  "toriccode_Lx2Ly4_pure_topological": {
+    "contract": {
+      "N": 16,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "e19bc84c08cb1c371901375f48c09c1be8ebec2d27c5e347036f4b0d1e722a39",
+        "stars": "a7b789b3ba06146b703b782278704d481f16267c0ac5582bfa0c92e1afe0d97c"
+      },
+      "id": "toriccode_Lx2Ly4_pure_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 4,
+        "h_x": 0.0,
+        "h_z": 0.0
+      },
+      "phase": "pure_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "70f137f933695a292cc6b1972a7ed3574be37f265b556a8bfc3ea8023850b0db"
+  },
+  "toriccode_Lx2Ly4_repo_anchored_field": {
+    "contract": {
+      "N": 16,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "e19bc84c08cb1c371901375f48c09c1be8ebec2d27c5e347036f4b0d1e722a39",
+        "stars": "a7b789b3ba06146b703b782278704d481f16267c0ac5582bfa0c92e1afe0d97c"
+      },
+      "id": "toriccode_Lx2Ly4_repo_anchored_field",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 4,
+        "h_x": 0.5,
+        "h_z": 0.5
+      },
+      "phase": "repo_anchored_field",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "c317afa025e6ef1c75e6084191f13b12befa54ae25ae4efb9d8bdbe789aa57f6"
+  },
+  "toriccode_Lx2Ly4_weak_field_topological": {
+    "contract": {
+      "N": 16,
+      "family": "ToricCode",
+      "geometry": {
+        "plaquettes": "e19bc84c08cb1c371901375f48c09c1be8ebec2d27c5e347036f4b0d1e722a39",
+        "stars": "a7b789b3ba06146b703b782278704d481f16267c0ac5582bfa0c92e1afe0d97c"
+      },
+      "id": "toriccode_Lx2Ly4_weak_field_topological",
+      "initial_charge": null,
+      "measured_observables": [
+        "Bp_avg"
+      ],
+      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
+      "params": {
+        "A_s": 1.0,
+        "B_p": 1.0,
+        "Lx": 2,
+        "Ly": 4,
+        "h_x": 0.1,
+        "h_z": 0.1
+      },
+      "phase": "weak_field_topological",
+      "reference_bond": "first edge",
+      "sector": "Bp=+1"
+    },
+    "sha256": "45746f6eaa815f04fc4093d10af4f0f92d75195ddc1265501b77773f0d2cae60"
+  }
+}
