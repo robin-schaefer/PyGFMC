@@ -5,7 +5,7 @@ Package and Installation
 ########################
 
 PyGFMC is a pure-Python package; there is nothing to compile.
-It needs Python 3.10 or newer.
+It needs Python :del:`3.10` :red:`3.11` or newer.
 
 :red:`Installation from PyPI`
 =============================

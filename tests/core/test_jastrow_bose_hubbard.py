@@ -15,7 +15,7 @@ import jax.numpy as jnp
 
 from pygfmc.hamiltonian import BoseHubbard, chain
 from pygfmc.wavefunction import JastrowBoseHubbard
-from core.guides import log_ratios_from_log_psi
+from core.guides import log_ratios_from_log_psi, require_netket
 
 L = 9
 EDGES = np.asarray(chain(L).edges)
@@ -155,7 +155,7 @@ def test_train_with_netket_keeps_the_form():
     swaps keep the occupation histogram), so the test passes NetKet's
     single-site ``MetropolisLocal`` on the unconstrained occupation space.
     """
-    pytest.importorskip("netket")
+    require_netket()
     import netket as nk
     from pygfmc.wavefunction import make_hilbert, train_with_netket
     n = 6

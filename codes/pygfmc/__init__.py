@@ -58,8 +58,11 @@ _enable_deterministic_xla()
 # float32 Hamiltonian in the GFMC scan.  NetKet's experimental sharding leaks a
 # named mesh into JAX's config that breaks later ``jax.pmap`` calls.  Importing
 # pygfmc BEFORE netket avoids both; explicit settings by the user win.
+# Newer NetKet releases read NETKET_SHARDING (the experimental name is
+# deprecated), so both are set.
 _os.environ.setdefault("NETKET_ENABLE_X64", "0")
 _os.environ.setdefault("NETKET_EXPERIMENTAL_SHARDING", "0")
+_os.environ.setdefault("NETKET_SHARDING", "0")
 
 def _read_version():
     """The installed distribution's version, else the one in the source

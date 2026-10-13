@@ -1,0 +1,11 @@
+# Versions the full test suite (core and benchmark) was validated with.
+# CI installs with `pip install -c .github/constraints.txt ...`, so newer
+# releases of JAX or NetKet cannot silently change results or break the suite.
+jax==0.9.2
+jaxlib==0.9.2
+numpy==2.3.5
+scipy==1.16.3
+h5py==3.15.1
+netket==3.21.0
+flax==0.12.5
+optax==0.2.6

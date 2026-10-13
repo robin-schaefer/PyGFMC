@@ -16,7 +16,7 @@ from pygfmc import run
 from pygfmc.hamiltonian import Spin, chain, exact_diagonalization
 from pygfmc.walkers import prepare_walkers_from_configs
 from pygfmc.wavefunction import JastrowSpin
-from core.guides import log_ratios_from_log_psi
+from core.guides import log_ratios_from_log_psi, require_netket
 
 L = 7
 EDGES = np.asarray(chain(L).edges)
@@ -233,7 +233,7 @@ def test_gfmc_spin1_tfim_matches_ed(incremental):
 
 
 def test_train_with_netket_keeps_the_form():
-    pytest.importorskip("netket")
+    require_netket()
     from pygfmc.wavefunction import train_with_netket, make_hilbert
     import netket as nk
     n = 6

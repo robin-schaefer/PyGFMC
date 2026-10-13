@@ -4,9 +4,10 @@ A sign-problem-free ferromagnetic XXZ ring of ``L = 6`` sites with a
 transverse field (64 states, so exact diagonalization is instant) and one
 deterministic instance of each of the four documented spin-1/2 guides; plus
 ``log_ratios_from_log_psi``, the reference for a guide's fast ratios used by
-the Jastrow tests.
+the Jastrow tests, and ``require_netket``, the skip shared by the NetKet tests.
 """
 import numpy as np
+import pytest
 
 from pygfmc.hamiltonian import SpinHalf, chain
 from pygfmc.wavefunction import ClusterCPS, ClusterMLP, ExactGroundState, JastrowSpinHalf
@@ -41,3 +42,18 @@ def build_guide(name, h):
     if name == "ExactGroundState":
         return ExactGroundState(h)
     raise KeyError(name)
+
+
+def require_netket():
+    """Skip when NetKet is absent or fails on import.
+
+    ``pytest.importorskip`` skips only on ``ImportError``; a NetKet release that
+    raises something else on import (e.g. a ``TypeError`` on an unsupported
+    Python version) would fail the test instead.  ``import_netket`` reports both
+    cases as ``ImportError``.
+    """
+    from pygfmc.wavefunction._optional import import_netket
+    try:
+        import_netket()
+    except ImportError as e:
+        pytest.skip(str(e))

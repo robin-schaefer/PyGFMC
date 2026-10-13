@@ -10,7 +10,7 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from core.guides import GUIDE_NAMES, L, build_guide
+from core.guides import GUIDE_NAMES, L, build_guide, require_netket
 from pygfmc import run_gfmc
 from pygfmc.walkers import prepare_walkers_random
 from pygfmc.wavefunction import ClusterCPS, ClusterMLP, ExactGroundState, JastrowSpinHalf
@@ -37,18 +37,9 @@ def _ratios(guide, h, cfg):
     return np.asarray(guide.log_diff_from_configs(cfg, new_configs, None)).reshape(-1)
 
 
-def _require_netket():
-    """Skip when NetKet is absent or fails on import."""
-    from pygfmc.wavefunction._optional import import_netket
-    try:
-        import_netket()
-    except ImportError as e:
-        pytest.skip(str(e))
-
-
 def test_default_sampler_is_refused_when_the_sum_is_not_conserved(h):
     """The default MetropolisExchange conserves S^z_tot; h_x breaks it, so it raises."""
-    _require_netket()
+    require_netket()
     from pygfmc.hamiltonian import SpinHalf
     from pygfmc.wavefunction import train_with_netket
 
@@ -101,7 +92,7 @@ def test_hdf5_roundtrip(name, h, tmp_path):
 @pytest.mark.parametrize("name", TRAINABLE)
 def test_train_with_netket_generic(name, h):
     """The generic trainer returns a usable float32 guide of the same class, with moved parameters."""
-    _require_netket()
+    require_netket()
     import netket as nk
     from pygfmc.wavefunction import make_hilbert, train_with_netket
 

@@ -28,7 +28,7 @@ For GPU support, install the CUDA build of JAX first, following the [JAX install
 | `netket` extra | `netket`, `optax`, `flax` | only for **training** guides by VMC (`pygfmc.wavefunction.train_with_netket`) |
 | `test` extra | `pytest` | the test suite |
 
-Python >= 3.10. Tested with Python 3.13.9, jax 0.9.2, numpy 2.3.5, scipy 1.16.3, h5py 3.15.1, flax 0.12.5, netket 3.21.0 and optax 0.2.6.
+Python >= 3.11. Tested with Python 3.13.9, jax 0.9.2, numpy 2.3.5, scipy 1.16.3, h5py 3.15.1, flax 0.12.5, netket 3.21.0 and optax 0.2.6.
 
 The NetKet imports are inside the training function, so `import pygfmc` works without NetKet. A training call without it raises an `ImportError` that says how to install it. Guides trained elsewhere can be saved to HDF5 and loaded for GFMC.
 

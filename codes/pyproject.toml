@@ -10,7 +10,7 @@ readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Robin Schaefer" }]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "jax",
     "numpy",
@@ -28,7 +28,7 @@ include = ["pygfmc*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "W"]

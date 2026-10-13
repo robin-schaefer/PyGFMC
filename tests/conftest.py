@@ -11,8 +11,9 @@ inside a test body, so the suite guards against two leaks:
   every test, so a test that switches it cannot change the precision of the
   tests that follow.
 * NetKet's experimental sharding installs a named mesh in JAX's thread-local
-  config.  ``NETKET_EXPERIMENTAL_SHARDING=0`` (set below, before NetKet is
-  imported) keeps it from doing so, and the ``reset_jax_mesh_state`` fixture
+  config.  ``NETKET_SHARDING=0`` and its deprecated older name
+  ``NETKET_EXPERIMENTAL_SHARDING=0`` (set below, before NetKet is imported)
+  keep it from doing so, and the ``reset_jax_mesh_state`` fixture
   clears any mesh a test leaves behind, which would break later ``jax.pmap``
   calls.
 
@@ -37,8 +38,10 @@ import pytest
 # remove the cause instead: with sharding disabled NetKet never installs a mesh,
 # nothing leaks, and any number of NetKet tests coexist in one process.  It
 # must be in place before the first `import netket`, hence module scope in
-# conftest.
+# conftest.  Newer NetKet releases read NETKET_SHARDING instead of the
+# deprecated experimental name, so both are set.
 os.environ.setdefault("NETKET_EXPERIMENTAL_SHARDING", "0")
+os.environ.setdefault("NETKET_SHARDING", "0")
 
 # The `pygfmc` package lives in ../codes.  Put it first on the path so the suite runs
 # against that tree without installation (after `pip install ../codes` this
