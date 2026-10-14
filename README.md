@@ -11,7 +11,7 @@ This makes it possible to access ground states of systems in which other quantum
 
 ## Docs
 
-The documentation (installation, usage, examples and API reference) is in [`docs/`](docs/README.md). 
+The documentation (installation, usage, examples and API reference) is online at **https://robin-schaefer.github.io/PyGFMC/**. Its sources are in [`docs/`](docs/README.md).
 
 ## Paper
 
