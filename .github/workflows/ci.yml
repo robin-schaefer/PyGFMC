@@ -8,6 +8,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    env:
+      # Generate the same CPU code as the machine that recorded the golden
+      # reference (AVX2, no AVX-512), so floating-point results can match bit for bit.
+      XLA_FLAGS: --xla_cpu_max_isa=AVX2
     strategy:
       matrix:
         python-version: ["3.11", "3.13"]

@@ -19,6 +19,8 @@ jobs:
       RUN_GFMC_BENCH: '1'
       NETKET_EXPERIMENTAL_SHARDING: '0'
       NETKET_SHARDING: '0'
+      # same CPU code as the machine that recorded the golden reference (AVX2)
+      XLA_FLAGS: --xla_cpu_max_isa=AVX2
       OMP_NUM_THREADS: '2'
     steps:
       - uses: actions/checkout@v4
