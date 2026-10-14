@@ -7,11 +7,9 @@
 * accepts **arbitrary variational wavefunctions** as guides, including neural quantum states, which can be trained with [NetKet](https://www.netket.org);
 * comes with several built-in Hamiltonians and guiding wavefunctions.
 
-This makes it possible to access ground states of systems in which other quantum Monte Carlo methods struggle to equilibrate!
-
 ## Docs
 
-The documentation (installation, usage, examples and API reference) is online at **https://robin-schaefer.github.io/PyGFMC/**. Its sources are in [`docs/`](docs/README.md).
+The documentation (installation, usage, examples and API reference) is online at **https://robin-schaefer.github.io/PyGFMC/**.
 
 ## Paper
 
@@ -41,7 +39,7 @@ walkers = prepare_walkers_sz(512, H.N, jax.random.PRNGKey(0), sz=0)
 
 walkers, energy, obs, stats, raw = run(
     walkers, 2000, H, step_size=0.2, guide=guide, p_array=[2, 4, 8, 16],
-    rng_key=jax.random.PRNGKey(1), warmup_steps=500, verbosity=0)
+    rng_key=jax.random.PRNGKey(1), warmup_steps=500, verbosity=10)
 print(energy[16], exact_diagonalization(H)[0][0])              # ≈ -3.65 (stochastic), -3.6511 (exact)
 ```
 
