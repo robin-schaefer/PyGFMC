@@ -13,7 +13,7 @@ The documentation (installation, usage, examples and API reference) is online at
 
 ## Paper
 
-The accompanying paper, *PyGFMC: GPU-accelerated Green's Function Monte Carlo*, is available as [`paper/PyGFMC.pdf`](paper/PyGFMC.pdf). 
+The accompanying paper, *PyGFMC: GPU-accelerated Green's Function Monte Carlo*, is available [here](https://robin-schaefer.github.io/PyGFMC/paper.html). 
 
 ## Installation
 
