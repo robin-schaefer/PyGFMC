@@ -1,5 +1,10 @@
 # PyGFMC
 
+[![CI](https://github.com/robin-schaefer/PyGFMC/actions/workflows/ci.yml/badge.svg)](https://github.com/robin-schaefer/PyGFMC/actions/workflows/ci.yml)
+[![Docs](https://github.com/robin-schaefer/PyGFMC/actions/workflows/docs.yml/badge.svg)](https://robin-schaefer.github.io/PyGFMC/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](codes/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](codes/pyproject.toml)
+
 **Py**thon **G**reen's **F**unction **M**onte **C**arlo (**PyGFMC**) is a [JAX](https://github.com/jax-ml/jax)-based implementation of Green's function Monte Carlo for ground states of sign-problem-free quantum lattice models. It
 
 * runs efficiently on **GPUs**: nearly **three orders of magnitude** higher throughput than on CPUs, scalable across multiple GPUs;
