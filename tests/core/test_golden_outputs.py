@@ -1,9 +1,9 @@
 """Golden-output regression: every propagator, for every Hamiltonian class and
-every guide that accepts it, must reproduce stored results bit for bit.
+every guide that accepts it, must reproduce stored results to float64 precision.
 
-The statistical tests elsewhere accept anything within a tolerance, so a
-change that moves the last bit of a weight, an energy or a reconfiguration
-decision passes them all.  This file pins the exact numbers of short runs on
+The statistical tests elsewhere accept anything within a statistical
+tolerance, so a change that moves an energy or a reconfiguration decision
+slightly passes them all.  This file pins the numbers of short float64 runs on
 CPU over the full product
 
     {cont_time, multi_step, single_step}
@@ -12,8 +12,21 @@ CPU over the full product
 
 each run measuring that class's diagonal and off-diagonal operators (the
 structure factors included), plus the gated off-diagonal path and
-``statistics()``.  A failure means sampler or estimator arithmetic changed; when the
-change is intended, regenerate the file::
+``statistics()``.
+
+The runs use float64 (``jax_enable_x64``) and every Hamiltonian, operator and
+guide is built with ``dtype=float64``.  Integer data (configurations, counts)
+and strings must match exactly; floating-point data must agree within
+``TOLERANCE`` (rtol 1e-10 for float64 data, about a million float64 rounding
+steps but far below any real change; float32 for the few diagnostics the engine
+accumulates in float32).  That absorbs the
+last-bit differences between CPUs (different vector instructions, different
+LAPACK kernels for the exact guides) while any change of the arithmetic, which
+moves results by many orders of magnitude more, still fails.  The guide is
+compared through its parameters, not through ``stats/parameters/guide_hash``:
+the hash covers the exact bits of the parameters, which legitimately differ in
+the last place between CPUs.  A failure means sampler or estimator arithmetic
+changed; when the change is intended, regenerate the file::
 
     PYGFMC_WRITE_GOLDEN=1 pytest core/test_golden_outputs.py -q
 
@@ -42,6 +55,20 @@ GOLDEN = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                       "reference_data", "golden_cpu.npz")
 _SKIP_STATS = {"it_per_sec", "runtime", "total_wall_time"}
 METHODS = ("cont_time", "multi_step", "single_step")
+F64 = jnp.float64
+# Production steps per run.  The autocorrelation times in ``stats`` need a few
+# hundred measurements for the automatic window to exist; with fewer they are
+# NaN for most observables.  The runs are dominated by compilation, so the
+# length costs little.
+N_STEPS = 300
+# Agreement required for floating-point data: far above the rounding
+# differences between CPUs, far below any change of the arithmetic.  A few
+# branching diagnostics are accumulated in float32 inside the engine even in a
+# float64 run, so float32 arrays get the float32 counterpart.
+TOLERANCE = {np.dtype(np.float64): (1e-10, 1e-12),
+             np.dtype(np.float32): (1e-5, 1e-6)}
+# Recorded, but compared through the guide's parameters (see the module docstring).
+_NOT_COMPARED = {"stats/parameters/guide_hash"}
 
 
 def _key(name):
@@ -62,9 +89,13 @@ def _flatten(prefix, obj, out):
         out[prefix] = np.asarray(obj)
 
 
-def _record(result):
+def _record(case):
+    result, guide = case
     walkers, energy, obs, stats = result[:4]
     out = {}
+    if guide is not None:
+        for i, leaf in enumerate(jax.tree_util.tree_leaves(guide)):
+            out[f"guide/{i}"] = np.asarray(leaf)
     _flatten("config", walkers.config, out)
     _flatten("log_weight", walkers.log_weight, out)
     _flatten("e_loc", walkers.e_loc, out)
@@ -124,6 +155,22 @@ def _largest_sector(H):
     return configs[members[0]], log_amp
 
 
+def _exact_guide(H, log_amp=None):
+    """``ExactGroundState`` with its amplitudes perturbed by a fixed pattern.
+
+    With the exact ground state every walker's local energy equals E_0 up to
+    rounding, so the energy autocorrelation time and the ancestor correlation
+    are computed from rounding noise and differ between CPUs by O(1).  The
+    perturbation (a deterministic 0.3 sin(1.7 n) on log psi) keeps the class's
+    code path but gives the local energy a real spread, so every recorded
+    statistic is well defined.
+    """
+    exact = ExactGroundState(H, log_amp=log_amp, dtype=F64)
+    la = np.asarray(exact.log_amp, dtype=float)
+    return ExactGroundState(H, log_amp=la + 0.3 * np.sin(1.7 * np.arange(la.size)),
+                            dtype=F64)
+
+
 # ── one system per Hamiltonian class ────────────────────────────────────────
 # Each builder returns the Hamiltonian, the walkers, the diagonal and
 # off-diagonal measurement operators (the latter with the measurement sign,
@@ -136,64 +183,66 @@ def _nn_structure_factor(edges, k):
     those bonds, built directly as StructureFactor's construction does."""
     W = 1.0 + np.cos(np.ones(len(edges)) * k)
     return SpinHalf.create(np.asarray(edges, dtype=np.int32),
-                           J_x=jnp.asarray(4.0 * W, dtype=jnp.float32),
-                           J_y=jnp.asarray(0.0 * W, dtype=jnp.float32),
-                           J_z=0.0, N=8, dtype=jnp.float32, sign_check=False)
+                           J_x=jnp.asarray(4.0 * W, dtype=F64),
+                           J_y=jnp.asarray(0.0 * W, dtype=F64),
+                           J_z=0.0, N=8, dtype=F64, sign_check=False)
 
 
 def _spinhalf():
     e = chain(8).edges
-    H = SpinHalf.create(e, J_x=-1.0, J_y=-1.0, J_z=1.0, h_x=0.5)
+    H = SpinHalf.create(e, J_x=-1.0, J_y=-1.0, J_z=1.0, h_x=0.5, dtype=F64)
     pos = np.arange(8, dtype=float)[:, None]
     ks = (2 * np.pi * np.arange(3) / 8)[:, None]
-    diag = {"zz": SpinHalf.create(e, J_z=1.0),
-            "sf": SzSzStructureFactor(pos, ks)}
-    off = {"spsm": SpinHalf.create(e, J_x=2.0, J_y=2.0, J_z=0.0, sign_check=False),
-           "sx": SpinHalf.create(e, h_x=-1.0, sign_check=False),
-           "sfx": _nn_structure_factor(e, 2 * np.pi / 8)}
+    diag = {"zz": SpinHalf.create(e, J_z=1.0, dtype=F64),
+            "sf": SzSzStructureFactor(pos, ks, dtype=F64)}
+    off = {"spsm": SpinHalf.create(e, J_x=2.0, J_y=2.0, J_z=0.0, sign_check=False, dtype=F64),
+           "sx": SpinHalf.create(e, h_x=-1.0, sign_check=False, dtype=F64),
+           # k = pi/2: the weight 1 + cos(k) rounds to exactly 1, so without a
+           # guide the series is exactly constant (not constant up to rounding)
+           "sfx": _nn_structure_factor(e, np.pi / 2)}
     clusters = np.array([[i, (i + 1) % 8] for i in range(8)])
     guides = {"none": lambda: None,
-              "jastrow": lambda: JastrowSpinHalf(8, e, beta=0.3, h=0.05),
+              "jastrow": lambda: JastrowSpinHalf(8, e, beta=0.3, h=0.05, dtype=F64),
               "cps": lambda: ClusterCPS([{"clusters": clusters, "parity": True}],
-                                        init="gaussian", seed=3),
-              "mlp": lambda: ClusterMLP([[clusters, [4]]], seed=4),
-              "exact": lambda: ExactGroundState(H)}
+                                        init="gaussian", seed=3, dtype=F64),
+              "mlp": lambda: ClusterMLP([[clusters, [4]]], seed=4, dtype=F64),
+              "exact": lambda: _exact_guide(H)}
     w = prepare_walkers_random(64, 8, _key("spinhalf walkers"))
     return dict(H=H, w=w, diag=diag, off=off, dt=0.2, lam=4.0, guides=guides)
 
 
 def _spin1():
     e = chain(8).edges
-    H = Spin.create(e, S=1.0, J_z=1.0, J_pm=-0.5, J_pmpm=-0.1, h_z=0.1, h_pm=-0.2)
-    diag = {"zz": Spin.create(e, S=1.0, J_z=1.0)}
-    off = {"pm": Spin.create(e, S=1.0, J_pm=0.5, sign_check=False),
-           "hpm": Spin.create(e, S=1.0, h_pm=0.2, sign_check=False)}
+    H = Spin.create(e, S=1.0, J_z=1.0, J_pm=-0.5, J_pmpm=-0.1, h_z=0.1, h_pm=-0.2, dtype=F64)
+    diag = {"zz": Spin.create(e, S=1.0, J_z=1.0, dtype=F64)}
+    off = {"pm": Spin.create(e, S=1.0, J_pm=0.5, sign_check=False, dtype=F64),
+           "hpm": Spin.create(e, S=1.0, h_pm=0.2, sign_check=False, dtype=F64)}
     guides = {"none": lambda: None,
-              "jastrow": lambda: JastrowSpin(8, e, beta=0.2, h=0.05, d=0.1),
-              "exact": lambda: ExactGroundState(H)}
+              "jastrow": lambda: JastrowSpin(8, e, beta=0.2, h=0.05, d=0.1, dtype=F64),
+              "exact": lambda: _exact_guide(H)}
     w = prepare_walkers_sz(64, 8, _key("spin1 walkers"), sz=0, states=(-1.0, 0.0, 1.0))
     return dict(H=H, w=w, diag=diag, off=off, dt=0.1, lam=12.0, guides=guides)
 
 
 def _bose():
     e = chain(6).edges
-    H = BoseHubbard.create(e, t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=-0.2, n_max=2)
-    diag = {"nn": BoseHubbard.create(e, U=2.0, n_max=2)}
-    off = {"hop": BoseHubbard.create(e, t=-1.0, n_max=2, sign_check=False),
-           "pair": BoseHubbard.create(e, eta=-0.3, n_max=2, sign_check=False)}
+    H = BoseHubbard.create(e, t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=-0.2, n_max=2, dtype=F64)
+    diag = {"nn": BoseHubbard.create(e, U=2.0, n_max=2, dtype=F64)}
+    off = {"hop": BoseHubbard.create(e, t=-1.0, n_max=2, sign_check=False, dtype=F64),
+           "pair": BoseHubbard.create(e, eta=-0.3, n_max=2, sign_check=False, dtype=F64)}
     guides = {"none": lambda: None,
-              "jastrow": lambda: JastrowBoseHubbard(6, e, beta=0.05, h=0.1, d=0.3),
-              "exact": lambda: ExactGroundState(H)}
+              "jastrow": lambda: JastrowBoseHubbard(6, e, beta=0.05, h=0.1, d=0.3, dtype=F64),
+              "exact": lambda: _exact_guide(H)}
     w = prepare_walkers_sz(64, 6, _key("bose walkers"), sz=6, states=(0.0, 1.0, 2.0))
     return dict(H=H, w=w, diag=diag, off=off, dt=0.1, lam=20.0, guides=guides)
 
 
 def _toric():
-    H = ToricCode.create(2, 2, h_x=0.3, h_z=0.1)
-    diag = {"bp": ToricCode.create(2, 2, A_s=0.0, B_p=1.0)}
-    off = {"star": ToricCode.create(2, 2, A_s=-1.0, B_p=0.0, sign_check=False),
-           "sx": ToricCode.create(2, 2, A_s=0.0, B_p=0.0, h_x=-1.0, sign_check=False)}
-    guides = {"none": lambda: None, "exact": lambda: ExactGroundState(H)}
+    H = ToricCode.create(2, 2, h_x=0.3, h_z=0.1, dtype=F64)
+    diag = {"bp": ToricCode.create(2, 2, A_s=0.0, B_p=1.0, dtype=F64)}
+    off = {"star": ToricCode.create(2, 2, A_s=-1.0, B_p=0.0, sign_check=False, dtype=F64),
+           "sx": ToricCode.create(2, 2, A_s=0.0, B_p=0.0, h_x=-1.0, sign_check=False, dtype=F64)}
+    guides = {"none": lambda: None, "exact": lambda: _exact_guide(H)}
     w = prepare_walkers_random(64, H.N, _key("toric walkers"))
     return dict(H=H, w=w, diag=diag, off=off, dt=0.2, lam=6.0, guides=guides)
 
@@ -211,13 +260,13 @@ def _plaquette():
     # three distinct diagonal energies, where the 2 x 2 kagome sectors hold at
     # most four with one.
     plaquettes = _square_plaquettes(4, 3)
-    H = PlaquetteModel.create(plaquettes, g=1.0, mu=-0.5)
-    diag = {"flip": PlaquetteModel.create(plaquettes, mu=1.0)}
-    off = {"ring": PlaquetteModel.create(plaquettes, g=-1.0, sign_check=False)}
+    H = PlaquetteModel.create(plaquettes, g=1.0, mu=-0.5, dtype=F64)
+    diag = {"flip": PlaquetteModel.create(plaquettes, mu=1.0, dtype=F64)}
+    off = {"ring": PlaquetteModel.create(plaquettes, g=-1.0, sign_check=False, dtype=F64)}
     config, log_amp = _largest_sector(H)          # all walkers in one sector
     w = prepare_walkers_from_configs(jnp.tile(config[None], (64, 1)))
     guides = {"none": lambda: None,
-              "exact": lambda: ExactGroundState(H, log_amp=log_amp)}
+              "exact": lambda: _exact_guide(H, log_amp)}
     return dict(H=H, w=w, diag=diag, off=off, dt=0.3, lam=4.0, guides=guides)
 
 
@@ -238,15 +287,17 @@ def _run(system, guide, method, **extra):
     step = s["dt"] if method == "cont_time" else 2
     if method != "cont_time":
         kw["lam"] = s["lam"]
-    return run_gfmc(s["w"], 30, s["H"], step, s["guides"][guide](), [2, 4], **kw)
+    g = s["guides"][guide]()
+    return run_gfmc(s["w"], N_STEPS, s["H"], step, g, [2, 4], **kw), g
 
 
 def _statistics_case():
     s = SYSTEMS["spinhalf"]()
-    _, st = statistics(s["w"], s["H"], 0.2, s["guides"]["jastrow"](), "cont_time",
+    g = s["guides"]["jastrow"]()
+    _, st = statistics(s["w"], s["H"], 0.2, g, "cont_time",
                        _key("spinhalf_jastrow_statistics"), 0.5, M=4, quiet=True,
                        m_array=[1, 2, 3])
-    return (s["w"], {}, {}, st)
+    return (s["w"], {}, {}, st), g
 
 
 CASES = {f"{sy}_{g}_{m}": (lambda sy=sy, g=g, m=m: _run(sy, g, m))
@@ -270,9 +321,10 @@ def golden():
         out = {"__jax_version__": np.asarray(jax.__version__, dtype="S32"),
                "__platform__": np.asarray(jax.default_backend(), dtype="S16"),
                "__machine__": np.asarray(_platform.machine(), dtype="S16")}
-        for name, fn in CASES.items():
-            for k, v in _record(fn()).items():
-                out[f"{name}/{k}"] = v
+        with jax.enable_x64(True):
+            for name, fn in CASES.items():
+                for k, v in _record(fn()).items():
+                    out[f"{name}/{k}"] = v
         os.makedirs(os.path.dirname(GOLDEN), exist_ok=True)
         np.savez(GOLDEN, **out)
         pytest.skip(f"wrote {GOLDEN} with {len(out)} arrays")
@@ -289,9 +341,11 @@ def golden():
 
 
 @pytest.mark.parametrize("name", sorted(CASES))
-def test_golden_output_is_reproduced_bit_for_bit(golden, name):
-    """Configurations, weights, energies, observables, raw series and stats match the stored run exactly."""
-    got = _record(CASES[name]())
+def test_golden_output_is_reproduced(golden, name):
+    """Configurations and counts match the stored float64 run exactly; weights,
+    energies, observables, raw series, stats and guide parameters to TOLERANCE."""
+    with jax.enable_x64(True):
+        got = _record(CASES[name]())
     prefix = name + "/"
     stored = {k[len(prefix):]: golden[k] for k in golden.files if k.startswith(prefix)}
     assert stored, f"{name}: not in the golden file; regenerate it with PYGFMC_WRITE_GOLDEN=1"
@@ -300,14 +354,17 @@ def test_golden_output_is_reproduced_bit_for_bit(golden, name):
         f"  missing now: {sorted(set(stored) - set(got))}\n"
         f"  new now:     {sorted(set(got) - set(stored))}")
     bad = []
-    for k in sorted(stored):
+    for k in sorted(set(stored) - _NOT_COMPARED):
         a, b = stored[k], np.asarray(got[k])
         if a.shape != b.shape or a.dtype != b.dtype:
             bad.append(f"{k}: shape/dtype {a.shape} {a.dtype} vs {b.shape} {b.dtype}")
         elif a.dtype.kind in "fc":
-            if not np.array_equal(a, b, equal_nan=True):
-                d = np.abs(a.astype(float) - b.astype(float))
-                bad.append(f"{k}: max |diff| {np.nanmax(d):.3e} in {int((d > 0).sum())} entries")
+            rtol, atol = TOLERANCE.get(a.dtype, TOLERANCE[np.dtype(np.float64)])
+            if not np.allclose(a, b, rtol=rtol, atol=atol, equal_nan=True):
+                off = ~np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=True)
+                d = np.abs(a.astype(complex) - b.astype(complex))
+                bad.append(f"{k}: max |diff| {np.nanmax(d):.3e} in {int(off.sum())} entries "
+                           f"(NaN in one run only: {int((np.isnan(a) != np.isnan(b)).sum())})")
         elif not np.array_equal(a, b):
             bad.append(f"{k}: differs")
-    assert not bad, f"{name} is no longer bit-identical to the golden run:\n  " + "\n  ".join(bad)
+    assert not bad, f"{name} no longer agrees with the golden run:\n  " + "\n  ".join(bad)
