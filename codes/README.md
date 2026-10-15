@@ -61,10 +61,10 @@ pygfmc/
 
 | Folder | Role | Detailed documentation |
 |---|---|---|
-| `pygfmc/walkers/` | The `Walker` population (a JAX pytree with HDF5 `save`/`load`), the initializers `prepare_walkers_random`, `prepare_walkers_sz`, `prepare_walkers_from_configs`, and `reconfiguration` (systematic resampling). | [`pygfmc/walkers/README.md`](pygfmc/walkers/README.md) |
-| `pygfmc/engine/` | The GFMC engine: the propagators, reconfiguration (resampling), the estimators and diagnostics, the drivers `run` / `run_gfmc` (and the multi-device `run_gfmc_pmap` behind `run`), and HDF5 storage, continuation and re-estimation. | [`pygfmc/engine/README.md`](pygfmc/engine/README.md) |
-| `pygfmc/hamiltonian/` | Hamiltonians and measurement operators that follow the rate protocol `pygfmc.Operator` (`M_total`, `get_rates`, `generate_state`), lattice factories, structure-factor measurement operators, and exact diagonalization for reference values. | [`pygfmc/hamiltonian/README.md`](pygfmc/hamiltonian/README.md) |
-| `pygfmc/wavefunction/` | Guiding (trial) wavefunctions, which follow the guide protocol `pygfmc.Guide` (`log_diff_from_operator` / `log_diff_from_configs` / `log_psi`), plus optional VMC training through NetKet. | [`pygfmc/wavefunction/README.md`](pygfmc/wavefunction/README.md) |
+| `pygfmc/walkers/` | The `Walker` population (a JAX pytree with HDF5 `save`/`load`), the initializers `prepare_walkers_random`, `prepare_walkers_sz`, `prepare_walkers_from_configs`, and `reconfiguration` (systematic resampling). | [`pygfmc/walkers/README.md`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/pygfmc/walkers/README.md) |
+| `pygfmc/engine/` | The GFMC engine: the propagators, reconfiguration (resampling), the estimators and diagnostics, the drivers `run` / `run_gfmc` (and the multi-device `run_gfmc_pmap` behind `run`), and HDF5 storage, continuation and re-estimation. | [`pygfmc/engine/README.md`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/pygfmc/engine/README.md) |
+| `pygfmc/hamiltonian/` | Hamiltonians and measurement operators that follow the rate protocol `pygfmc.Operator` (`M_total`, `get_rates`, `generate_state`), lattice factories, structure-factor measurement operators, and exact diagonalization for reference values. | [`pygfmc/hamiltonian/README.md`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/pygfmc/hamiltonian/README.md) |
+| `pygfmc/wavefunction/` | Guiding (trial) wavefunctions, which follow the guide protocol `pygfmc.Guide` (`log_diff_from_operator` / `log_diff_from_configs` / `log_psi`), plus optional VMC training through NetKet. | [`pygfmc/wavefunction/README.md`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/pygfmc/wavefunction/README.md) |
 
 **Each subpackage has its own `README.md`.** They document every module, all public functions and classes with their signatures, the protocols for writing your own Hamiltonian or guide, and the conventions (step size, estimator windows, return values, resuming a run). This file gives an overview only.
 
@@ -112,7 +112,7 @@ equilibrated and `avg_log_weight` stays at its initial estimate.
 
 ## Example notebooks
 
-The repository's [`notebooks/`](../notebooks/README.md) folder holds runnable
+The repository's [`notebooks/`](https://github.com/robin-schaefer/PyGFMC/blob/main/notebooks/README.md) folder holds runnable
 examples, stored with the outputs of a full run:
 
 | Notebook | Model | What it shows |
@@ -290,4 +290,4 @@ These are the names each subpackage exports, grouped by the module that defines 
 
 ## License
 
-Apache-2.0, see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+Apache-2.0, see [`LICENSE`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/LICENSE) and [`NOTICE`](https://github.com/robin-schaefer/PyGFMC/blob/main/codes/NOTICE).

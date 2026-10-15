@@ -18,6 +18,10 @@ dependencies = [
     "h5py",
 ]
 
+[project.urls]
+Homepage = "https://github.com/robin-schaefer/PyGFMC"
+Documentation = "https://robin-schaefer.github.io/PyGFMC/"
+
 [project.optional-dependencies]
 # Training guides by VMC.  Running GFMC with a trained guide needs none of these.
 netket = ["netket", "optax", "flax"]
