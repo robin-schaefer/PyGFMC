@@ -8,9 +8,20 @@ PyGFMC is a Green's Function Monte Carlo (GFMC) code for quantum lattice models,
 - Jastrow guides for spin-1/2, spin-S and bosons, cluster-CPS and cluster-MLP guides, optionally trained by VMC through NetKet;
 - HDF5 checkpointing (lossless compressed series) with bit-identical continuation, and re-estimation with blocked-jackknife error bars.
 
+- **Documentation:** https://robin-schaefer.github.io/PyGFMC/
+- **Repository:** https://github.com/robin-schaefer/PyGFMC
+- **Paper:** *PyGFMC: GPU-accelerated Green's Function Monte Carlo*, available [here](https://robin-schaefer.github.io/PyGFMC/paper.html)
+
 ## Installation
 
-From this folder:
+From [PyPI](https://pypi.org/project/pygfmc/):
+
+```bash
+pip install pygfmc            # GFMC only
+pip install "pygfmc[netket]"  # + training guides with NetKet (VMC)
+```
+
+From source, in this folder of a clone of the [repository](https://github.com/robin-schaefer/PyGFMC):
 
 ```bash
 pip install .                 # GFMC only

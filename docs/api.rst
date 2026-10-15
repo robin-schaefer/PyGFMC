@@ -211,7 +211,7 @@ Exact diagonalization
 :code:`pygfmc.wavefunction`
 ===========================
 
-Guiding wavefunctions and their training. :code:`train_with_netket` needs the optional extra pip install -e "./codes[netket]", run from the root of the cloned `repository <https://github.com/robin-schaefer/PyGFMC>`__ (see` :ref:`Installation`).
+Guiding wavefunctions and their training. :code:`train_with_netket` needs the optional extra netket: :code:`pip install "pygfmc[netket]"`, or from source :code:`pip install -e "./codes[netket]"` in the root of the cloned `repository <https://github.com/robin-schaefer/PyGFMC>`__ (see :ref:`Installation`).
 
 .. currentmodule:: pygfmc.wavefunction
 

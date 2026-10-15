@@ -12,13 +12,13 @@ Welcome to PyGFMC!
     * provides access to **diagonal** and **off-diagonal** observables, and
     * accepts **arbitrary variational wavefunctions** as guides.
 
-    Clone the `repository <https://github.com/robin-schaefer/PyGFMC>`_ and install from its root with :code:`pip`:
+    Install it from `PyPI <https://pypi.org/project/pygfmc/>`_ with :code:`pip`:
 
     .. code-block:: console
 
-        git clone https://github.com/robin-schaefer/PyGFMC.git
-        cd PyGFMC
-        pip install -e "./codes[netket]"
+        pip install pygfmc               # GFMC only
+        pip install "pygfmc[netket]"     # + training guides with NetKet
+
 
 What is Green's Function Monte Carlo?
 -------------------------------------

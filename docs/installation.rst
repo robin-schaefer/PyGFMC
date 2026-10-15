@@ -7,12 +7,15 @@ Package and Installation
 PyGFMC is a pure-Python package; there is nothing to compile.
 It needs Python 3.11 or newer.
 
-:red:`Installation from PyPI`
-=============================
+Installation from PyPI
+======================
 
-.. container:: red
+PyGFMC is available on `PyPI <https://pypi.org/project/pygfmc/>`_:
 
-   PyGFMC is not yet available on PyPI. Until then, install it from source as described above.
+.. code-block:: console
+
+    pip install pygfmc               # GFMC only
+    pip install "pygfmc[netket]"     # + training guides with NetKet
 
 
 
@@ -20,8 +23,8 @@ Installation from source
 ========================
 
 
+To modify the code or run the tests, install from source.
 The source is on GitHub at https://github.com/robin-schaefer/PyGFMC.
-Clone it and install from the root of the repository:
 
 .. code-block:: console
 
@@ -29,8 +32,6 @@ Clone it and install from the root of the repository:
     cd PyGFMC
     pip install -e "./codes"             # GFMC only
     pip install -e "./codes[netket]"     # + training guides with NetKet
-
-PyGFMC is not published on PyPI. The source directory containing :code:`codes/pyproject.toml` is required for these commands.
 
 
 For GPU runs, install the appropriate CUDA build of JAX first: `JAX installation guide <https://docs.jax.dev/en/latest/installation.html>`_.

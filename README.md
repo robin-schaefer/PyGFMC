@@ -22,12 +22,13 @@ The accompanying paper, **PyGFMC: GPU-accelerated Green's Function Monte Carlo**
 
 ## Installation
 
+From [PyPI](https://pypi.org/project/pygfmc/):
+
 ```bash
-git clone https://github.com/robin-schaefer/PyGFMC.git
-cd PyGFMC
-pip install -e "./codes"            # GFMC only
-pip install -e "./codes[netket]"    # + training guides with NetKet
+pip install pygfmc                  # GFMC only
+pip install "pygfmc[netket]"        # + training guides with NetKet
 ```
+
 ## Quick start
 
 ```python
