@@ -1,6 +1,6 @@
 # PyGFMC
 
-[![CI](https://github.com/robin-schaefer/PyGFMC/actions/workflows/ci.yml/badge.svg)](https://github.com/robin-schaefer/PyGFMC/actions/workflows/ci.yml)
+[![Tests](https://github.com/robin-schaefer/PyGFMC/actions/workflows/tests.yml/badge.svg)](https://github.com/robin-schaefer/PyGFMC/actions/workflows/tests.yml)
 [![Docs](https://github.com/robin-schaefer/PyGFMC/actions/workflows/docs.yml/badge.svg)](https://robin-schaefer.github.io/PyGFMC/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](codes/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](codes/pyproject.toml)

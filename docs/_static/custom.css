@@ -62,3 +62,8 @@ span.red + a.reference span {
     color: #d00000;
     background-color: transparent;
 }
+
+/* `.. container:: center` centers its content (e.g. a single command line) */
+div.center {
+    text-align: center;
+}

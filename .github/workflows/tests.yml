@@ -1,0 +1,33 @@
+name: Tests
+
+# Runs only when the package or the tests change (or when started by hand).
+on:
+  push:
+    paths: ['codes/**', 'tests/**']
+  pull_request:
+    paths: ['codes/**', 'tests/**']
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      # Generate the same CPU code as the machine that recorded the golden
+      # reference (AVX2, no AVX-512), so results stay within the golden tolerances.
+      XLA_FLAGS: --xla_cpu_max_isa=AVX2
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c .github/constraints.txt -e "./codes[test,netket]"
+      - name: Core suite
+        working-directory: tests
+        run: pytest core -q

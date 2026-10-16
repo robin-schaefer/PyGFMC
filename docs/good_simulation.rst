@@ -179,6 +179,11 @@ Further tips
 * **Use many walkers.** The more walkers, the better.
 * **Off-diagonal observables.** Use :code:`off_diag_stride` to reduce the autocorrelation time between measurements.
 * **Discrete methods.** If no diagonal element is present (e.g., pure hopping), we recommend working with the discrete method using :code:`method="single_step"`.
+* Check if a GPU is used:
+
+  .. container:: center
+
+     :code:`python -c "import jax; print(jax.default_backend(), jax.devices())"`
 
 .. admonition:: Invest in the guide
 
