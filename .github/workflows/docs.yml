@@ -23,6 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # the docs embed the manuscript (docs/conf.py: html_extra_path), which is not tracked
+      - name: Build the manuscript
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: PyGFMC.tex
+          working_directory: paper
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"

@@ -7,6 +7,8 @@ __pycache__/
 *.egg-info/
 docs/_build/
 paper/out/
+# the manuscript PDF is built by CI (artifact of ci.yml, embedded in the docs by docs.yml)
+paper/PyGFMC.pdf
 
 # LaTeX build files (paper/Makefile writes them to paper/out/; a build by hand
 # or from an editor leaves them next to PyGFMC.tex)

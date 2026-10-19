@@ -20,9 +20,15 @@ jobs:
           ruff check --config codes/pyproject.toml tests docs paper/images
 
   docs:
+    needs: paper
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # the docs embed the manuscript, which is not tracked: take the paper job's build
+      - uses: actions/download-artifact@v4
+        with:
+          name: paper
+          path: paper
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
