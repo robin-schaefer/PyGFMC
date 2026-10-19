@@ -1,9 +1,9 @@
 # PyGFMC notebooks
 
 Runnable examples for the `pygfmc` package. They require PyGFMC
-(`pip install -e ./codes` from the repository root) plus `matplotlib`; the
-notebooks that train a guide also need the NetKet extra
-(`pip install -e "./codes[netket]"`).
+(`pip install pygfmc`, or `pip install -e "./codes"` from the repository root)
+plus `matplotlib`; the notebooks that train a guide also need the NetKet extra
+(`pip install "pygfmc[netket]"`, or `pip install -e "./codes[netket]"`).
 Start Jupyter in `notebooks/` so relative data paths resolve.
 Each notebook is stored with the outputs of its last full run.
 

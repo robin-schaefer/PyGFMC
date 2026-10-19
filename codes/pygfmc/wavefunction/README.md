@@ -476,7 +476,7 @@ The other helpers are module-level functions, not exported by `pygfmc.wavefuncti
   `h`, `d`: absent, tied, or per element), shared by `JastrowSpin` and
   `JastrowBoseHubbard`.
 - `_optional.import_netket()` — returns the `netket` module or raises
-  `ImportError` naming the fix (`pip install -e "./codes[netket]"`). Every
+  `ImportError` naming the fix (`pip install "pygfmc[netket]"`). Every
   NetKet import in the package goes through it.
 - `_seed.resolve_seed(seed, *, announce=False, context='guide')` — returns
   `int(seed)`, or draws a fresh seed from `os.urandom` when `seed is None`
@@ -488,7 +488,8 @@ The other helpers are module-level functions, not exported by `pygfmc.wavefuncti
 Training is optional: install it with
 
 ```bash
-pip install -e "./codes[netket]"     # netket, optax, flax; run in the cloned repository
+pip install "pygfmc[netket]"         # netket, optax, flax
+pip install -e "./codes[netket]"     # the same from source, in the root of a clone
 ```
 
 Running GFMC with an already-trained guide needs none of these packages; a

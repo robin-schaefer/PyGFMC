@@ -15,7 +15,7 @@ All of them are combined in the main PyGFMC driver: :ref:`run(...) <usage-run>`.
 
 .. note::
 
-    Code blocks of this page are collected in the notebook :download:`transverse_field_ising_chain.ipynb <../notebooks/transverse_field_ising_chain.ipynb>`.
+    Code blocks of this page are collected in the notebooks :download:`transverse_field_ising_chain.ipynb <../notebooks/transverse_field_ising_chain.ipynb>` and :download:`n_body_model.ipynb <../notebooks/n_body_model.ipynb>`.
 
 
 All functions and classes are listed in the :ref:`API reference <API>`.
@@ -216,7 +216,7 @@ The guides can be trained by variational Monte Carlo with `NetKet <https://www.n
     sampler = nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, L))
     guide = train_with_netket(H, guide, sampler=sampler)
 
-The default sempler is :code:`MetropolisExchange`.
+The default sampler is :code:`MetropolisExchange`.
 
 .. _usage-observables:
 

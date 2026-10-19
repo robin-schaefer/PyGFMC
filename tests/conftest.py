@@ -44,8 +44,8 @@ os.environ.setdefault("NETKET_EXPERIMENTAL_SHARDING", "0")
 os.environ.setdefault("NETKET_SHARDING", "0")
 
 # The `pygfmc` package lives in ../codes.  Put it first on the path so the suite runs
-# against that tree without installation (after `pip install ../codes` this
-# resolves to the same files), and put this folder on the path so the
+# against that tree without installation (after `pip install -e ./codes` from the
+# repository root this resolves to the same files), and put this folder on the path so the
 # benchmark helpers import as `benchmark.helpers`.
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(_HERE, os.pardir, "codes"))

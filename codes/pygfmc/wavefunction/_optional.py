@@ -2,14 +2,15 @@
 
 NetKet (and optax) are needed only to TRAIN a guide; running GFMC with an
 already-trained guide never touches them.  They are therefore an optional
-extra, ``pip install -e "./codes[netket]"`` in a clone of the repository, and
+extra, ``pip install "pygfmc[netket]"`` (``pip install -e "./codes[netket]"``
+in a clone of the repository), and
 every NetKet entry point imports through :func:`import_netket` so a missing
 install fails with the remedy rather than a bare ``ModuleNotFoundError`` from
 deep inside a training call.
 """
 
-_INSTALL_HINT = ('pip install -e "./codes[netket]" (run in a clone of '
-                 'https://github.com/robin-schaefer/PyGFMC)')
+_INSTALL_HINT = ('pip install "pygfmc[netket]" (or pip install -e "./codes[netket]" '
+                 'from the root of a clone of https://github.com/robin-schaefer/PyGFMC)')
 
 
 def import_netket():

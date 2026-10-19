@@ -21,12 +21,12 @@ pip install pygfmc            # GFMC only
 pip install "pygfmc[netket]"  # + training guides with NetKet (VMC)
 ```
 
-From source, in this folder of a clone of the [repository](https://github.com/robin-schaefer/PyGFMC):
+From source, in the root of a clone of the [repository](https://github.com/robin-schaefer/PyGFMC):
 
 ```bash
-pip install .                 # GFMC only
-pip install '.[netket]'       # + training guides with NetKet (VMC)
-pip install '.[test]'          # + pytest
+pip install -e "./codes"           # GFMC only
+pip install -e "./codes[netket]"   # + training guides with NetKet (VMC)
+pip install -e "./codes[test]"     # + pytest
 ```
 
 For GPU support, install the CUDA build of JAX first, following the [JAX installation guide](https://docs.jax.dev/en/latest/installation.html).
@@ -130,7 +130,7 @@ examples, stored with the outputs of a full run:
 |---|---|---|
 | `bose_hubbard_chain.ipynb` | Bose-Hubbard chain, 50 sites | a guide trained with NetKet, then the ground-state energy |
 | `transverse_field_ising_chain.ipynb` | critical spin-1 transverse-field Ising chain, 12 sites | every code block of the documentation page *Running a simulation* |
-| `xxz_chain.ipynb` | XXZ chain with random couplings and a field, 20 sites | the paper's example: a Jastrow guide trained with NetKet, observables, the raw per-step series, the exact ground state as guide |
+| `xxz_chain.ipynb` | XXZ chain with random couplings and a field, 20 sites | the paper's example: a Jastrow guide trained with NetKet, observables, the raw per-step series, the final estimates with error bars, and the structure factors S^zz(k) and S^±(π) |
 | `n_body_model.ipynb` | four-site n-body model with a field, 12 sites | writing your own Hamiltonian and guiding wavefunction, and training the guide with NetKet |
 | `kagome_xxz.ipynb` | XXZ model on the kagome lattice, 18 and 108 sites | a symmetry-reduced cluster guide: training, storing, loading, and its effect on GFMC |
 | `toric_code.ipynb` | toric code, 10×10 and 3×3 tori | the exact energy without a field, and the convergence with fields against exact diagonalization |
@@ -150,6 +150,16 @@ examples, stored with the outputs of a full run:
 ## Full list of public functions and classes
 
 These are the names each subpackage exports, grouped by the module that defines them. The subfolder READMEs also list the methods of every class (`create`, `get_rates`, `log_psi`, `save`/`load`, ...) and the module-level functions that are not exported (e.g. `pygfmc.engine.multi_gpu.run_gfmc_pmap`). Everything listed under `pygfmc.engine` is also importable directly from `pygfmc`.
+
+### `pygfmc.protocols`
+
+The interfaces a user-defined class must follow; also importable directly from `pygfmc`.
+
+| Name | Kind | Description |
+|---|---|---|
+| `Operator` | protocol | The rate protocol of a Hamiltonian or of an off-diagonal observable (`M_total`, `get_rates`, `generate_state`). |
+| `DiagonalOperator` | protocol | An operator measured through its diagonal only (`diagonal_weight`; passed in `diag_operators`). |
+| `Guide` | protocol | A guiding wavefunction: at least one of `log_diff_from_operator`, `log_diff_from_configs` or `log_psi`. |
 
 ### `pygfmc.walkers`
 

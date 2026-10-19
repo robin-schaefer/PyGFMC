@@ -2,7 +2,7 @@
 
 Every guide implements at least one of ``log_diff_from_operator``,
 ``log_diff_from_configs`` or ``log_psi`` (see ``README.md``).  Training with
-NetKet is optional (``pip install -e "./codes[netket]"``); importing this package
+NetKet is optional (``pip install "pygfmc[netket]"``); importing this package
 never imports NetKet, optax or flax.
 """
 

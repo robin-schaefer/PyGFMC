@@ -128,11 +128,11 @@ Department of Physics, Harvard University, Cambridge, MA, USA
 \textbf{\boldmath{%
 \PyGFMC{} is a \JAX-based implementation of Green's function Monte Carlo for ground states of sign-problem-free quantum lattice models.
 %
-On GPUs it reaches nearly three orders of magnitude higher throughput than on CPUs, and is scalable across multiple GPUs.
+On GPUs it reaches nearly three orders of magnitude higher throughput than on CPUs, and is scalable across multiple devices.
 %
 This enables ensembles of up to $10^7$ walkers and expressive guiding wavefunctions, including high-dimensional neural quantum states.
 %
-As a result, \PyGFMC{} can access ground states of systems in which other quantum Monte Carlo methods struggle to equilibrate, such as frustrated lattices.
+As a result, \PyGFMC{} can access ground states of systems in which other quantum Monte Carlo methods struggle to equilibrate.
 %
 We demonstrate its capabilities on the notoriously difficult problem of quantum spin ice.
 %
@@ -170,7 +170,7 @@ Documentation and code are available at \repo{}.
 
 \section{Introduction}\label{sec:intro}
 
-Quantum Monte Carlo methods~\cite{becca_quantum_2017,sandvik_quantum_1991,foulkes_quantum_2001} hold the promise of efficiently solving sign-problem-free quantum many-body problems.
+Quantum Monte Carlo methods~\cite{becca_quantum_2017,sandvik_quantum_1991} hold the promise of efficiently solving sign-problem-free quantum many-body problems.
 %
 Where they apply, their statistical approach makes them the method of choice.
 %
@@ -178,7 +178,7 @@ They are neither limited to small system sizes, as exact diagonalization~\cite{w
 %
 They also avoid the challenging variational optimization on which neural quantum states~\cite{torlai_learning_2016,carleo_solving_2017,nomura_restricted_2017} rely.
 %
-However, while efficient in principle, much of the exotic physics encountered in sign-problem-free models, whether motivated by experiments~\cite{berg_sign_2012,li_what_2016,yahne_dipolar_2024,bernaschi_the_2024} or of purely theoretical interest~\cite{isakov_understanding_2016,kato_numerical_2015,huang_extended_2020,causer_rejection_2024}, can pose severe challenges in practice.
+However, while efficient in principle, much of the exotic physics encountered in sign-problem-free models, such as quantum spin liquids~\cite{isakov_spin-liquid_2006,isakov_hard-core_2006,banerjee_unusual_2008,isakov_topological_2011,isakov_universal_2012,kato_numerical_2015,huang_extended_2020,niggemann_gapless_2026} or spin glasses~\cite{rieger_zero-temperature_1994,guo_quantum_1994,rieger_griffiths_1996,guo_quantum_1996,king_quantum_2023,bernaschi_the_2024}, can pose severe challenges in practice.
 %
 In particular, when nearly degenerate low-energy states are present, reaching low temperatures or the ground state requires long equilibration times that grow rapidly with system size.
 %
@@ -195,7 +195,7 @@ for all basis states $\vert x\rangle \neq \vert x^\prime\rangle$.
 %
 \PyGFMC{} implements the Green's function Monte Carlo~(GFMC) algorithm~\cite{trivedi_ground-state_1990,calandra_numerical_1998,foulkes_quantum_2001}, a stochastic projection onto the ground state (see also Refs.~\cite{booth_fermion_2009,cufar_rimu_2026}).
 %
-By performing a walk with population control, GFMC samples the ground-state distribution and thereby provides access to diagonal and off-diagonal observables.
+By performing a walk with population control, GFMC samples the ground state and provides access to diagonal and off-diagonal observables.
 %
 Its advantage over other quantum Monte Carlo methods is the ability to include arbitrarily complex guiding wavefunctions, which are either chosen by hand or optimized numerically beforehand~\cite{qin_combination_2020,lin_greens_2022,lin_greens_2024}.
 %
@@ -204,7 +204,7 @@ These approximate the ground state and thereby improve the performance substanti
 
 \PyGFMC{} is written in \JAX~\cite{jax2018github,flax2020github}, allowing parallelized execution on CPUs and GPUs.
 %
-GPU acceleration achieves a speedup of roughly \emph{three orders of magnitude} over a CPU baseline and is scalable across multiple GPUs, making walker populations of up to $10^7$ possible.
+GPU acceleration achieves a speedup of roughly \emph{three orders of magnitude} over the CPU baseline and is scalable across multiple GPUs, making walker populations of up to $10^7$ possible.
 %
 This hardware-based improvement makes more expressive guiding wavefunctions possible.
 %
@@ -234,7 +234,7 @@ Second, we tackle the notoriously difficult, three-dimensional, and frustrated p
 %
 For small, ferromagnetic transverse couplings, it hosts a $U(1)$ quantum spin liquid.
 %
-We study the phase transition from the liquid into the ferromagnet, which is extremely challenging to equilibrate at low and zero temperature for quantum Monte Carlo due to the small transverse exchange parameters~\cite{kato_numerical_2015,huang_extended_2020}.
+We study the phase transition from the liquid into the ferromagnet, which is challenging to equilibrate at low and zero temperature for quantum Monte Carlo due to the small transverse exchange parameters~\cite{kato_numerical_2015,huang_extended_2020}.
 %
 Furthermore, we study excitations in the effective model describing the spin liquid.
 %
@@ -314,7 +314,7 @@ Since each weight is a product over many transitions, the spread of the weights 
 %
 This leads to a collapse of the effective sample size.
 %
-To circumvent this, the population is systematically controlled: walkers that have accumulated large weights are replicated, while those with small weights are removed~\cite{ghanem_population_2021,chen_algorithm_2023}.
+To circumvent this, the population is systematically controlled and walkers that have accumulated large weights are replicated, while those with small weights are removed~\cite{ghanem_population_2021,chen_algorithm_2023}.
 %
 The ensemble size is fixed.
 
@@ -324,9 +324,9 @@ The branching step is performed every $\nbra$ transitions, by which point the $i
 \end{align}
 where $b_{x_{i,k}}$ is the column sum encountered at the $k$-th transition among the walker's last $\nbra$ transitions.
 %
-We use a \emph{correlated} branching scheme where a single random number $\zeta \sim U(0,1)$ generates the $\nwalker$ quantiles $z_\alpha = (\alpha + \zeta)/\nwalker$ for $\alpha = 0, \dots, \nwalker - 1$, and the new ensemble is drawn from the empirical cumulative distribution induced by the weights $\{w_i\}$ at these $\{z_\alpha\}$.
+We use a \emph{correlated} branching scheme where a single random number $\zeta \sim U(0,1)$ generates the $\nwalker$ quantiles $z_\alpha = (\alpha + \zeta)/\nwalker$ for $\alpha = 0, \dots, \nwalker - 1$, and the new ensemble is drawn from the cumulative distribution induced by the weights $\{w_i\}$ at these $\{z_\alpha\}$.
 %
-This systematic scheme reduces the resampling variance without introducing bias~\cite{calandra_numerical_1998,becca_quantum_2017}.
+This systematic scheme reduces the variance without introducing bias~\cite{calandra_numerical_1998,becca_quantum_2017}.
 %
 Notably, when all weights are equal every walker survives the branching step unchanged.
 
@@ -404,7 +404,7 @@ The weights are set to unity after the branching.
 %
 \autoref{fig:branching} illustrates the branching step on a four-walker example.
 
-The final ground-state energy estimate as a function of $p$ projection steps is obtained from a single Markov chain by evolving the walker ensemble and recording $(\bar{w}_n, \bar{e}_n)$ at every branching step:
+The final ground-state energy estimate as a function of $p$ branching steps is obtained from a single Markov chain by evolving the walker ensemble and recording $(\bar{w}_n, \bar{e}_n)$ at every branching step:
 \begin{align}
 	E_0[p] \;=\; \frac{\sum_n G_n\, \bar{e}_n}{\sum_n G_n}
 	\qquad\text{with}\qquad
@@ -510,9 +510,9 @@ Let $\ket{x}$ be the current configuration of a walker.
 %
 The operator $O$ is applied stochastically, and a target configuration $\ket{x'}$ is drawn with probability
 \begin{align}
-	p_{x',x} \;=\;\frac{\psi_T(x')}{\psi_T(x)}\,\frac{o_{x',x}}{\tilde o_x},
+	p_{x',x} \;=\;\frac{\psi_T(x')}{\psi_T(x)}\,\frac{o_{x',x}}{o_x},
 	\qquad
-	\tilde o_x \;=\; \sum_{x'} \frac{\psi_T(x')}{\psi_T(x)}\,o_{x',x},
+	o_x \;=\; \sum_{x'} \frac{\psi_T(x')}{\psi_T(x)}\,o_{x',x},
 	\label{eq:prob_operator}
 \end{align}
 where $o_{x',x} = \bra{x'} O \ket{x}$ are the matrix elements of $O$.
@@ -527,12 +527,12 @@ This procedure is sketched in \autoref{fig:fw_ancestry}, where four walkers are 
 %
 After $p/2$ steps we record the mean of the inherited $o_x$ values
 \begin{align}
-	\bar{o}_{n-p/2} \;=\; \frac{1}{\nwalker} \sum_{i=1}^{\nwalker} \tilde o_{x_i(n)},
+	\bar{o}_{n-p/2} \;=\; \frac{1}{\nwalker} \sum_{i=1}^{\nwalker} o_{x_i(n)},
 	\label{eq:obs_oavg}
 \end{align}
 together with the branching-weight product of the auxiliary chain
 \begin{align}
-	G^{\rm aux}_n \;=\; \prod_{j=1}^{p/2} \bar w^{\rm aux}_{n-p/2+j}
+	G^{\rm aux}_n \;=\; \prod_{j=0}^{p/2-1} \bar w^{\rm aux}_{n-j}
 	\;=\; \bar w^{\rm aux}_{n-p/2+1}\,\cdots\,\bar w^{\rm aux}_{n}\,.
 	\label{eq:obs_gaux}
 \end{align}
@@ -618,19 +618,18 @@ The walker mean at step $n$ defines $\bar o_{n-p/2}$ as in \autoref{eq:obs_oavg}
 	O[p] \;=\; \frac{\sum_n G_n \, \bar{o}_{n-p/2}}{\sum_n G_n}.
 \end{align}
 
-
-No probabilistic branching on $O$ is involved here, so the diagonal pipeline imposes no positivity restriction on $O$.
-
+No probabilistic branching of $O$ is involved here, so the diagonal pipeline imposes no positivity restriction on $O$.
 
 
 
-\subsection{Achieving reliable simulations}\label{sec:gfmc:simulation}
+
+\subsection{Convergence and error control}\label{sec:gfmc:simulation}
 
 Obtaining well-converged results is difficult.
 %
 It requires understanding why a simulation has failed (or is converging poorly) and how to improve it.
 %
-Therefore, we first discuss the two main sources of error and how to identify them, and explain how to mitigate them.
+Therefore, we first discuss the two main sources of error and how to identify them, and then explain how to mitigate them.
 
 \subsubsection{Sources of error}\label{sec:errors}
 The two sources of error are (i) a systematic bias from an insufficient projection depth and (ii) statistical uncertainty.
@@ -665,7 +664,15 @@ The two most important entries are:
 \begin{itemize}
 	\item \pyinline{stats['unique_fraction']}: the fraction of unique configurations present after each branching step.
 		%
-		For the correlated branching scheme employed here, we recommend that this fraction remain above roughly $90\%$.
+		For the correlated branching scheme employed here, we recommend that this fraction remain above roughly $0.9$.
+		%
+		When the step size between two branching events is too large, a few walkers dominate the evolution and many others die out.
+		%
+		Therefore, the number of distinct configurations decays.
+		%
+		Conversely, when the step size is too small, the walkers have too little time to accumulate different weights and essentially none die out.
+		%
+		The fraction stays close to $1$.
 	\item \pyinline{stats['effective_sample_size']}: the effective sample size counts how many of the initial walkers effectively contribute descendants after a given number of branching steps.
 		%
 		We define $c_i$ as the number of present walkers descending from the $i$-th walker.
@@ -682,14 +689,10 @@ The two most important entries are:
 		%
 		We recommend that $n_{\rm eff} \gtrsim 50$ in order to obtain sufficient statistics.
 		%
-		However, this may vary between different observables.
+		However, this may vary between different observables and models.
 		%
 		Note that an observable is measured at the midpoint of its projection window, so the relevant depth is $m=p/2$ rather than the full $p$.
 
-
-		We find that the effective sample size from \autoref{eq:neff} is more informative than the bare number of ancestors present at step $p$, which can be accessed via \pyinline{stats['ancestor_fraction']}.
-		%
-		The former takes into account that some lineages dominate over others.
 
 \end{itemize}
 
@@ -730,15 +733,6 @@ The observables are listed per number of branching steps $p$, which corresponds 
 %
 Note that this is just the observable estimator and does not include the weight obtained over these $m$ steps.
 
-Launching an auxiliary Markov chain to measure an off-diagonal observable is expensive and scales with $m_{\rm max}=\max(p)/2$.
-%
-It is therefore worth determining the autocorrelation time first and launching the chain only once the walker ensemble has decorrelated.
-%
-Within the production run, this is controlled by the \pyinline{off_diag_stride} keyword (see \autoref{sec:pkg:driver}), which measures the off-diagonal observables only every \pyinline{off_diag_stride}-th branching step.
-%
-The energy and the diagonal observables are unaffected and remain resolved at every step.
-
-
 
 \PyGFMC{} estimates the statistical error from a single Markov chain using a blocked jackknife~\cite{flyvbjerg_error_1989,efron_jackknife_1982} by calling \pyinline{evaluate_observables} (see \autoref{sec:pkg:driver}).
 %
@@ -760,7 +754,7 @@ However, we recommend performing several independent simulations and taking the 
 The performance of a GFMC calculation can be greatly improved by carefully adjusting the simulation parameters.
 %
 We discuss these control parameters and how to tune them, but first emphasize an important point:
-The quality of a simulation, especially for systems that are difficult to equilibrate, depends on the guiding wavefunction.
+The quality of a simulation, especially for systems that are difficult to equilibrate, depends crucially on the guiding wavefunction.
 %
 A good variational ansatz is the key to tackling challenging problems, and effort should be invested in optimizing it before undertaking large-scale simulations.
 
@@ -780,7 +774,7 @@ Second, if it is too large, weight accumulates excessively and only a few walker
 
 To identify a suitable step size in advance, we recommend scanning a range of step sizes and maximizing the effective sample size $\neff(\tau)$ from \autoref{eq:neff} as a function of $\tau$.
 %
-We perform this optimization in \figref{fig:tfim_critical}{a}, which shows $\neff$ as a two-dimensional color map on a log scale as a function of step size $\beta$ (continuous propagation) and projection depth $\tau$.
+We perform this optimization in \figref{fig:tfim_critical}{a}, which shows $\neff$ as a two-dimensional heat map on a log scale as a function of step size $\beta$ (continuous propagation) and projection depth $\tau$.
 %
 It includes contour lines to guide the eye.
 %
@@ -987,7 +981,7 @@ The off-diagonal simulation requires an extended projection depth.
 \end{figure}
 
 
-\subsection{Pyrochlore nearest-neighbor XXZ}
+\subsection{Nearest-neighbor XXZ on the pyrochlore lattice}
 \label{sec:ex:pyro_nn}
 \begin{figure}[t]
 	\centering
@@ -1187,7 +1181,7 @@ A Hamiltonian class must include the following attributes and methods:
 	%
 	They simply repeat the input \pyinline{config} in this case.
 
-	\item \pyinline{generate_state(config, state_idx)}: returns the configuration corresponding to row \pyinline{state_idx} of \autoref{eq:configurations}.
+	\item \pyinline{generate_state(config, idx)}: returns the configuration corresponding to row \pyinline{idx} of \autoref{eq:configurations}.
 		%
 		The propagator calls it whenever \pyinline{get_rates} was not asked to materialize the successor configurations, which is the default path.
 		%
@@ -1417,6 +1411,17 @@ As discussed in \autoref{sec:gfmc:obs}, the matrix elements of the off-diagonal 
 Operators with mixed signs must be split into positive and negative parts and measured separately (see \autoref{eq:observable_splitting}).
 %
 The observables are passed to the main pipeline as dictionaries keyed by name, via the \pyinline{diag_operators} and \pyinline{off_diag_operators} arguments (see \autoref{sec:pkg:driver}), and the returned estimates are mirrored back in the same key structure.\\
+
+Launching an auxiliary Markov chain to measure an off-diagonal observable is expensive and scales with $m_{\rm max}=\max(p)/2$.
+%
+It is therefore worth determining the autocorrelation time first and launching the chain only once the walker ensemble has decorrelated.
+%
+Within the production run, this is controlled by the \pyinline{off_diag_stride} keyword (see \autoref{sec:pkg:driver}), which measures the off-diagonal observables only every \pyinline{off_diag_stride}-th branching step.
+%
+The energy and the diagonal observables are unaffected and remain resolved at every step.\\
+
+
+
 
 \PyGFMC{} allows \pyinline{diagonal_weight(config)} to return multiple values, which can be beneficial in some cases.
 %

@@ -8,6 +8,28 @@ __pycache__/
 docs/_build/
 paper/out/
 
+# LaTeX build files (paper/Makefile writes them to paper/out/; a build by hand
+# or from an editor leaves them next to PyGFMC.tex)
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# package builds (publish.yml builds into dist/)
+dist/
+build/
+
+# JUnit reports written by .github/workflows/validation.yml
+tests/validation-*.xml
+
+# PDF copies written next to the tracked .svg by docs/images/plot_*.py
+docs/images/convergence.pdf
+docs/images/neff_vs_tau.pdf
+
 # written by notebooks/transverse_field_ising_chain.ipynb
 notebooks/tfim_spin1.h5
 # written (and removed at the end) by notebooks/kagome_xxz.ipynb

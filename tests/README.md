@@ -23,7 +23,7 @@ pytest benchmark -q                       # without the flag: only the cheap ref
 ```
 
 The NetKet training tests in `core/` are skipped when NetKet is not installed or does
-not import (it needs `pip install '../codes[netket]'`).
+not import (it needs `pip install -e "./codes[netket]"` from the repository root).
 QuSpin and TeNPy are needed only to regenerate the benchmark references, not to
 run the benchmark: the reference values are stored in
 `benchmark/reference_data/`.
