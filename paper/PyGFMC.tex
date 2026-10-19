@@ -894,7 +894,7 @@ The model is exactly solvable and serves as our benchmark~\cite{pfeuty_one-dimen
 		%
 		Panel (a) shows the effective sample size from \autoref{eq:neff} (median over 16 independent runs) on a logarithmic scale as a function of step size $\beta$ (continuous propagation) and the total projection depth $\tau=m\beta$.
 		%
-		Panel (b) shows the difference from the exact ground-state energy for six different step sizes, which are marked on the axis of panel (a), as a function of total projection depth.
+		Panel (b) shows the difference from the exact ground-state energy for six different step sizes as a function of total projection depth.
 		%
 		It further indicates $\neff$ at different values of $\tau$ for $\beta=1.5$.
 		%
@@ -925,7 +925,7 @@ Panel (b) shows the convergence of the energy as a function of projection depth 
 %
 Remarkably, the energy is resolved to a precision of $10^{-5}$ after only a few $\tau$.
 %
-The two largest step sizes ($\beta=1.5,1.25$) fail to resolve the plateau to this as we observe the collapse of the walker distribution beyond $\tau\approx 10$.
+The two largest step sizes ($\beta=1.5,1.25$) fail to resolve the plateau to this precision, since the walker distribution collapses beyond $\tau\approx 10$.
 %
 For $\beta=1.5$, we mark the $\neff$ values at selected projection depths $\tau$.
 %
@@ -963,7 +963,9 @@ At and near the critical point, comparable convergence requires larger projectio
 %
 Our simulations resolve the diagonal correlator reliably across the entire parameter space.
 %
-The off-diagonal simulation requires an extended projection depth.
+The off-diagonal forward walking was carried out only up to $\tau=10$ and therefore does not converge near the critical point.
+%
+However, the transverse magnetization obtained from the diagonal run at $\tau=120$ via $\sum_i\langle\sigma^x_i\rangle = -\left(E_0 +  J_z\sum_i\langle\sigma^z_i\sigma^z_{i+1}\rangle\right)/h_x$ (red squares in \autoref{fig:tfim_zz_xtot}) converges across the entire parameter range considered.
 
 
 \begin{figure}[t]
@@ -974,6 +976,8 @@ The off-diagonal simulation requires an extended projection depth.
 	Different colors encode the projection depth $\tau$. 
 	%
 	The maximal values for the diagonal and off-diagonal observables are $\tau=120$ and $\tau =10$, respectively.
+	%
+	The red squares show the transverse magnetization obtained from the diagonal correlator and energy at $\tau=120$.
 	%
 	The same GFMC settings as in \autoref{fig:tfim_critical} were used.
 	}
@@ -1032,7 +1036,7 @@ The system undergoes a phase transition into a ferromagnetic ground state as $|J
 %
 The transition occurs at a small value, $|J_{xy}|/J_z\approx 0.1036$~\cite{banerjee_unusual_2008}, which makes equilibration difficult and Monte Carlo simulations challenging~\cite{kato_numerical_2015,huang_extended_2020}.
 %
-We overcome this difficulty by using a Jastrow-type guiding wavefunction that provides a good approximation of the ground state.
+To overcome this difficulty, we employ a Jastrow-type guiding wavefunction that provides a good approximation of the ground state.
 %
 We parameterize the guide as $\log\psi(\sigma) = \sum_c \Phi(\sigma_c)$, where $c$ runs over all $18$-site clusters formed by the closed loop of six tetrahedra surrounding a hexagonal plaquette.
 %
@@ -1045,6 +1049,8 @@ A pyrochlore lattice with $N$ sites hosts $N$ crowns, and each $\Phi_c$ maps the
 We set the same $\Phi=\Phi_c$ for each cluster and employ various spatial symmetries of the crown cluster that, together with time-reversal symmetry, drastically reduce the number of independent parameters.
 %
 Instead of $2^{18}$ coefficients, we end up with only $2110$ independent parameters that must be optimized.
+%
+Optimization was performed using NetKet~\cite{SciPostPhysCodeb.7,SciPostPhysCodeb.7-r3.4}.
 
 To resolve the transition into the ferromagnet, we measure the transverse structure factor at $\bm{q}=0$:
 \begin{align}
@@ -1091,7 +1097,7 @@ We have set the flux through the other surfaces to zero, $\phi_y=\phi_z=0$.
 		%
 		The inset shows the $1/L$ scaling collapse.
 		%
-		GFMC parameters: step size $\nbra=15$, $\lambda=0$, $2^{12}$ walkers and $10^{5}$ steps per flux sector, number of branching steps $p=48$; no guiding wavefunction is used.
+		GFMC parameters: step size $\nbra=15$, $\lambda=0$, $2^{12}$ walkers and $10^{5}$ steps per flux sector, number of branching steps $p=48$; no guiding wavefunction has been used.
 	}
 	\label{fig:ring_energy}
 \end{figure}
@@ -1113,7 +1119,7 @@ The package is organized around five main components, which we describe in turn:
 	\item[] \textbullet\ \autoref{sec:pkg:obs}: Observables (optional);
 	\item[] \textbullet\ \autoref{sec:pkg:driver}: Simulation driver.
 \end{list}
-\PyGFMC{} can be installed with \textbf{\pyinline{pip install pygfmc}} (\textbf{\pyinline{pip install "pygfmc[netket]"}} if you want to use NetKet~\cite{SciPostPhysCodeb.7,SciPostPhysCodeb.7-r3.4}), or from the source code: \repo.
+\PyGFMC{} can be installed with \textbf{\pyinline{pip install pygfmc}} (\textbf{\pyinline{pip install "pygfmc[netket]"}} if you want to use NetKet~\cite{SciPostPhysCodeb.7,SciPostPhysCodeb.7-r3.4}), or from the source code at \repo.
 
 \subsection{Hamiltonian}\label{sec:pkg:hamiltonian}
 The Hamiltonian determines the walker propagation.
@@ -1183,15 +1189,15 @@ A Hamiltonian class must include the following attributes and methods:
 
 	\item \pyinline{generate_state(config, idx)}: returns the configuration corresponding to row \pyinline{idx} of \autoref{eq:configurations}.
 		%
-		The propagator calls it whenever \pyinline{get_rates} was not asked to materialize the successor configurations, which is the default path.
+		The propagator calls it whenever \pyinline{get_rates} was not asked to materialize the successor configurations.
 		%
 		We recommend \emph{not} computing all \pyinline{M_total} possible configurations, since only the one stochastically chosen is required.
 		%
 		This saves memory and runtime.
 
-\item \pyinline{diagonal_weight(config)} (optional): returns a scalar (or an array) for the diagonal contribution $d$, which is used to compute the diagonal expectation values.
+\item \pyinline{diagonal_weight(config)} (optional): returns the diagonal contribution $d$, which is used to compute the diagonal expectation values.
 		%
-		It can also return multiple values via an array, which is beneficial in some cases (see \autoref{sec:pkg:obs}).
+		It can also return multiple values via an array, which is beneficial if a set of diagonal operators shall be evaluated at once (see \autoref{sec:pkg:obs}).
 \end{itemize}
 
 \paragraph{Implemented Hamiltonian classes.} The following classes are implemented:
@@ -1311,7 +1317,7 @@ walkers   = prepare_walkers_sz(N_walkers=512, N_sites=H.N, rng_key=key, sz=0)
 {\emergencystretch=3em
 The algorithm requires only the ratio $\psi_T(x')/\psi_T(x)$, so the guide class returns the log-difference $\log \psi_T(x') - \log \psi_T(x)$ for all \pyinline{M_total} successor states of the current configuration.
 %
-Therefore, at least one of the following three methods must be implemented:
+At least one of the following three methods must be implemented:
 \begin{itemize}
 	\item \pyinline{log_diff_from_operator(config, hamiltonian, cache=None)}: evaluates the log-differences directly from \pyinline{config} and the \pyinline{hamiltonian}.
 		%
@@ -1357,7 +1363,7 @@ For example, it can store system-specific information, which often helps to spee
 			\label{eq:spinjastrow}
 		\end{align}
 		where $x_i \in \{-S,\dots,S\}$ is the eigenvalue of $S^z_i$ and $d_i$ is a single-ion term.
-	\item \pyinline{JastrowBoseHubbard(N, pairs, beta, h=None, d=None)} for \pyinline{BoseHubbard}: similar to the ansatz in \autoref{eq:jastrow}:
+	\item \pyinline{JastrowBoseHubbard(N, pairs, beta, h=None, d=None)} for \pyinline{BoseHubbard}: similar to the ansatz in \autoref{eq:spinjastrow}:
 		\begin{align}
 			\psi_T(x) \;=\; \exp\!\Big(
 				-\sum_{\langle i,j\rangle} \beta_{ij}\, x_i\, x_j
@@ -1399,7 +1405,7 @@ from pygfmc.wavefunction import JastrowSpinHalf
 
 guide = JastrowSpinHalf(H.N, H.edges, beta=0.1)
 \end{lstlisting}
-Further implementation details are given in the appendix: pre-implemented guides (\autoref{app:guides}), user-defined guides (\autoref{app:user-defined-guides}), and the \texttt{NetKet} integration (\autoref{app:netket}).
+Further implementation details are given in the appendix: implemented guides (\autoref{app:guides}), user-defined guides (\autoref{app:user-defined-guides}), and the \texttt{NetKet}~\cite{SciPostPhysCodeb.7,SciPostPhysCodeb.7-r3.4} integration (\autoref{app:netket}).
 
 \subsection{Observables (optional)}\label{sec:pkg:obs}
 An observable can be created with the same interface as the Hamiltonian.
@@ -1416,7 +1422,7 @@ Launching an auxiliary Markov chain to measure an off-diagonal observable is exp
 %
 It is therefore worth determining the autocorrelation time first and launching the chain only once the walker ensemble has decorrelated.
 %
-Within the production run, this is controlled by the \pyinline{off_diag_stride} keyword (see \autoref{sec:pkg:driver}), which measures the off-diagonal observables only every \pyinline{off_diag_stride}-th branching step.
+Within the production run, this is controlled by the \pyinline{off_diag_stride} keyword, which measures the off-diagonal observables only every \pyinline{off_diag_stride}-th branching step.
 %
 The energy and the diagonal observables are unaffected and remain resolved at every step.\\
 
@@ -1425,22 +1431,13 @@ The energy and the diagonal observables are unaffected and remain resolved at ev
 
 \PyGFMC{} allows \pyinline{diagonal_weight(config)} to return multiple values, which can be beneficial in some cases.
 %
-This is, for example, the case for the diagonal $S^zS^z$ structure factor that can be computed for several momenta simultaneously via \pyinline{SzSzStructureFactor(positions, k_vectors)} for the \pyinline{SpinHalf} class.
+This is the case for the diagonal $S^zS^z$ structure factor that can be computed for several momenta simultaneously via \pyinline{SzSzStructureFactor(positions, k_vectors)} for the \pyinline{SpinHalf} class.
 %
 The function takes the positions of the sites, given as an array of shape $(N,\mathrm{dim})$, and a selection of $k$ vectors of the same dimension:
 \begin{align}
 	S^{zz}(\mathbf{k})= \sum_{i<j} 2\cos\!\big(\mathbf{k}\cdot\left(\mathbf{r}_{i}-\mathbf{r}_{j}\right)\big)\,S^z_iS^z_j\,.\label{eq:szsz_structure_factor}
 \end{align}
-The sites lie within a cell spanned by the lattice vectors $\mathbf{a}_1,\dots,\mathbf{a}_{\rm dim}$.
-%
-For a valid $\mathbf{k}$ vector, $\mathbf{k}\cdot\mathbf{a}_i = 2\pi n_i$ for $n_i\in \mathbb{Z}$. 
-%
-Shifting a site to its periodic images via $\sum_i m_i\mathbf{a}_i$ with $m_i\in\mathbb{Z}$ results only in a phase shift of a multiple of $2\pi$.
-%
-Therefore, it is sufficient to only consider the direct displacements $\mathbf{r}_i-\mathbf{r}_j$ between two sites, without periodic images.
-%
-We provide a simple function that checks if a wave vector is valid: \pyinline{is_valid_k(k_vectors, lattice_vectors)}.
-
+The $\mathbf{k}$ vectors must be compatible with the periodic boundary conditions, $\mathbf{k}\cdot\mathbf{a}_i\in 2\pi\mathbb{Z}$ for the lattice vectors $\mathbf{a}_i$ spanning the system.
 
 \pyinline{StructureFactor(positions, k, channel='SpSm')} returns the corresponding off-diagonal operator for the transverse structure factor of the \pyinline{SpinHalf} class,
 \begin{align}
@@ -1449,8 +1446,6 @@ We provide a simple function that checks if a wave vector is valid: \pyinline{is
 	={AB}(0)+{AB}(\mathbf{k}),\\
 	\mathrm{with }\qquad{AB}(\mathbf{k})=&\sum_{i<j}\cos\!\big(\mathbf{k}\cdot\left(\mathbf{r}_{i}-\mathbf{r}_{j}\right)\big)\Big(A_iB_j+\mathrm{h.c.}\Big)\,.
 \end{align}
-The $\mathbf{k}$ vector has to be a valid wave vector.
-%
 There are different options for the channel: \pyinline{'SpSm'}: $A=S^+$ and $B=S^-$; \pyinline{'SpSp'}: $A=S^+$ and $B=S^+$; \pyinline{'SpSm+SpSp'}: the sum of the two, $S^+_iS^-_j+S^+_iS^+_j+\mathrm{h.c.}=4S^x_iS^x_j$.
 %
 The channel \pyinline{'SzSz'} ($A=B=S^z$) yields the diagonal operator $S^{zz}(0)+S^{zz}(\mathbf{k})$ of \autoref{eq:szsz_structure_factor}.
@@ -1470,9 +1465,6 @@ from pygfmc.hamiltonian import SpinHalf, SzSzStructureFactor, StructureFactor
 h_all = jnp.ones(L)
 h_0   = jnp.zeros(L).at[0].set(1.0)
 
-# the fields enter H with a minus sign, so +sum_i S^z_i needs h_z = -1 (and
-# +sum_i S^x_i needs h_x = -1, which gives the nonnegative rates an
-# off-diagonal observable requires)
 Sztot = SpinHalf.create(edges=[], N=L, h_z=-h_all)
 Sz0   = SpinHalf.create(edges=[], N=L, h_z=-h_0)
 Sxtot = SpinHalf.create(edges=[], N=L, h_x=-h_all, sign_check=False)
@@ -1493,9 +1485,9 @@ off_diag_operators = {'Sxtot': Sxtot, 'Sx0': Sx0, 'Spm': Spm}
 \subsection{Simulation driver}\label{sec:pkg:driver}
 The four components above (Hamiltonian, walkers, guide, and observables) are tied together using the \pyinline{run} function, which is the core of \PyGFMC{}.
 %
-It executes an optional warm-up, the production scan of $\nsteps$ branching steps, and the post-run statistics report.
+It executes an optional warm-up, the production scan of $\nsteps$ branching steps, and the post-run statistics.
 %
-When several GPUs are visible, \pyinline{run} automatically shards the walker population across all of them.
+When several GPUs are visible, \pyinline{run} automatically distributes the walker population across all of them.
 %
 Measuring diagonal observables is restricted to a single device.
 
@@ -1505,7 +1497,7 @@ A complete list of the input arguments of \pyinline{run} is provided in \autoref
 The most important keywords are:
 \begin{apilistbox}
 \begin{itemize}
-	\item \pyinlinebold{walkers}: the initial walker batch (\autoref{sec:pkg:walker});
+	\item \pyinlinebold{walkers}: the initial walker ensemble (\autoref{sec:pkg:walker});
 	\item \pyinlinebold{n_steps}: number of production branching steps;
 	\item \pyinlinebold{hamiltonian}: the Hamiltonian;
 	\item \pyinlinebold{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
@@ -1537,7 +1529,7 @@ The most important keywords are:
 		%
 		Observables are accessed via nested keys with \pyinline{['diag']['<name>']} and \pyinline{['off_diag']['<name>']} that contain arrays of shape $\nsteps \times n_p$, where $n_p$ is the length of \pyinline{p_array}.
 		%
-		Diagonal operators may hold an array of shape $\nsteps \times n_k \times n_p$, where $n_k$ is the number of return values of \pyinline{diagonal_weight}, as for the \pyinline{SzSzStructureFactor} discussed above.
+		Diagonal operators may hold an array of shape $\nsteps \times n_k \times n_p$, where $n_k$ is the number of return values of \pyinline{diagonal_weight}.
 		%
 		$\nsteps$ is reduced if \pyinline{off_diag_stride} is greater than 1 for the off-diagonal observable.
 		%

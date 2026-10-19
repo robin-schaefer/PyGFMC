@@ -16,7 +16,12 @@ def is_valid_k(k_vectors, lattice_vectors, atol=1e-8):
 
     A wavevector is valid when ``k . L_j = 2 pi x integer`` for every periodic
     vector ``L_j`` of the system.  Exactly then every periodic image of a pair
-    carries the same phase, so :class:`SzSzStructureFactor` and
+    carries the same phase: shifting a site to a periodic image,
+    ``r -> r + sum_j m_j L_j`` with integers ``m_j``, changes ``k . (r_i - r_j)``
+    by a multiple of ``2 pi`` and leaves ``cos(k . (r_i - r_j))`` unchanged.
+    The direct displacements ``r_i - r_j`` of the positions as given therefore
+    suffice, without choosing periodic images, so
+    :class:`SzSzStructureFactor` and
     :func:`~pygfmc.hamiltonian.StructureFactor` do not depend on which image
     the positions encode.
 
