@@ -796,7 +796,7 @@ Also note that beyond $10^{7}$, the limited resolution of \pyinline{float32} sta
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/Fig3}
-	\caption{Throughput, in iterations per second, as a function of the	walker population $\nwalker$ for the one-dimensional Heisenberg chain at $L=100$, $\nbra=6$, and $\lambda=25$.  
+	\caption{Throughput in iterations per second as a function of the walker population $\nwalker$ for the one-dimensional Heisenberg chain at $L=100$, $\nbra=6$, and $\lambda=25$.  
 		%
 		Blue points: CPU runs on an Intel Xeon Platinum 8480 using $1$ to $32$ cores.
 		%
@@ -862,11 +862,11 @@ Second, we resolve the transition between a $U(1)$ spin liquid and a ferromagnet
 %
 This problem is notoriously difficult to equilibrate due to its small off-diagonal matrix elements~(\autoref{sec:ex:pyro_nn}).
 %
-Third, we compute string excitations in the $U(1)$ quantum spin liquid phase~(\autoref{sec:ex:ring}).
+Third, we compute string excitations in the $U(1)$ quantum spin liquid phase on the pyrochlore lattice~(\autoref{sec:ex:ring}).
 
 \subsection{Transverse-field Ising model}
 \label{sec:ex:tfim}
-We study the one-dimensional transverse-field Ising model on a periodic chain with $N=100$ sites,
+We study the one-dimensional transverse-field Ising model on a periodic chain with $N=100$ sites:
 \begin{align}
 	H_{\rm TFIM} = -J_z\sum_i \sigma^z_i\sigma^z_{i+1} - h_x \sum_i \sigma^x_i\,,
 	\label{eq:H_TFIM}
@@ -885,7 +885,7 @@ This affects the values in the ferromagnetic phase for $h_x \leq 0.9$.
 %
 In the paramagnetic phase, $\beta_{\rm Jastrow}=0$ (or equivalently, no guiding wavefunction) is a good ansatz, as it becomes exact for $h_x/J_z\rightarrow \infty$.
 %
-The model is exactly solvable~\cite{pfeuty_one-dimensional_1970} and serves as our benchmark.
+The model is exactly solvable and serves as our benchmark~\cite{pfeuty_one-dimensional_1970}.
 
 \begin{figure}[tp]
 	\centering
@@ -917,7 +917,7 @@ The model is exactly solvable~\cite{pfeuty_one-dimensional_1970} and serves as o
 %
 Panel (a) shows the effective sample size $\neff$ from \autoref{eq:neff} (median over 16 simulations) as a function of the step size $\beta$ (x-axis) and projection depth $\tau=m\beta$ (y-axis) on a logarithmic scale.
 %
-We find that survival is optimal ($\neff$ is maximal) near $\beta\approx 0.15$ across the tested values of $\tau$.
+We find that survival is optimal ($\neff$ is maximal) near $\beta\approx 0.15$ for the tested values of $\tau$.
 %
 The effective sample size decreases as $\beta$ increases from approximately $0.25$ to $1$.
 
@@ -925,7 +925,7 @@ Panel (b) shows the convergence of the energy as a function of projection depth 
 %
 Remarkably, the energy is resolved to a precision of $10^{-5}$ after only a few $\tau$.
 %
-The two largest step sizes ($\beta=1.5,1.25$) fail to reach projection depths beyond $\tau\approx 10$ reliably, which we attribute to a collapsed walker distribution.
+The two largest step sizes ($\beta=1.5,1.25$) fail to resolve the plateau to this as we observe the collapse of the walker distribution beyond $\tau\approx 10$.
 %
 For $\beta=1.5$, we mark the $\neff$ values at selected projection depths $\tau$.
 %
