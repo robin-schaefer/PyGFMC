@@ -6,8 +6,7 @@
 
 S^±(q=0) = (1/N) Σ_{i<j} ⟨S⁺ᵢS⁻ⱼ + S⁻ᵢS⁺ⱼ⟩ (paper eq. `Spm_q0`), i.e. `S0`/N with
 `S0` as stored in `data.h5` (onsite term excluded), for the nearest-neighbour pyrochlore XXZ model (J_z = 1) versus
-J_xy/J_z for N = 128, 256, 432, 500, 864, 1024. N = 1372 (only run near the
-transition) is in the file but left out (`EXCLUDE_N` in `plot.py`). The inset (linear y-axis, inward ticks, no tick labels) zooms into the
+J_xy/J_z for N = 128, 256, 432, 500, 864, 1024. The inset (linear y-axis, inward ticks, no tick labels) zooms into the
 transition region J_xy/J_z ∈ [−0.11, −0.10] (`INSET_X` in `plot.py`).
 The red band in the inset marks the transition at J_xy/J_z = −31/300 ± 1/1200
 (−0.103333 ± 0.000833, i.e. ± one grid spacing; `TRANSITION_C`, `TRANSITION_HW`
@@ -16,8 +15,8 @@ of the inset to the crossing point at J_xy/J_z = −31/300.
 
 ## Data
 
-- **GFMC: `data.h5`**: all Spm(0) production cells (253 cells: 124 each in
-  samples s0 and s1, 5 in s2; layout below).
+- **GFMC: `data.h5`**: all Spm(0) production cells (228 cells: 114 each in
+  samples s0 and s1; layout below).
   The plotted value is `spm0/S0 / N` at the deepest τ rung of each cell, with
   error `4·spm0/sem / N`. The samples of a cell are averaged. The error is the larger of the
   combined blocked SEM (√(Σ sem²)/n_samples) and half the spread between the
@@ -36,7 +35,7 @@ of the inset to the crossing point at J_xy/J_z = −31/300.
 ```
 
 A cell is one (sample, lattice, J_xy) run; `<lattice>` is `cubicL2`–`cubicL4` or
-`fccL4`–`fccL7`, and N is stored in `/index` and in the cell attributes.
+`fccL4`–`fccL6`, and N is stored in `/index` and in the cell attributes.
 `S0 = 4·value` is S^±(q=0)·N with the onsite term excluded, and `sem` is the blocked
 standard error of `value`. τ is the projection depth per side, (p/2)·β_imag.
 

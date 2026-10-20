@@ -30,7 +30,6 @@ OUT = os.path.join(HERE, "..", "Fig6.pdf")
 INSET_X = (-0.11, -0.10)  # J_xy/J_z range shown in the inset
 INSET_POS = [0.50, 0.38, 0.48, 0.59]  # inset in axes fraction: x0, y0, w, h
 LEGEND_ANCHOR = (0.45, 1.0)  # upper-right corner of the legend, axes fraction
-EXCLUDE_N = {1372}  # sizes left out of the figure
 TRANSITION_C, TRANSITION_HW = -31 / 300, 1 / 1200  # centre and half-width of the band
 TRANSITION = (TRANSITION_C - TRANSITION_HW, TRANSITION_C + TRANSITION_HW)
 FIT_TAU_MIN = 10  # fit S(tau) = c exp(-a tau) + b on rungs tau >= FIT_TAU_MIN
@@ -110,7 +109,7 @@ def main():
     gfmc = load_gfmc(fit=args.fit)
 
     fig, ax = prepare_standard_figure()
-    sizes = sorted(N for N in gfmc if N not in EXCLUDE_N)
+    sizes = sorted(gfmc)
     cmap = matplotlib.colormaps.get_cmap("viridis")
     colors = {N: cmap(0.1 + 0.8 * i / max(len(sizes) - 1, 1))
               for i, N in enumerate(sizes)}
