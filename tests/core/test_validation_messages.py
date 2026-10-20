@@ -64,7 +64,6 @@ ENGINE = [
     *[(f"nonfinite shift {method} {value}", dict(method=method, step_size=2, lam=value),
        ValueError, "lam must be finite")
       for method in ("single_step", "multi_step") for value in (np.nan, np.inf, -np.inf)],
-    ("no rng_key", dict(rng_key=None), ValueError, "run_gfmc requires rng_key"),
     ("zero walkers", dict(walkers=prepare_walkers_from_configs(jnp.zeros((0, _N)))),
      ValueError, "At least one walker is required"),
     pytest.param("step_size zero", dict(step_size=0.0), ValueError, "step_size must be > 0"),

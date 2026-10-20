@@ -47,9 +47,9 @@ def test_diagonal_op_diag_vs_offdiag_consistency():
     ising_diag    = obs["ising_diag"][best_p]
     ising_offdiag = obs["ising_offdiag"][best_p]
 
-    assert abs(ising_diag    - ising_ed) < 0.1
-    assert abs(ising_offdiag - ising_ed) < 0.1
-    assert abs(ising_diag - ising_offdiag) < 0.1
+    assert abs(ising_diag    - ising_ed) < 0.01            # statistical error ~2e-3
+    assert abs(ising_offdiag - ising_ed) < 0.01
+    assert abs(ising_diag - ising_offdiag) < 1e-5          # same estimate up to float32 rounding
 
 
 def test_forward_walk_at_m_zero_is_the_plain_mean():

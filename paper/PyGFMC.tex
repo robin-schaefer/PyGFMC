@@ -1382,7 +1382,7 @@ For example, it can store system-specific information, which often helps to spee
 		Symmetries can be embedded, making local clusters of up to $18$ sites possible.
 		%
 		This ansatz has been used in \autoref{sec:ex:pyro_nn}.
-	\item \pyinline{ClusterMLP(groups, params=None, init_scale=0.01, seed=None)} for \pyinline{SpinHalf}: implements the cluster functions $\Phi_c$~\cite{changlani_approximating_2009,mezzacapo_ground-state_2009} as multilayer perceptrons (MLPs) with a configurable number of hidden layers.
+	\item \pyinline{ClusterMLP(groups, params=None, seed=None)} for \pyinline{SpinHalf}: implements the cluster functions $\Phi_c$~\cite{changlani_approximating_2009,mezzacapo_ground-state_2009} as multilayer perceptrons (MLPs) with a configurable number of hidden layers.
 
 \end{itemize}
 
@@ -1510,7 +1510,7 @@ The most important keywords are:
 	      	\item \pyinline{"cont_time"} for the continuous-time scheme.
 			\end{itemize}
 	       (Default: \pyinline{"cont_time"});
-	   \item \pyinlinebold{rng_key}: \JAX{} PRNG seed;
+	   \item \pyinlinebold{rng_key}: \JAX{} PRNG key (Default: \pyinline{jax.random.PRNGKey(secrets.randbits(32))});
 	   \item \pyinlinebold{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
 	   \item \pyinlinebold{diag_operators}: diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None});
 	   \item \pyinlinebold{off_diag_operators}: off-diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None}).
@@ -1709,7 +1709,7 @@ The production \pyinline{run} takes the following arguments:
 	      	\item \pyinline{"cont_time"} for the continuous-time scheme.
 			\end{itemize}
 	       (Default: \pyinline{"cont_time"});
-   \item \pyinline{rng_key}: \JAX{} PRNG seed;
+	\item \pyinline{rng_key}: \JAX{} PRNG key (Default: \pyinline{jax.random.PRNGKey(secrets.randbits(32))});
 	\item \pyinline{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
    \item \pyinline{n_devices}: number of devices used by \pyinline{run} (Default: \pyinline{None}, meaning \pyinline{jax.device_count()}).
    %
@@ -1723,7 +1723,7 @@ The production \pyinline{run} takes the following arguments:
 		%
 		This reduces the memory peak when an off-diagonal operator is applied to an ensemble by a factor of $\nwalker/\pyinline{off_diag_batch_size}$ (Default: \pyinline{None});
 	\item \pyinline{warmup_steps}: total number of warm-up steps, split across four stages. If \pyinline{avg_log_weight} (see below) is not given, the warm-up determines \pyinline{avg_log_weight} (Default: \pyinline{None});
-	\item \pyinline{avg_log_weight}: average logarithm of the weight obtained at each branching event (see \autoref{eq:avg_weight}).
+	\item \pyinline{avg_log_weight}: normalization of the weights at each branching step (see \autoref{eq:avg_weight}).
 		%
 		When not given and \pyinline{warmup_steps} is not set, $1000$ warm-up steps are executed to determine it (Default: \pyinline{None});
 	\item \pyinline{verbosity}: integer $0$--$10$ controlling the amount of printed output (Default: $7$);
@@ -1793,9 +1793,9 @@ We summarize the most relevant ones below.
 	\item We verify the generation of different walker ensembles.
 
 	\item We check bitwise identity by splitting a simulation into different segments using the \pyinline{write_to_HDF5} and \pyinline{run_from_HDF5} functions.
-	\item A golden-output regression test pins short runs over every combination of propagator, Hamiltonian class, and guide.
+	\item A golden-output regression test pins short runs over every combination of propagator, Hamiltonian class, and compatible guide.
 		%
-		We measure the class' observables, configurations, weights, local energies, and statistics.
+		We measure the observables, configurations, weights, local energies, and statistics.
 \end{itemize}
 
 
@@ -1926,7 +1926,7 @@ Each constructor verifies that the resulting model is sign-problem-free.
 %
 The check can be bypassed with \pyinline{sign_check=False}, which is necessary when a Hamiltonian class is used as an off-diagonal operator.
 %
-All constructors accept a \pyinline{dtype} keyword, whose default is \pyinline{jnp.float32}.
+All constructors accept a \pyinline{dtype} keyword (default \pyinline{jnp.float32}).
 %
 We recommend using \pyinline{jnp.float32}, as GPUs are substantially slower when handling \pyinline{jnp.float64}.
 
@@ -2174,14 +2174,14 @@ Similar to \pyinline{JastrowSpinHalf()} but implemented for the \pyinline{BoseHu
 JastrowBoseHubbard(N, pairs, beta, h=None, d=None)
 \end{lstlisting}
 \paragraph{ClusterCPS.}
-The correlator product state allows one to define different groups of clusters, where $N_G$ is the number of groups and the log-amplitude is obtained by:
+The correlator product state~\cite{changlani_approximating_2009,mezzacapo_ground-state_2009} allows for different groups of clusters, where $N_G$ is the number of groups and the log-amplitude is obtained by:
 \begin{align}
-	\log\psi_T(x) \;=\; \sum_{g=1}^{N_G} \sum_{c\in\mathcal{C}_g} \Phi_g(c[x])\,,
+	\log\psi_T(x) \;=\; \sum_{g=1}^{N_G} \sum_{c\in\mathcal{C}_g} \Phi_g(c[x])\,.
 	\label{eq:phi_clustercps}
 \end{align}
-where $\mathcal{C}_g$ is a collection of clusters of equal size $L_g$ and $\Phi_g$ is a lookup table that maps a configuration to a real number.
+$\mathcal{C}_g$ is a collection of clusters of equal size $L_g$ and $\Phi_g$ is a lookup table that maps a configuration to a real number.
 %
-The lookup table has $2^{L_g}$ entries.
+The lookup table has $2^{L_g}$ entries since it is defined for the \pyinline{SpinHalf} class.
 
 Each group $g$ is passed as \pyinline{[clusters, symmetries, parity]}, where \pyinline{clusters} is a two-dimensional array of shape $(|\mathcal{C}_g|, L_g)$ defining the clusters of the group. 
 %
@@ -2193,9 +2193,9 @@ It is a two-dimensional array of size $(N_A,L_g)$, where $N_A$ is the number of 
 %
 The symmetry holds for $h_z=0$.
 %
-Together, these identify the symmetry-equivalent entries of $\Phi_g$ and reduce the table to its inequivalent orbits.
+The spatial symmetries and parity reduce the table to its inequivalent orbits.
 %
-Employing symmetries is essential, as it drastically reduces the number of variational amplitudes in the lookup table (from $2^{18}=262144$ to $2110$ in the pyrochlore example of \autoref{sec:ex:pyro_nn}) and prevents the guide from introducing any bias into the GFMC calculation.\\
+For example, the number of free parameters in the lookup table was reduced from $2^{18}=262144$ to $2110$ in the pyrochlore example of \autoref{sec:ex:pyro_nn}.\\
 
 
 \begin{lstlisting}
@@ -2207,9 +2207,9 @@ ClusterCPS(groups, amplitudes=None, init='zero', seed=None)
 %
 An already trained set of lookup tables is passed as \pyinline{amplitudes} with one array per group.
 %
-If \pyinline{amplitudes=None}, the tables are initialized either to zeros (\pyinline{'zero'}) or to small Gaussian noise (\pyinline{'gaussian'}), as selected by \pyinline{init}.
+If \pyinline{amplitudes=None}, the tables are initialized either to zeros (\pyinline{'zero'}) or to small Gaussian noise (\pyinline{'gaussian'}).
 %
-The seed can be set by \pyinline{seed}.
+A seed can be set by \pyinline{seed}.
 
 \paragraph{ClusterMLP.}
 It has a similar structure to \pyinline{ClusterCPS}, but encodes each cluster group by a multilayer perceptron $\Phi_g$ instead of a lookup table.
@@ -2230,20 +2230,18 @@ The input layer is fixed by the cluster size and the output layer is the final s
 
 
 \begin{lstlisting}
-ClusterMLP(groups, params=None, init_scale=0.01, seed=None)
+ClusterMLP(groups, params=None, seed=None)
 \end{lstlisting}
 
 The weights and biases $(W^{(l)}, b^{(l)})$ of all groups can be passed as \pyinline{params}, one pair per layer and group, and must be consistent with the layer dimensions implied by \pyinline{clusters} and \pyinline{hidden}.
 %
-If \pyinline{params=None}, the biases are set to zero and the weights are drawn from a Gaussian of width \pyinline{init_scale}.\\
+If \pyinline{params=None}, the biases are set to zero and the weights are drawn from a Gaussian of width $0.01$.\\
 
 In our benchmarks, we find that \pyinline{ClusterMLP} achieves lower energies than \pyinline{ClusterCPS}.
 %
 It is possible to train \pyinline{ClusterMLP} and load the amplitudes per state in \pyinline{ClusterCPS}.
 %
-However, it can also break symmetries of the system and potentially introduce bias into GFMC results.
-%
-We therefore recommend working with \pyinline{ClusterCPS}.
+However, \pyinline{ClusterMLP} breaks symmetries and potentially requires deeper projections within the GFMC algorithm.
 
 
 \paragraph{ExactGroundState.}
@@ -2254,6 +2252,7 @@ This is mainly meant for validation.\\
 \begin{lstlisting}
 ExactGroundState(
     hamiltonian,
+    log_amp=None,              # precomputed log|psi_0|; None diagonalizes hamiltonian 
     local_hilbert_space=None,  # None uses hamiltonian.local_hilbert_space
     N=None,                    # number of sites, defaults to hamiltonian.N
 )
@@ -2294,9 +2293,6 @@ jax.tree_util.register_pytree_node(
     lambda aux, children: MagnetizationGuide(*children),
 )
 \end{lstlisting}
-The variational parameter $\beta$ is registered as the only child of the pytree.
-%
-The \pyinline{cache} argument is not used in the example.
 
 
 

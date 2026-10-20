@@ -76,7 +76,7 @@ As an example, we simulate the spin-1 transverse-field Ising chain at its critic
     \qquad J = 1\,,\quad h = h_c = 1.326\,,
 
 with the critical field of `C. West et al., Phys. Rev. B 92, 115103 (2015) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.115103>`_.
-:class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`-h_\pm \sum_i (S^+_i + S^-_i) = -2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :del:`h_pm=-h/2` :code:`h_pm=h/2`:
+:class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`-h_\pm \sum_i (S^+_i + S^-_i) = -2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :code:`h_pm=h/2`:
 
 .. code-block:: python
 

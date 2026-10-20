@@ -385,13 +385,13 @@ with one tanh MLP (arbitrary depth, linear output) shared by all clusters of a
 group. `log_diff_from_operator` re-evaluates only the clusters touched by each
 transition.
 
-- **`ClusterMLP(groups, params=None, init_scale=0.01, seed=None, dtype=...,
+- **`ClusterMLP(groups, params=None, seed=None, dtype=...,
   N=None)`** — `groups = [[clusters, hidden], ...]`, `clusters` an
   `(n_clusters_g, k_g)` array and `hidden` a list of hidden widths (`[]` or
   `None` for a linear model; a bare int is rejected). `groups` is the only way
   to specify the architecture. `params` is one list of `(W_i, b_i)` layer
   pairs per group (the last layer is the linear output) whose shapes must
-  match `groups`; it is initialised Gaussian with std `init_scale` (seeded by
+  match `groups`; it is initialised Gaussian with std 0.01 (seeded by
   `seed`, drawn when `None`) when omitted. `N` defaults to the largest site
   index + 1 (pass it if trailing sites belong to no cluster).
   - `log_psi(config, cache=None)`, `log_diff_from_configs(...)`,

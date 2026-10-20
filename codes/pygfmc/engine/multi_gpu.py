@@ -43,7 +43,7 @@ from .estimators import (_estimate_observables,
 from .driver import (run_gfmc, _AUX_ROOT, _AUX_POSITIVITY, _check_population,
                      _POSITIVITY_PROBE_STEPS, _warmup_stage_key, _traced_alw,
                      _measurement_plan, _measured_steps, _warmup_schedule,
-                     _require_warmup_or_alw, _default_warmup,
+                     _require_warmup_or_alw, _default_warmup, _default_rng_key,
                      _off_by_name, _lineage_warning, _run_stats, _raw_series)
 from .._validation import _validated_int
 from .._output import emit
@@ -568,8 +568,7 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
     (adding ``raw``) when ``return_raw=True``.
     """
     wall_start = time.time()
-    if rng_key is None:
-        raise ValueError("run_gfmc_pmap requires rng_key (a JAX PRNG key).")
+    rng_key = _default_rng_key(rng_key, verbosity, "run_gfmc_pmap")
     if isinstance(rng_key, np.ndarray):
         # a key read back from stats or HDF5; as a JAX array it matches the
         # signature of the scans compiled by the run it continues

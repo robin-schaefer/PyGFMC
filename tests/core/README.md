@@ -4,7 +4,7 @@ The core suite checks the building blocks of PyGFMC against exact results:
 that every Hamiltonian's rate tensor reproduces the true matrix, that the
 estimators, the forward-walking bookkeeping and the HDF5 storage are exact,
 that the three propagators agree, and that the guides, the multi-device path
-and user-defined operators and guides work end to end. It has 588 tests, runs in
+and user-defined operators and guides work end to end. It has 587 tests, runs in
 about 50 minutes on one CPU and should be run after every change.
 
 ```bash
@@ -64,7 +64,7 @@ The same diagonal operator through both estimator pipelines, and the forward wal
 
 | Test | Cases | What it checks |
 |---|---|---|
-| `test_diagonal_op_diag_vs_offdiag_consistency` | 1 | Ising energy via the diagonal and off-diagonal estimators matches ED and each other. |
+| `test_diagonal_op_diag_vs_offdiag_consistency` | 1 | Ising energy via the diagonal and off-diagonal estimators matches ED within 0.01 and the two agree within 1e-5 (float32 rounding). |
 | `test_forward_walk_at_m_zero_is_the_plain_mean` | 1 | At p = 1 (m = 0) the raw off-diagonal column equals the diagonal pipeline's m = 0 value at each measured step, with a zero log norm; it differs from the p = 4 column, and the p = 1 estimates agree within 0.01. |
 | `test_protocol_only_operator_measures_off_diagonally` | 1 | A NamedTuple with only `M_total == 1` and `get_rates` runs as an off-diagonal operator; the identity reads exactly 1. |
 | `test_continuing_with_the_measured_shift_compiles_nothing_new` | 1 | A continuation passing `stats['avg_log_weight']` adds no entry to the driver's jit caches. |
@@ -447,13 +447,13 @@ The paper's user-defined operator classes, verified against PyGFMC.
 | `test_structure_factor_multi_k_in_a_run_equals_separate_operators` | 1 | One vector-valued operator == n_k scalar appendix operators, through run_gfmc. |
 | `test_structure_factor_equals_the_appendix_pair_sum_on_any_lattice` | 9 | \|sum_i e^{ik r_i} s_i\|^2 == the O(N^2) pair sum, on symmetric and asymmetric cells. |
 
-### `test_validation_messages.py` (56 cases)
+### `test_validation_messages.py` (55 cases)
 
 Each bad input raises its own message before any work: one parametrized table over the guide constructors, the driver, the Hamiltonian constructors, `ExactGroundState`, the spin-1/2 guides' operator-layout check and `evaluate_observables`, plus a protocol smoke test.
 
 | Test | Cases | What it checks |
 |---|---|---|
-| `test_engine_rejects_bad_input_before_walking` | 22 | `run_gfmc` rejects nonfinite steps/shifts, a missing key, zero walkers, an operator or guide missing its routines, a non-dividing batch size, max(p) >= n_steps, a too-short off-diagonal run, an empty equal-window band and odd p, with the warm-up, probe and production replaced by a failing stub. |
+| `test_engine_rejects_bad_input_before_walking` | 21 | `run_gfmc` rejects nonfinite steps/shifts, zero walkers, an operator or guide missing its routines, a non-dividing batch size, max(p) >= n_steps, a too-short off-diagonal run, an empty equal-window band and odd p, with the warm-up, probe and production replaced by a failing stub. |
 | `test_constructor_and_layout_messages` | 33 | ClusterCPS / ClusterMLP group specs, amplitudes and parameters, Spin `S`, BoseHubbard `n_max`, the `ExactGroundState` `log_amp` length, the SpinHalf-layout `TypeError` of JastrowSpinHalf / ClusterCPS / ClusterMLP on a ToricCode, and `evaluate_observables` without `'energy'`, each with its message. |
 | `test_built_in_classes_satisfy_the_protocols` | 1 | Built-in Hamiltonians carry every `pygfmc.Operator` member and pass the engine check, built-in guides have a ratio routine, `__version__` equals `codes/pyproject.toml`'s, and `kagome(2, 2)` has its hexagons. |
 

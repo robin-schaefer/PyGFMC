@@ -110,10 +110,13 @@ def _parse_mlp_groups(groups):
     return clusters, hidden
 
 
-def _init_group_params(dims, init_scale, rng):
+_INIT_STD = 0.01   # std of the Gaussian weight initialisation
+
+
+def _init_group_params(dims, rng):
     """Weights/biases for one group's network, layer dims ``dims``.
 
-    Weights are always Gaussian (std ``init_scale``), biases zero.  There is
+    Weights are always Gaussian (std ``_INIT_STD``), biases zero.  There is
     deliberately no all-zero option: with W=b=0 every MLP output is 0 AND
     d(out)/dW vanishes, so only the final bias can move -- and a constant
     shift of log psi is just a normalisation.  Such a guide could never train
@@ -122,7 +125,7 @@ def _init_group_params(dims, init_scale, rng):
     """
     layers = []
     for d_in, d_out in zip(dims[:-1], dims[1:]):
-        W = rng.normal(0, init_scale, (d_in, d_out)).astype(np.float32)
+        W = rng.normal(0, _INIT_STD, (d_in, d_out)).astype(np.float32)
         layers.append((W, np.zeros(d_out, dtype=np.float32)))
     return layers
 
@@ -144,9 +147,8 @@ class ClusterMLP:
                      ``(W_i, b_i)`` pairs for layers ``i = 0 … n_layers-1``.
                      The last layer is the output (no activation).  If
                      omitted, weights are drawn from a Gaussian of std
-                     ``init_scale``; if given, the layer shapes must match
-                     ``groups``.
-        init_scale:  std of the random weight initialisation.
+                     0.01 and the biases are zero; if given, the layer
+                     shapes must match ``groups``.
         seed:        RNG seed for the initialisation; ``None`` draws one,
                      kept as ``guide.seed`` (``None`` on a guide rebuilt
                      from its pytree, e.g. after training).
@@ -167,7 +169,7 @@ class ClusterMLP:
     # ── construction ────────────────────────────────────────────────────
 
     def __init__(self, groups, params=None,
-                 init_scale=0.01, seed=None, dtype=jnp.float32, N=None):
+                 seed=None, dtype=jnp.float32, N=None):
         self.dtype = dtype
 
         # ── group specs, mirroring ClusterCPS's ``groups`` ─────────────────
@@ -196,8 +198,7 @@ class ClusterMLP:
             seed = resolve_seed(seed, context="ClusterMLP")
             rng = np.random.default_rng(seed)
             params = [
-                _init_group_params([int(c.shape[1])] + list(h) + [1],
-                                   init_scale, rng)
+                _init_group_params([int(c.shape[1])] + list(h) + [1], rng)
                 for c, h in zip(clusters, hidden)
             ]
 

@@ -331,7 +331,7 @@ function, imported from its module (e.g.
 - **`run_gfmc(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, return_raw=True, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, off_diag_stride=1, off_diag_batch_size=None)`**
   — optional warm-up (none by default), production scan, windowed estimation
   and end-of-run `statistics`. Returns `(walkers, energy, obs, stats, raw)` (4-tuple without
-  `raw` when `return_raw=False`). `rng_key` is required.
+  `raw` when `return_raw=False`). Without `rng_key` a fresh key is drawn from `secrets.randbits(32)` (printed at `verbosity >= 1`, stored in `stats['parameters/rng_key']`).
   With `return_raw=False` the off-diagonal measurements are restricted to the
   steps usable by every `p` (equal windows): the per-call numbers are then
   final and comparable across `p`. With the raw series kept, every step is

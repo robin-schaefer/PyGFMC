@@ -1,6 +1,7 @@
 """Single-device GFMC driver: :func:`run_gfmc`."""
 import jax
 import os as _os
+import secrets
 import time
 from functools import partial
 from types import SimpleNamespace
@@ -435,6 +436,20 @@ _POSITIVITY_PROBE_STEPS = 100
 
 
 DEFAULT_WARMUP_STEPS = 1000
+
+
+def _default_rng_key(rng_key, verbosity, name):
+    """``rng_key=None``: a fresh key from ``secrets.randbits(32)``.
+
+    The seed is printed at ``verbosity >= 1`` and the key is recorded in
+    ``stats['parameters/rng_key']`` either way, so the run can be repeated.
+    """
+    if rng_key is not None:
+        return rng_key
+    seed = secrets.randbits(32)
+    emit(f"[gfmc] - [{name}] - rng_key not given; using "
+         f"jax.random.PRNGKey({seed})", verbosity, 1)
+    return jax.random.PRNGKey(seed)
 
 
 def _default_warmup(avg_log_weight, warmup_steps):
@@ -1182,7 +1197,11 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                             sub-step vs. minus the mean local energy per unit
                             imaginary time); under cont_time ``lam`` has no
                             effect (it is the lambda -> infinity limit).
-        rng_key:            JAX PRNGKey or typed Threefry key (required).
+        rng_key:            JAX PRNGKey or typed Threefry key.  ``None``
+                            (default) draws a fresh one from
+                            ``secrets.randbits(32)`` (printed at
+                            verbosity >= 1, stored in
+                            ``stats['parameters/rng_key']``).
                             The default PRNG must be Threefry; unsupported key
                             implementations raise before running.
                             THIS IS THE CHAIN POSITION, not just a seed: the
@@ -1369,8 +1388,7 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
           ``p_array``.
     """
     wall_start = time.time()
-    if rng_key is None:
-        raise ValueError("run_gfmc requires rng_key (a JAX PRNG key).")
+    rng_key = _default_rng_key(rng_key, verbosity, "run_gfmc")
     if isinstance(rng_key, np.ndarray):
         # a key read back from stats or HDF5; as a JAX array it matches the
         # signature of the scans compiled by the run it continues
