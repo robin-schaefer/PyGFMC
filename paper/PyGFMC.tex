@@ -1732,7 +1732,7 @@ The production \pyinline{run} takes the following arguments:
 \end{itemize}
 The first six arguments are positional; all others are keyword arguments.
 \section{Validation}\label{sec:pkg:tests}
-We have implemented several tests to verify the code.
+We have implemented several tests to verify the code within two test suites.
 %
 The first suite, \texttt{core}, checks individual parts of the code.
 %
@@ -1753,9 +1753,9 @@ We summarize the most relevant ones below.
 
 	\item Diagonal observables are measured both directly and with the (off-diagonal) forward-walking technique.
 		%
-		The two estimates must agree to floating-point precision when the auxiliary chain.
+		The two estimates must agree to floating-point precision.
 
-	\item We compare different \pyinline{off_diag_stride} values with each other against values obtained with no stride.
+	\item We compare runs with different \pyinline{off_diag_stride} values against a run without stride.
 \end{itemize}
 
 
@@ -1795,7 +1795,7 @@ We summarize the most relevant ones below.
 	\item We check bitwise identity by splitting a simulation into different segments using the \pyinline{write_to_HDF5} and \pyinline{run_from_HDF5} functions.
 	\item A golden-output regression test pins short runs over every combination of propagator, Hamiltonian class, and guide.
 		%
-		We measure the class's diagonal and off-diagonal observables, configurations, weights, local energies, observables, and statistics to be reproduced.
+		We measure the class' observables, configurations, weights, local energies, and statistics.
 \end{itemize}
 
 
@@ -1807,7 +1807,7 @@ We benchmark \PyGFMC{} against \texttt{QuSpin}~\cite{weinberg_quspin_2017,weinbe
 %
 For each combination, we compare the ground-state energy and available diagonal reference observables.
 %
-We further compare off-diagonal observables for a subset of problems.
+We further compare off-diagonal observables for the combinations marked in the last column of \autoref{tab:validation-models}.
 
 
 The geometries we used are labeled by type and number of sites $N$.
