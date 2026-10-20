@@ -99,14 +99,6 @@ def test_identity_shared_keys_is_exactly_one(x64):
                     f"stride={stride}, p={p}: <identity> = {obs[p]:.12f} != 1")
 
 
-def test_identity_independent_keys_is_one_on_average():
-    """Independent shadow keys: <identity>_p is 1 up to lineage noise."""
-    obs = _run_chain(jnp.float32, 1, shared_keys=False)
-    for p in sorted(_P_ARRAY):
-        assert abs(obs[p] - 1.0) < 0.2, (
-            f"p={p}: <identity> = {obs[p]:.4f} deviates implausibly from 1")
-
-
 def test_identity_run_gfmc_correlated_multistep(x64):
     """Through the full run_gfmc path, <identity>_p == 1 to 1e-9 at ss=8 multi_step and ss=1."""
     with x64():

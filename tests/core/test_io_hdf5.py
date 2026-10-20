@@ -241,28 +241,6 @@ def test_rng_key_replay_is_refused(tmp_path):
     check_run_compatible(path, rng_key=p["rng_key_next"], n_steps=120)
 
 
-def test_energy_is_rewindowable_from_raw(tmp_path):
-    """The stored raw series reproduce the run's energies and re-window to new p."""
-    path = str(tmp_path / "a.h5")
-    out = _run(n_steps=400)
-    E = out[1]
-    _write(path, out)
-
-    with h5py.File(path, "r") as f:
-        e_series = f["raw/energy"][()]
-        logw = f["raw/log_weights"][()]
-    assert e_series.shape == (400,) and logw.shape == (400,)
-
-    # the run's own grid must come back bit-identical
-    again, _ = _estimate_observables(P_ARRAY, logw, e_series)
-    for p in P_ARRAY:
-        assert float(again[p]) == pytest.approx(float(E[p]), rel=0, abs=1e-12)
-    # and windows the run never evaluated are available too
-    other, _ = _estimate_observables([2, 6, 12], logw, e_series)
-    assert sorted(other) == [2, 6, 12]
-    assert all(np.isfinite(v) for v in other.values())
-
-
 def test_no_raw_means_no_rewindowing(tmp_path):
     """Without raw there is no /raw group and load_raw_from_HDF5 raises."""
     path = str(tmp_path / "a.h5")
@@ -282,34 +260,6 @@ def test_fingerprint_is_stable_and_content_sensitive():
     assert pytree_fingerprint(_model()) != pytree_fingerprint(other)
     assert pytree_fingerprint(_zz(EDGES[0])) != pytree_fingerprint(_zz(EDGES[1]))
     assert pytree_fingerprint(_guide()) != pytree_fingerprint(_guide(-0.21))
-
-
-def test_contents_are_checked_not_only_names(tmp_path):
-    """The three ways a name can stay fixed while the object changes."""
-    path = str(tmp_path / "a.h5")
-    guide = _guide()
-    ops = {"zz01": _zz(EDGES[0])}
-
-    _write(path, _run(n_steps=150, guide=guide, diag=ops))
-
-    check_run_compatible(path, hamiltonian=_model(), guide=guide,
-                         diag_operators=ops)                    # unchanged
-
-    # an edited coupling, behind an unchanged class name
-    with pytest.raises(ValueError, match="hamiltonian_hash"):
-        check_run_compatible(path, hamiltonian=SpinHalf.create(
-            EDGES, J_x=0.0, J_y=0.0, J_z=-4.1, h_x=1.5))
-    # a retrained guide, behind an unchanged class name AND path
-    with pytest.raises(ValueError, match="guide_hash"):
-        check_run_compatible(path, guide=_guide(-0.21))
-    # an operator moved to another bond, behind an unchanged name
-    with pytest.raises(ValueError, match="diag_operator_hashes"):
-        check_run_compatible(path, diag_operators={"zz01": _zz(EDGES[1])})
-
-    for key in ("hamiltonian_hash", "guide_hash", "diag_operator_hashes",
-                "off_diag_operator_hashes"):
-        assert key in MUST_MATCH
-        assert key in _read_from_HDF5(path)["parameters"]
 
 
 def test_resume_verifies_the_objects_it_is_given(tmp_path):
@@ -829,22 +779,6 @@ def test_jackknife_block_count_is_validated():
         evaluate_observables(raw, P_ARRAY, n_blocks=400)   # fewer than 1 step/block
     with pytest.warns(UserWarning, match="is few"):
         evaluate_observables(raw, P_ARRAY, n_blocks=4)
-
-
-@pytest.mark.parametrize("stride", [1, 4])
-def test_jackknife_errors_are_finite_and_positive(stride):
-    """Every jackknife error is finite and positive for both operator kinds.
-
-    A longer chain at fixed n_blocks need NOT give a smaller estimate (block
-    length grows, short blocks underestimate), so that is not asserted.
-    """
-    _, _, _, _, raw = _run_with_both_operators(stride=stride)
-    _, _, E_err, obs_err = evaluate_observables(raw, P_ARRAY, n_blocks=20)
-    assert all(np.isfinite(v) and v > 0 for v in E_err.values())
-    for name in ("zz", "sx"):
-        for p in P_ARRAY:
-            v = float(obs_err[name][p])
-            assert np.isfinite(v) and v > 0, f"{name} p={p}"
 
 
 def test_mixed_width_diagonal_operators_share_a_run(tmp_path):

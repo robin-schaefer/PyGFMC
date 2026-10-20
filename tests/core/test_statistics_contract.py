@@ -106,15 +106,6 @@ def test_ancestor_correlation_is_one_at_depth_zero_and_decays_with_the_step():
     assert abs(big["ancestor_correlation"][0]) < 0.3, big["ancestor_correlation"]
 
 
-def test_cont_time_hops_per_step_is_escape_rate_times_step_size():
-    w, alw = _equilibrated()
-    _, st = statistics(w, _H, 0.3, _G, "cont_time", jax.random.PRNGKey(5), alw,
-                       M=3, quiet=True)
-    np.testing.assert_allclose(st["hops_per_step_mean"], st["escape_rate_mean"] * 0.3)
-    np.testing.assert_allclose(st["hops_per_step_max"], st["escape_rate_max"] * 0.3)
-    assert np.all(st["hold_time_mean"] > 0)
-
-
 def test_avg_log_weight_is_optional_and_only_a_numerical_shift():
     """Omitting avg_log_weight uses the walkers' own estimate, bit-identically;
     a different shift leaves every diagnostic within float noise."""

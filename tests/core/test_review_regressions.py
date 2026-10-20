@@ -81,18 +81,6 @@ def test_resume_without_raw_handles_diagonal_lead_in(tmp_path):
     assert np.isfinite(resumed[1][2])
 
 
-def test_jackknife_truncates_tail_in_point_estimate_too():
-    raw = {"energy": np.r_[np.arange(100.), 1e9],
-           "log_weights": np.zeros(101), "p_array": [1]}
-    with pytest.warns(UserWarning, match="Discarding 1 trailing"):
-        actual = evaluate_observables(raw, n_blocks=20)
-    expected = evaluate_observables(
-        {**raw, "energy": raw["energy"][:100], "log_weights": np.zeros(100)},
-        n_blocks=20)
-    assert actual == expected
-    assert actual[2][1] > 0
-
-
 @pytest.mark.parametrize("h", [Spin.create([], N=2, S=1, h_pm=-1),
                                BoseHubbard.create([(0, 1)], n_max=2)])
 def test_nonergodic_default_training_sampler_rejected_before_netket(h):

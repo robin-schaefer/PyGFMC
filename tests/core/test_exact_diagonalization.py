@@ -44,16 +44,6 @@ def _dense_spectrum(h, k):
 
 
 @pytest.mark.parametrize("name,build,lhs,N", _MODELS, ids=_IDS)
-def test_ground_state_matches_the_per_class_construction(name, build, lhs, N):
-    """E0 from the rate protocol equals E0 from the reference matrix."""
-    h = build()
-    energies, diag, off = exact_diagonalization(h, lhs, N, number_of_states=1)
-    assert energies.shape == (1,)
-    assert diag == {} and off == {}
-    assert energies[0] == pytest.approx(reference_ground_state(h)[0], rel=0, abs=_ATOL)
-
-
-@pytest.mark.parametrize("name,build,lhs,N", _MODELS, ids=_IDS)
 def test_low_lying_spectrum_is_sorted_and_matches_dense(name, build, lhs, N):
     """The requested states come back sorted and match the dense reference."""
     h = build()

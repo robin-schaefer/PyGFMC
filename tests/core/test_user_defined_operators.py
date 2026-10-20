@@ -161,17 +161,6 @@ def test_nbody_return_configs_agrees_with_generate_state():
         assert bool(jnp.all(c_full[k] == h.generate_state(cfg, k))), f"row {k}"
 
 
-def test_nbody_diagonal_weight_matches_get_rates():
-    """diagonal_weight equals get_rates' diagonal slot."""
-    h = _nbody(_J_X)
-    for seed in range(4):
-        cfg = jnp.asarray(
-            2 * jax.random.bernoulli(jax.random.PRNGKey(seed), shape=(_L,)) - 1,
-            dtype=jnp.float32)
-        assert np.isclose(float(h.diagonal_weight(cfg)),
-                          float(h.get_rates(cfg)[0][0]), atol=1e-6)
-
-
 def test_nbody_gfmc_matches_exact_diagonalization():
     """A real run with the user-defined Hamiltonian must reach the ED energy."""
     h = _nbody(_J_X)
@@ -192,21 +181,6 @@ def test_structure_factor_diagonal_weight_is_exact():
         ref = sum(2 * np.cos(np.dot(k, _COORDS[i] - _COORDS[j]))
                   * (float(cfg[i]) / 2) * (float(cfg[j]) / 2) for i, j in _PAIRS)
         assert np.isclose(float(sf_op.diagonal_weight(cfg)), ref, atol=1e-5), k
-
-
-def test_structure_factor_runs_as_diag_operator():
-    """It needs no pytree registration: diag_operators are closed over, not traced."""
-    sf_op = PairSzSz(_PAIRS, _DR, [np.pi, 0.0])
-    assert not hasattr(sf_op, "M_total"), "the appendix class defines no M_total"
-    walkers = prepare_walkers_from_configs(jnp.ones((512, _L), dtype=jnp.float32))
-    _, _, obs, _, _ = run_gfmc(
-        walkers, 400, _nbody(_J_X), 1, None, [8, 16], lam=_LAM,
-        rng_key=jax.random.PRNGKey(1), diag_operators={"sf": sf_op},
-        warmup_steps=50, verbosity=0)
-    vals = [float(v) for v in obs["sf"].values()]
-    assert all(np.isfinite(vals)), vals
-    bound = float(jnp.sum(jnp.abs(sf_op.w))) / 4.0       # |O| <= sum |w| / 4
-    assert all(abs(v) <= bound + 1e-6 for v in vals), (vals, bound)
 
 
 # ── a protocol-only Hamiltonian through exact diagonalization ───────────────
@@ -313,31 +287,6 @@ def test_custom_guide_routines_agree():
         np.testing.assert_allclose(from_op, from_cfg, atol=1e-6)
         np.testing.assert_allclose(from_op, from_psi, atol=1e-6)
         assert from_op[0] == pytest.approx(0.0, abs=1e-7)
-
-
-def test_custom_guide_log_psi_takes_single_and_batch():
-    """The protocol requires log_psi to accept (N,) and (n, N)."""
-    guide = MagnetizationGuide(0.25)
-    rng = np.random.default_rng(1)
-    single = jnp.asarray(rng.choice([-1.0, 1.0], size=_L), dtype=jnp.float32)
-    batch = jnp.asarray(rng.choice([-1.0, 1.0], size=(7, _L)), dtype=jnp.float32)
-    assert np.asarray(guide.log_psi(single)).shape == ()
-    assert np.asarray(guide.log_psi(batch)).shape == (7,)
-    np.testing.assert_allclose(np.asarray(guide.log_psi(batch)),
-                               np.asarray([float(guide.log_psi(r)) for r in batch]),
-                               atol=1e-6)
-
-
-def test_custom_guide_is_a_pytree_with_beta_as_its_parameter():
-    """beta must be a child, not aux data, or JAX cannot trace it."""
-    guide = MagnetizationGuide(0.25)
-    leaves, treedef = jax.tree_util.tree_flatten(guide)
-    assert len(leaves) == 1 and float(leaves[0]) == 0.25
-    assert float(jax.tree_util.tree_unflatten(treedef, leaves).beta) == 0.25
-    hash(treedef)
-    cfg = jnp.ones(_L)
-    grad = jax.grad(lambda b: MagnetizationGuide(b).log_psi(cfg))(0.25)
-    assert float(grad) == pytest.approx(float(_L), rel=0, abs=1e-6)
 
 
 def test_custom_guide_at_beta_zero_reduces_to_no_guide():

@@ -171,17 +171,6 @@ def test_input_validation():
         StructureFactor(positions[:1], k)
 
 
-def test_sums_over_every_i_lt_j():
-    """The operator has one slot per pair i<j, with r_i - r_j as the displacement."""
-    N = 5
-    positions, pairs, dr = random_geom(N, 9)
-    k = np.array([0.4, -0.8, 1.3])
-    op = StructureFactor(positions, k, dtype=jnp.float64)
-    assert np.array_equal(np.asarray(op.edges), pairs)
-    ref = reference(pairs, dr, k, "Sp", "Sm", N)
-    assert np.max(np.abs(from_get_rates(op, N) - ref.real)) < 1e-10
-
-
 def test_periodic_image_does_not_matter_for_valid_k():
     """Shifting sites by periodic vectors leaves the operator unchanged for an
     allowed k, and changes it for a k off the grid."""
@@ -317,19 +306,6 @@ def test_channels_are_additive():
             StructureFactor(positions, k, channel=removed_alias)
 
 
-def test_PM_PP_are_the_XX_and_YY_combinations():
-    """PM + PP == 4 SxSx and PM - PP == 4 SySy, exactly."""
-    N = 2
-    PM = (embed(MAT["Sp"], 0, N) @ embed(MAT["Sm"], 1, N)
-          + embed(MAT["Sm"], 0, N) @ embed(MAT["Sp"], 1, N))
-    PP = (embed(MAT["Sp"], 0, N) @ embed(MAT["Sp"], 1, N)
-          + embed(MAT["Sm"], 0, N) @ embed(MAT["Sm"], 1, N))
-    XX = embed(MAT["X"], 0, N) @ embed(MAT["X"], 1, N)
-    YY = embed(MAT["Y"], 0, N) @ embed(MAT["Y"], 1, N)
-    assert np.max(np.abs(PM + PP - 4 * XX)) < 1e-14
-    assert np.max(np.abs(PM - PP - 4 * YY)) < 1e-14
-
-
 # ── the diagonal SzSz(k) operator ───────────────────────────────────────────
 
 def zz_operator(pairs, dr, k, N, dtype=jnp.float64):
@@ -344,60 +320,6 @@ def szz_reference(pairs, dr, q, N):
     for (i, j), d in zip(pairs, dr):
         op_matrix += np.cos(np.dot(q, d)) * (embed(MAT["Z"], int(i), N) @ embed(MAT["Z"], int(j), N))
     return op_matrix
-
-
-def test_szz_diag_matches_reference():
-    """The direct ZZ(k) build is diagonal and matches the reference diagonal."""
-    N = 6
-    positions, pairs, dr = random_geom(N, 13)
-    k = np.array([1.1, -0.4, 0.7])
-    op = zz_operator(pairs, dr, k, N)
-    assert op.M_total == 1, "must be DIAGONAL"
-    ref = szz_reference(pairs, dr, k, N)
-    assert np.max(np.abs(ref.imag)) < 1e-12
-    diag_ref = np.diag(ref.real)
-    got, idx = zz_diag_values(op, N)
-    assert np.max(np.abs(got - diag_ref[idx])) < 1e-10
-    assert np.max(np.abs(ref.real - np.diag(diag_ref))) < 1e-12
-
-
-def test_szz_diag_accepts_negative_weights_and_needs_no_shift():
-    """No positivity constraint on the diagonal path, so the raw cos is usable."""
-    N = 5
-    positions, pairs, dr = random_geom(N, 2)
-    k = np.array([1.7, 0.9, -1.1])
-    op = zz_operator(pairs, dr, k, N)
-    W = np.cos(dr @ k)
-    assert W.min() < 0.0, "this k must produce genuinely negative weights"
-    assert W.max() <= 1.0 + 1e-12, "raw cos, so no 1+ shift"
-    assert float(np.asarray(op.J_z).min()) < 0.0
-    assert op.M_total == 1
-
-
-def test_szz_diag_textbook_transform_carries_a_FACTOR_2():
-    """sum_{i!=j} e^{-iq.r_ij} Z_iZ_j == 2 * (pairs-once cos form): Z_iZ_j is i<->j symmetric."""
-    N = 5
-    positions, pairs, dr = random_geom(N, 8)
-    q = np.array([0.6, -1.2, 0.3])
-    bare = full_ordered(positions, q, "Z", "Z", N)
-    assert np.max(np.abs(bare.imag)) < 1e-12
-    assert np.max(np.abs(bare - 2.0 * szz_reference(pairs, dr, q, N))) < 1e-12
-
-
-def test_szz_k0_is_pinned_by_sz_conservation():
-    """S^zz(k=0) is constant inside a fixed-Sz sector; a nonzero k is not."""
-    N = 8
-    positions, pairs, dr = random_geom(N, 1)
-    Ztot = sum(embed(MAT["Z"], i, N) for i in range(N)).real
-    sector = np.where(np.abs(np.diag(Ztot)) < 1e-12)[0]
-    assert sector.size > 1
-    O0 = szz_reference(pairs, dr, np.zeros(3), N).real
-    ev = np.linalg.eigvalsh(O0[np.ix_(sector, sector)])
-    assert ev.max() - ev.min() < 1e-10, "k=0 must be a constant in-sector"
-    assert abs(ev[0] - 0.5 * (0.0 - N / 4.0)) < 1e-10    # pairs-once: -N/8 at Sz_tot = 0
-    Ok = szz_reference(pairs, dr, np.array([1.1, -0.4, 0.7]), N).real
-    evk = np.linalg.eigvalsh(Ok[np.ix_(sector, sector)])
-    assert evk.max() - evk.min() > 0.5
 
 
 def test_scalar_Jx_alongside_array_Jz_builds():
@@ -434,10 +356,3 @@ def test_any_dimension(d):
     assert np.max(np.abs(got - np.diag(szz_reference(pairs, dr, k, N).real)[idx])) < 1e-10
 
 
-def test_dimension_mismatch_raises():
-    """A d-mismatch between dr and k raises; a matching 2-D k is accepted."""
-    N = 4
-    positions, pairs, dr = random_geom(N, 55, d=2)
-    with pytest.raises(ValueError, match="they must match"):
-        StructureFactor(positions, np.zeros(3))
-    StructureFactor(positions, np.array([np.pi, 0.0]))

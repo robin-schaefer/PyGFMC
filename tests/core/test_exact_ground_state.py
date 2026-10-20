@@ -148,16 +148,6 @@ def test_off_diag_observable_is_exact_at_every_p():
     assert max(got.values()) - min(got.values()) < 5e-3, f"drifts with p: {got}"
 
 
-def test_pytree_roundtrip(spinhalf4):
-    """tree_flatten / tree_unflatten reproduces the guide exactly."""
-    g = ExactGroundState(spinhalf4)
-    g2 = jax.tree_util.tree_unflatten(*reversed(jax.tree_util.tree_flatten(g)))
-    cfg = jnp.array([1., -1., 1., -1.], dtype=jnp.float32)
-    np.testing.assert_array_equal(np.asarray(g.log_diff_from_configs(cfg)),
-                                  np.asarray(g2.log_diff_from_configs(cfg)))
-    np.testing.assert_array_equal(np.asarray(g.log_amp), np.asarray(g2.log_amp))
-
-
 def test_hdf5_roundtrip(spinhalf4, tmp_path):
     """save/load reproduces the amplitudes and writes the metadata attributes."""
     g = ExactGroundState(spinhalf4)

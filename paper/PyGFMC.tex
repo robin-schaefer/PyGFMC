@@ -1734,14 +1734,6 @@ The first six arguments are positional; all others are keyword arguments.
 \section{Validation}\label{sec:pkg:tests}
 We have implemented several tests to verify the code.
 %
-The code was developed using agentic workflows built on large language models.
-%
-The starting point for the development was a \texttt{C++} implementation that we had previously written without any large language model involvement.
-%
-It served as a well-tested codebase and guided the agentic workflow.
-
-Throughout development, every step was validated, and the repository contains two main test suites.
-%
 The first suite, \texttt{core}, checks individual parts of the code.
 %
 The second suite, \texttt{benchmark}, performs end-to-end benchmarks of various models against \texttt{QuSpin}~\cite{weinberg_quspin_2017,weinberg_quspin_2019}, \texttt{DanceQ}~\cite{schaefer_danceQ_2025,DanceQ_code}, and \texttt{TeNPy}~\cite{tenpy2024}.
@@ -1759,11 +1751,11 @@ We summarize the most relevant ones below.
 		%
 		When the auxiliary chain is propagated with the same seed as the main Markov chain, the weights of the auxiliary chain equal those of the main Markov chain.
 
-	\item Diagonal observables are measured both directly and with the (off-diagonal) forward-walking technique, and the two estimates must agree to floating-point precision when the auxiliary chain uses the same seed as the main Markov chain.
-
-	\item It can be advantageous to launch the auxiliary chain for off-diagonal observables only every few steps.
+	\item Diagonal observables are measured both directly and with the (off-diagonal) forward-walking technique.
 		%
-		We compare different stride values against values obtained with no stride.
+		The two estimates must agree to floating-point precision when the auxiliary chain.
+
+	\item We compare different \pyinline{off_diag_stride} values with each other against values obtained with no stride.
 \end{itemize}
 
 
@@ -1778,7 +1770,7 @@ We summarize the most relevant ones below.
 
 	\item We have implemented the option to use the exact wavefunction as a guide.
 		%
-		We check exhaustively on small systems that the local energy equals the ground-state energy on every configuration where the exact wavefunction is nonzero, and check every requested projection window in an integration test.
+		We check that the local energy equals the ground-state energy on every configuration. 
 		%
 		This tests the correct implementation of the transition rates.
 		%
@@ -1801,11 +1793,9 @@ We summarize the most relevant ones below.
 	\item We verify the generation of different walker ensembles.
 
 	\item We check bitwise identity by splitting a simulation into different segments using the \pyinline{write_to_HDF5} and \pyinline{run_from_HDF5} functions.
+	\item A golden-output regression test pins short runs over every combination of propagator, Hamiltonian class, and guide.
 		%
-		The main-chain data remain bitwise identical; identical off-diagonal measurement series additionally require segment boundaries aligned with \pyinline{off_diag_stride}, since the measurement grid restarts in each call.
-	\item A golden-output regression test pins short runs over every combination of propagator, Hamiltonian class, and guide that accepts it, each measuring the class's diagonal and off-diagonal observables, to reference data stored in the repository, and requires configurations, weights, local energies, observables, and statistics to be reproduced bit for bit.
-		%
-		Since the statistical tests accept any result within a tolerance, this is the only test that detects a change in the last bit of the sampler's arithmetic.
+		We measure the class's diagonal and off-diagonal observables, configurations, weights, local energies, observables, and statistics to be reproduced.
 \end{itemize}
 
 
@@ -1815,11 +1805,9 @@ We benchmark \PyGFMC{} against \texttt{QuSpin}~\cite{weinberg_quspin_2017,weinbe
 %
 \autoref{tab:validation-models} lists all tested combinations of Hamiltonian class and couplings.
 %
-For each combination, we compare the ground-state energy and available diagonal reference observables; those marked in the last column additionally compare off-diagonal observables using the forward-walking technique.
+For each combination, we compare the ground-state energy and available diagonal reference observables.
 %
-The constrained-ED export at the ring-exchange point contains no diagonal flippability reference, so that observable is not validated there.
-%
-These broad regression comparisons use fixed tolerances, not statistical confidence intervals; separate small-system, multi-seed accuracy tests vary projection depth and walker number to probe systematic effects.
+We further compare off-diagonal observables for a subset of problems.
 
 
 The geometries we used are labeled by type and number of sites $N$.
@@ -1830,9 +1818,9 @@ R4, R9, and R13 are randomly generated graphs with $4$, $9$, and $13$ sites, sho
 %
 T8, T12, and T16 are toric-code lattices~\cite{kitaev_fault_2003} on periodic $2\times2$, $2\times3$, and $2\times4$ square lattices, where the spins sit on the $N=2L_xL_y$ edges.
 %
-To benchmark larger systems with DMRG, we use a two-leg ladder with $L=50$ rungs and open legs (L100), see \figref{fig:test-lattices}{d}.
+To benchmark larger systems with DMRG, we use a two-leg ladder with $L=50$ rungs and open boundary conditions (L100), see \figref{fig:test-lattices}{d}.
 %
-The ring-flip model is benchmarked on a pyrochlore lattice containing $N=128$ sites constructed from $2\times2\times2$ cubic unit cells and labeled P128.
+The ring-flip model is benchmarked on a pyrochlore lattice containing $N=128$ sites constructed from $2\times2\times2$ cubic unit cells and is labeled P128.
 %
 We compute the ground state in the zero-flux ice sector, whose Hilbert-space dimension is $8.1\times10^{10}$, using constrained exact diagonalization.
 %

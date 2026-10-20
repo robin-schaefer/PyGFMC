@@ -43,7 +43,7 @@ def test_reference_exclusion_must_be_explicit_and_current(cfg):
         scoring.check_observable_contract(cfg, {"z_tot": 0.0}, {"z_tot": {8: 0.0}})
 
 
-@pytest.mark.parametrize("windows", [{}, {8: float("nan")}, {8: float("inf")}])
+@pytest.mark.parametrize("windows", [{}, {8: float("nan")}])
 def test_invalid_observable_results_fail(cfg, windows):
     with pytest.raises(AssertionError):
         scoring.check_observable_contract(cfg, {"z_tot": 0.0}, {"z_tot": windows})

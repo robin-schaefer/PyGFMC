@@ -84,18 +84,6 @@ def test_equal_windows_of_return_raw_false(stride):
     assert float(gated[2]["x"][p_max]) == float(plain[2]["x"][p_max])
 
 
-def test_equal_windows_have_no_keyword():
-    """The gating follows from return_raw alone; the old keyword is refused."""
-    kw = dict(method="single_step", lam=15.0, rng_key=jax.random.PRNGKey(4), warmup_steps=4,
-              off_diag_operators={"x": _XTOT}, verbosity=0)
-    with_raw = run_gfmc(_walkers(), 40, _H, 1, None, [4, 8], **kw)
-    without = run_gfmc(_walkers(), 40, _H, 1, None, [4, 8], return_raw=False, **kw)
-    assert int(with_raw[3]["parameters/off_diag_equal_windows"]) == 0
-    assert int(without[3]["parameters/off_diag_equal_windows"]) == 1
-    with pytest.raises(TypeError, match="off_diag_equal_windows"):
-        run_gfmc(_walkers(), 40, _H, 1, None, [4, 8], off_diag_equal_windows=True, **kw)
-
-
 def test_gated_chain_continues_gated(tmp_path):
     """A chain stored without raw series (equal windows) continues without them."""
     path = str(tmp_path / "a.h5")

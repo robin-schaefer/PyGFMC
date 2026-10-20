@@ -4,7 +4,7 @@ The core suite checks the building blocks of PyGFMC against exact results:
 that every Hamiltonian's rate tensor reproduces the true matrix, that the
 estimators, the forward-walking bookkeeping and the HDF5 storage are exact,
 that the three propagators agree, and that the guides, the multi-device path
-and user-defined operators and guides work end to end. It has 616 tests, runs in
+and user-defined operators and guides work end to end. It has 588 tests, runs in
 about 50 minutes on one CPU and should be run after every change.
 
 ```bash
@@ -40,7 +40,7 @@ silently bypass benchmark assertions.
 
 "Cases" counts the parametrized instances pytest collects.
 
-### `test_benchmark_contracts.py` (62 cases)
+### `test_benchmark_contracts.py` (61 cases)
 
 Fast negative tests for the benchmark scoring and the committed external-reference contracts, without running GFMC or an external solver.
 
@@ -50,7 +50,7 @@ Fast negative tests for the benchmark scoring and the committed external-referen
 | `test_missing_observable_fails` | 2 | A reference without an output, or an output without a reference, fails. |
 | `test_small_zero_reference_error_passes` | 1 | A small deviation from a zero reference passes the absolute bound. |
 | `test_reference_exclusion_must_be_explicit_and_current` | 1 | An unavailable reference needs an explicit reason; an exclusion for a reference that exists fails as obsolete. |
-| `test_invalid_observable_results_fail` | 3 | No windows, a NaN or an infinite estimate fails. |
+| `test_invalid_observable_results_fail` | 2 | No windows or a NaN estimate fails. |
 | `test_missing_projection_window_fails` | 1 | An output missing one of the requested p windows fails. |
 | `test_committed_reference_contract` | 41 | Every committed reference file matches its model's couplings, geometry, sector, conventions, measurement-protocol hash and pinned SHA-256. |
 | `test_stale_reference_contract_is_rejected` | 3 | Changed couplings, initial sector or edge order are rejected. |
@@ -85,19 +85,18 @@ Check shared window selection against explicit scalar weighted sums.
 |---|---|---|
 | `test_multiple_operators_on_irregular_measurement_grid` | 2 | `_off_diagonal_estimates` on three operators measured at irregular steps, with and without a trimmed tail, equals the explicitly summed weighted ratios of every window. |
 
-### `test_exact_diagonalization.py` (13 cases)
+### `test_exact_diagonalization.py` (8 cases)
 
 Generic `exact_diagonalization` against the independent reference matrices.
 
 | Test | Cases | What it checks |
 |---|---|---|
-| `test_ground_state_matches_the_per_class_construction` | 5 | E0 from the rate protocol equals E0 from the reference matrix. |
 | `test_low_lying_spectrum_is_sorted_and_matches_dense` | 5 | The requested states come back sorted and match the dense reference. |
 | `test_observables_match_a_direct_evaluation` | 1 | Diagonal and off-diagonal observables against a dense computation. |
 | `test_runs_in_float64_and_restores_the_caller_precision` | 1 | Double precision inside, and `jax_enable_x64` restored even on a raise. |
 | `test_input_validation` | 1 | Bad local spaces, sizes, state counts and contradictory N/d raise. |
 
-### `test_exact_ground_state.py` (21 cases)
+### `test_exact_ground_state.py` (20 cases)
 
 Tests for the ExactGroundState guiding wavefunction.
 
@@ -108,7 +107,6 @@ Tests for the ExactGroundState guiding wavefunction.
 | `test_exact_guide_local_energy_on_every_supported_configuration` | 4 | Exhaustive local energies and zero variance on the nonzero exact-wavefunction support for SpinHalf (including a fixed sector), Spin and BoseHubbard. |
 | `test_zero_variance_integration` | 1 | With psi_T = psi_0 the GFMC energy collapses onto E_0 within float32 noise (100 warm-up steps suffice: e_L is constant). |
 | `test_off_diag_observable_is_exact_at_every_p` | 1 | With psi_T = psi_0 the forward-walked estimate is unbiased and flat in p. |
-| `test_pytree_roundtrip` | 1 | tree_flatten / tree_unflatten reproduces the guide exactly. |
 | `test_hdf5_roundtrip` | 1 | save/load reproduces the amplitudes and writes the metadata attributes. |
 | `test_hdf5_load_rejects_wrong_family` | 1 | Loading into a different Hamiltonian family raises. |
 | `test_plaquette_works_without_config_to_basis_index` | 1 | The index comes from local_hilbert_space, so PlaquetteModel is supported. |
@@ -117,16 +115,14 @@ Tests for the ExactGroundState guiding wavefunction.
 | `test_non_hermitian_operator_is_rejected` | 1 | The operator matrix is checked for finite entries and Hermiticity before the eigensolve. |
 | `test_allocation_guard_refuses_a_huge_dense_solve` | 1 | The estimated sparse or dense allocation is checked before anything is built; `number_of_states` goes through the integer validator. |
 
-### `test_get_rates_all_classes.py` (15 cases)
+### `test_get_rates_all_classes.py` (13 cases)
 
 Every Hamiltonian class: `get_rates` must reproduce the full matrix (rebuilt by `core/rates.py`).
 
 | Test | Cases | What it checks |
 |---|---|---|
 | `test_get_rates` | 5 | The matrix rebuilt from get_rates equals the reference, over the full basis. |
-| `test_plaquette_off_diagonal_element_is_minus_g` | 1 | `H = -g Sum_p flip_p`: the flip element must be -g_p where flippable. |
 | `test_diagonal_weight_matches_get_rates` | 5 | The fast `diagonal_weight(c)` must equal `get_rates(c)[0][0]`. |
-| `test_spin_rate_matrix_is_hermitian` | 1 | The S=1 matrix rebuilt from `get_rates` is symmetric (S^+ and S^- share one amplitude). |
 | `test_toric_per_object_couplings` | 1 | Per-star/plaquette/site couplings: scalar == uniform array; a non-uniform model rebuilds the reference and its rate matrix is symmetric. |
 | `test_move_reproduces_generate_state` | 2 | `Spin.move` and `BoseHubbard.move` name the two sites and increments of every transition, and adding them gives exactly `generate_state`. |
 
@@ -182,14 +178,13 @@ Input checks and small cases of the `pygfmc.hamiltonian` subpackage.
 | `test_exact_ground_state_energy_on_tiny_bases` | 1 | Exact diagonalization works on dim-2 and dim-4 bases. |
 | `test_plaquette_rejects_odd_length` | 1 | Odd plaquette lengths raise; even ones are accepted. |
 
-### `test_identity_forward_walk.py` (3 cases)
+### `test_identity_forward_walk.py` (2 cases)
 
 Identity-operator checks of the forward-walking pure estimator; the forward walk is jitted as in the production scan.
 
 | Test | Cases | What it checks |
 |---|---|---|
 | `test_identity_shared_keys_is_exactly_one` | 1 | Shared shadow keys: <identity>_p == 1 to 1e-9 (float64) for every p and stride. |
-| `test_identity_independent_keys_is_one_on_average` | 1 | Independent shadow keys: <identity>_p is 1 up to lineage noise. |
 | `test_identity_run_gfmc_correlated_multistep` | 1 | Through the full run_gfmc path, <identity>_p == 1 to 1e-9 at ss=8 multi_step and ss=1. |
 
 ### `test_io_hdf5.py` (44 cases, 1 marked `slow`)
@@ -209,10 +204,8 @@ write_to_HDF5 / run_from_HDF5 / evaluate_observables — the per-run storage for
 | `test_operators_are_compared_by_name_not_count` | 1 | Same count, different operators -> identical shapes, different meaning. |
 | `test_write_is_atomic_on_mismatch` | 1 | A refused append must leave the file exactly as it was. |
 | `test_rng_key_replay_is_refused` | 1 | Starting again on a key an earlier run started from (a replay) is refused; continuing is not. |
-| `test_energy_is_rewindowable_from_raw` | 1 | The stored raw series reproduce the run's energies and re-window to new p. |
 | `test_no_raw_means_no_rewindowing` | 1 | Without raw there is no /raw group and load_raw_from_HDF5 raises. |
 | `test_fingerprint_is_stable_and_content_sensitive` | 1 | Equal contents give equal digests; any content change changes the digest. |
-| `test_contents_are_checked_not_only_names` | 1 | The three ways a name can stay fixed while the object changes. |
 | `test_resume_verifies_the_objects_it_is_given` | 1 | The check belongs at resume time, not after the run has been paid for. |
 | `test_fixed_parameters_live_once_at_the_file_level` | 1 | MUST_MATCH parameters are stored once at the top, per-run ones inside each run. |
 | `test_run_from_HDF5_continues_the_chain` | 1 | One call: verify, load, run without warmup, same tuple as run_gfmc. |
@@ -230,7 +223,6 @@ write_to_HDF5 / run_from_HDF5 / evaluate_observables — the per-run storage for
 | `test_evaluate_observables_energy_at_windows_the_run_never_used` | 1 | A different grid re-windows the energy and leaves the operators alone. |
 | `test_jackknife_two_blocks_equals_the_half_chain_split` | 2 | n_blocks=2 jackknife error equals \|x_first_half - x_second_half\| / 2. |
 | `test_jackknife_block_count_is_validated` | 1 | Too few usable blocks raise; a small block count warns. |
-| `test_jackknife_errors_are_finite_and_positive` | 2 | Every jackknife error is finite and positive for both operator kinds. |
 | `test_mixed_width_diagonal_operators_share_a_run` | 1 | A scalar and an n_k-valued diagonal operator share a run. |
 | `test_malformed_measurement_steps_are_rejected` | 1 | `off_diag_steps` must be present, one-dimensional, one per row, integer-valued, strictly increasing and within the chain. |
 
@@ -339,7 +331,7 @@ The published notebooks and the manuscript assets stay usable from a source chec
 | `test_notebook_sources_and_downloads` | 7 | Every notebook parses, has no stored error output, and is downloadable with its required bundled HDF5 data. |
 | `test_manuscript_references_and_figure_inventory` | 1 | Manuscript references resolve uniquely and each included figure has a PDF, regeneration script and documentation. |
 
-### `test_review_regressions.py` (20 cases)
+### `test_review_regressions.py` (19 cases)
 
 Regression tests for numerical, checkpoint and API review findings.
 
@@ -348,7 +340,6 @@ Regression tests for numerical, checkpoint and API review findings.
 | `test_tiny_hopping_does_not_overflow_geometric_hold` | 3 | A zero or tiny transverse field keeps the multi_step geometric hold finite and the configuration unchanged. |
 | `test_checkpoint_switches_source_and_honors_override` | 1 | Resume reads the walker checkpoint the file names (embedded or external) and checks it by hash, honors an explicit `walker_filename`, and a later embedded checkpoint supersedes an external one. |
 | `test_resume_without_raw_handles_diagonal_lead_in` | 1 | `run_from_HDF5(..., return_raw=False)` with diagonal operators returns the 4-tuple with finite estimates. |
-| `test_jackknife_truncates_tail_in_point_estimate_too` | 1 | Trailing steps that fill no block are dropped from the point estimate as well as from the errors, with a warning. |
 | `test_nonergodic_default_training_sampler_rejected_before_netket` | 2 | `train_with_netket` refuses the default exchange sampler for local spaces of more than two values, before importing NetKet. |
 | `test_autocorrelation_handles_both_signs` | 2 | The integrated autocorrelation time of an AR(1) series matches (1 + rho) / (2 (1 - rho)) for rho = +-0.8. |
 | `test_nested_incremental_state_tracks_configuration` | 3 | A guide state held in a nested pytree follows the configuration through every propagator. |
@@ -383,7 +374,7 @@ Sign-problem-free guards: a wrong-sign coupling must be REJECTED.
 | `test_spinhalf_rejects_positive_jpmpm_instead_of_swapping` | 1 | A wrong-sign J_pmpm raises, naming the S^x <-> S^y remedy, instead of being swapped silently. |
 | `test_spinhalf_field_sign_convention` | 1 | The `get_rates` matrix of `-(h_z S^z + h_x S^x)` equals the explicit 2x2 matrix and has ToricCode's field spectrum; h_x < 0 raises unless sign_check=False. |
 
-### `test_silence_and_gating.py` (8 cases)
+### `test_silence_and_gating.py` (7 cases)
 
 `verbosity=0` prints nothing, and the equal-window gating of `return_raw=False` (the suite's one home for it).
 
@@ -393,11 +384,10 @@ Sign-problem-free guards: a wrong-sign coupling must be REJECTED.
 | `test_verbosity_one_reports_positivity_and_statistics` | 1 | At `verbosity=1` the positivity report, the dedup notice and the statistics report appear, without a banner. |
 | `test_write_to_HDF5_prints_one_line_by_default` | 1 | The default is one line naming the group. |
 | `test_equal_windows_of_return_raw_false` | 2 | `return_raw=False` at strides 1 and 2 measures exactly the stride steps of the band every p can use, and leaves the main chain and the largest window untouched. |
-| `test_equal_windows_have_no_keyword` | 1 | The gating follows from `return_raw` alone (stored as `parameters/off_diag_equal_windows`); passing `off_diag_equal_windows` raises `TypeError`. |
 | `test_gated_chain_continues_gated` | 1 | A chain stored without raw series continues through `run_from_HDF5` with equal windows and appends. |
 | `test_equal_windows_is_a_must_match_parameter` | 1 | Flipping the gating on an existing file is refused. |
 
-### `test_statistics_contract.py` (9 cases)
+### `test_statistics_contract.py` (8 cases)
 
 The keys and invariants of `statistics()` and of the `stats` a run returns.
 
@@ -407,11 +397,10 @@ The keys and invariants of `statistics()` and of the `stats` a run returns.
 | `test_offspring_fractions_sum_to_one_and_define_survival` | 1 | `offspring_k0..k3` plus `offspring_k4plus` sum to 1; `survival_rate = 1 - offspring_k0`. |
 | `test_effective_sample_size_starts_at_N_and_never_grows_with_depth` | 1 | Kish ESS is N at m = 0, non-increasing in m, and never exceeds the surviving-ancestor count. |
 | `test_ancestor_correlation_is_one_at_depth_zero_and_decays_with_the_step` | 1 | `ancestor_correlation` is 1 at m = 0 and for a step too short for any hop, lies in [-1, 1], decays with m, and is gone after one step of ten hops. |
-| `test_cont_time_hops_per_step_is_escape_rate_times_step_size` | 1 | `hops_per_step_* = escape_rate_* * step_size`. |
 | `test_avg_log_weight_is_optional_and_only_a_numerical_shift` | 1 | Omitting `avg_log_weight` uses the walkers' own estimate bit-identically; a different shift moves every diagnostic only within float noise. |
 | `test_run_stats_carry_the_diagnostics_and_the_inputs` | 1 | A driver's stats hold the diagnostics, the inputs under `parameters/`, the autocorrelation times, and no duplicate keys. |
 
-### `test_structure_factor_operator.py` (31 cases)
+### `test_structure_factor_operator.py` (24 cases)
 
 StructureFactor vs an INDEPENDENT Kronecker construction.
 
@@ -423,7 +412,6 @@ StructureFactor vs an INDEPENDENT Kronecker construction.
 | `test_k_zero_reduces_to_the_plain_pair_sum` | 1 | At k=0 the weight is 2 on every pair, so J_pm = 2 (J_x = J_y = 4). |
 | `test_blocked_and_invalid_combinations` | 1 | YY, S.S, misspelled ZZ and mixed species raise with the route named. |
 | `test_input_validation` | 1 | The shape contract on positions and k is enforced. |
-| `test_sums_over_every_i_lt_j` | 1 | The operator has one slot per pair i<j, with r_i - r_j as the displacement. |
 | `test_periodic_image_does_not_matter_for_valid_k` | 1 | Shifting sites by periodic vectors leaves the operator unchanged for an allowed k, and changes it for a k off the grid. |
 | `test_is_valid_k` | 1 | k.L_j / 2 pi integer for every row; single k gives a bool, many an array. |
 | `test_incommensurate_k_is_accepted_without_complaint` | 1 | The constructor does NOT check k, by design (commensurability is the caller's job, `is_valid_k`); the weights are 1 + cos(k.dr) on every pair for any k. |
@@ -431,16 +419,10 @@ StructureFactor vs an INDEPENDENT Kronecker construction.
 | `test_szsz_channel_is_szsz_structure_factor_at_0_plus_k` | 2 | StructureFactor(channel="SzSz") == SzSzStructureFactor at q = 0 plus q = k, configuration by configuration, on random positions and on a triangular torus with valid k. |
 | `test_szsz_channel_matches_kronecker_reference` | 1 | The SzSz channel is sum_{i<j} (1 + cos)(Z_iZ_j + h.c.) = 2(1 + cos) Z_iZ_j. |
 | `test_channels_are_additive` | 1 | O("SpSm+SpSp") == O("SpSm") + O("SpSp") exactly; names are case/space-insensitive. |
-| `test_PM_PP_are_the_XX_and_YY_combinations` | 1 | PM + PP == 4 SxSx and PM - PP == 4 SySy, exactly. |
-| `test_szz_diag_matches_reference` | 1 | The direct ZZ(k) build is diagonal and matches the reference diagonal. |
-| `test_szz_diag_accepts_negative_weights_and_needs_no_shift` | 1 | No positivity constraint on the diagonal path, so the raw cos is usable. |
-| `test_szz_diag_textbook_transform_carries_a_FACTOR_2` | 1 | sum_{i!=j} e^{-iq.r_ij} Z_iZ_j == 2 * (pairs-once cos form): Z_iZ_j is i<->j symmetric. |
-| `test_szz_k0_is_pinned_by_sz_conservation` | 1 | S^zz(k=0) is constant inside a fixed-Sz sector; a nonzero k is not. |
 | `test_scalar_Jx_alongside_array_Jz_builds` | 1 | A scalar J_x next to a per-pair J_z array builds the diagonal operator with the explicit pair sum. |
 | `test_any_dimension` | 4 | Nothing is 3D-specific; the weight is a dot product. |
-| `test_dimension_mismatch_raises` | 1 | A d-mismatch between dr and k raises; a matching 2-D k is accepted. |
 
-### `test_user_defined_operators.py` (31 cases)
+### `test_user_defined_operators.py` (27 cases)
 
 The paper's user-defined operator classes, verified against PyGFMC.
 
@@ -448,18 +430,14 @@ The paper's user-defined operator classes, verified against PyGFMC.
 |---|---|---|
 | `test_nbody_get_rates_rebuilds_the_matrix` | 1 | H[y,x] from get_rates must equal the Kronecker construction. |
 | `test_nbody_return_configs_agrees_with_generate_state` | 1 | The materialized tensor and the on-the-fly path must not disagree. |
-| `test_nbody_diagonal_weight_matches_get_rates` | 1 | diagonal_weight equals get_rates' diagonal slot. |
 | `test_nbody_gfmc_matches_exact_diagonalization` | 1 | A 1024-walker, 600-step run with the user-defined Hamiltonian reaches the ED energy within 0.02/site. |
 | `test_structure_factor_diagonal_weight_is_exact` | 1 | The appendix structure factor equals an explicit pair sum. |
-| `test_structure_factor_runs_as_diag_operator` | 1 | It needs no pytree registration: diag_operators are closed over, not traced. |
 | `test_protocol_hamiltonian_exact_diagonalization` | 1 | exact_diagonalization needs nothing beyond the protocol. |
 | `test_protocol_hamiltonian_observables` | 1 | Diagonal and off-diagonal observables on a protocol-only Hamiltonian. |
 | `test_protocol_hamiltonian_exact_guide` | 1 | ExactGroundState on a protocol-only Hamiltonian needs local_hilbert_space, then is exact. |
 | `test_protocol_hamiltonian_exact_guide_round_trips` | 1 | The generic index map survives HDF5 and pytree round-trips. |
 | `test_generic_index_agrees_with_the_per_class_map` | 1 | Default and reversed local orderings give the same amplitude per configuration. |
 | `test_custom_guide_routines_agree` | 1 | The three guide routines must return the same ratios. |
-| `test_custom_guide_log_psi_takes_single_and_batch` | 1 | The protocol requires log_psi to accept (N,) and (n, N). |
-| `test_custom_guide_is_a_pytree_with_beta_as_its_parameter` | 1 | beta must be a child, not aux data, or JAX cannot trace it. |
 | `test_custom_guide_at_beta_zero_reduces_to_no_guide` | 1 | beta = 0 draws the same moves as no guide; e_L agrees to float32 rounding. |
 | `test_custom_guide_gfmc_reaches_the_exact_ground_state` | 1 | GFMC is unbiased whatever the guide; the tolerance covers the MC error. |
 | `test_structure_factor_multi_k_matches_the_appendix_pair_sum` | 2 | Same numbers as the pair sum at every allowed k, in both image conventions. |

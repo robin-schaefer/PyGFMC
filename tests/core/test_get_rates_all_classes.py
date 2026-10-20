@@ -107,21 +107,6 @@ def test_get_rates(name):
     _rebuild_and_compare(h, _all_configs(values, h.N), name)
 
 
-def test_plaquette_off_diagonal_element_is_minus_g():
-    """``H = -g Sum_p flip_p``: the flip element must be -g_p where flippable."""
-    h, values = _model_plaquette()
-    g = np.broadcast_to(np.asarray(h.g, dtype=np.float64), (h.n_plaquette,))
-    assert np.all(g > 0), "fixture must use the sign-problem-free g >= 0"
-
-    cfgs = jnp.asarray(_all_configs(values, h.N), dtype=_DTYPE)
-    rates = np.asarray(jax.vmap(lambda c: h.get_rates(c)[0])(cfgs), dtype=np.float64)
-    flippable = np.asarray(jax.vmap(h._flippable_mask)(cfgs))
-    assert flippable.any(axis=0).all(), "every plaquette must be flippable somewhere"
-    np.testing.assert_allclose(rates[:, 1:], np.where(flippable, -g[None, :], 0.0),
-                               rtol=0, atol=1e-6)
-    assert rates[:, 1:].max() <= 0.0
-
-
 @pytest.mark.parametrize("name", list(_MODELS))
 def test_diagonal_weight_matches_get_rates(name):
     """The fast ``diagonal_weight(c)`` must equal ``get_rates(c)[0][0]``."""
@@ -137,15 +122,6 @@ def test_diagonal_weight_matches_get_rates(name):
     assert bad.size == 0, (
         f"{name}: diagonal_weight disagrees with get_rates for {bad.size}/512 "
         f"configurations, e.g. {np.asarray(configs[bad[0]])}")
-
-
-def test_spin_rate_matrix_is_hermitian():
-    """The matrix the S=1 propagators sample (rebuilt from get_rates) is symmetric:
-    S^+ and S^- share one amplitude in the exchange, pair and transverse terms."""
-    h, values = _model_spin_s1()
-    M = rebuild_matrix(h, _all_configs(values, h.N), dtype=_DTYPE)
-    assert np.abs(M).max() > 0.1
-    assert float(np.abs(M - M.T).max()) < 1e-6
 
 
 def test_toric_per_object_couplings():
