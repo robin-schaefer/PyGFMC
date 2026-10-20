@@ -192,6 +192,8 @@ def _bh_static(h, edges):
     PyGFMC convention (pygfmc/hamiltonian/bose_hubbard.py):
         H = -t Sum (b+_i b_j + h.c.) - eta Sum (b+_i b+_j + h.c.)
             + (U/2) Sum n_i(n_i-1) - mu Sum n_i + h_pm Sum (b+_i + b_i)
+    in terms of the STORED field ``h.h_pm``, the negated create() argument
+    (H contains ``-h_pm Sum (b+_i + b_i)``).
     QuSpin "+-" coupling g -> g * b+_i b_j; "n" coupling g -> g * n_i;
     "nn" coupling g -> g * n_i n_j (i==j gives n_i^2, NOT n_i(n_i-1)).
     """

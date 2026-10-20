@@ -9,8 +9,10 @@ TeNPy models take the same coupling names as the matching PyGFMC class's
     enter H with a minus sign, as in ``SpinHalf.create``), i.e. TeNPy's
     SpinHalfSite Sx/Sy/Sz.
   - Spin (general S): (J_z, J_pm, J_pmpm, h_z, h_pm) map onto SpinSite's
-    Sz/Sp/Sm.
+    Sz/Sp/Sm, with the fields entering as -h_z Sz and -h_pm (Sp + Sm), as in
+    ``Spin.create``.
   - BoseHubbard: (t, eta, U, mu, h_pm) map onto BosonSite's B/Bd/N, with the
+    field entering as -h_pm (B + Bd), as in ``BoseHubbard.create``, and the
     U term built as 0.5*U*(NN - N) since TeNPy's 'NN' is N^2.
 
 TeNPy's stock BoseHubbardModel has no pairing (eta) term, so all three
@@ -90,8 +92,8 @@ def _make_spin_ladder_model():
             Jz    = model_params.get("J_z", 0.0)
             Jpm   = model_params.get("J_pm", 0.0)
             Jpmpm = model_params.get("J_pmpm", 0.0)
-            hz    = model_params.get("h_z", 0.0)
-            hp = hm = model_params.get("h_pm", 0.0)   # one amplitude for S+ and S-
+            hz    = -model_params.get("h_z", 0.0)    # H contains -h_z Sum Sz
+            hp = hm = -model_params.get("h_pm", 0.0)  # and -h_pm Sum (S+ + S-)
 
             for u1, u2, dx in _ladder_pairs(self.lat):
                 if Jz:
@@ -133,7 +135,7 @@ def _make_bose_hubbard_ladder_model():
             eta = model_params.get("eta", 0.0)
             U   = model_params.get("U", 0.0)
             mu  = model_params.get("mu", 0.0)
-            hp = hm = model_params.get("h_pm", 0.0)   # one amplitude for b+ and b
+            hp = hm = -model_params.get("h_pm", 0.0)  # H contains -h_pm Sum (b+ + b)
 
             for u1, u2, dx in _ladder_pairs(self.lat):
                 if t:

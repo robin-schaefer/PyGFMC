@@ -43,7 +43,8 @@ def _spinhalf_matrix(h):
     # SpinHalf STORES its fields as the coefficients of +Sum S^z and
     # +Sum (S^+ + S^-), i.e. h.h_z = -h_z and h.h_x_half = -h_x/2 of the
     # create() arguments (H contains -Sum (h_z S^z + h_x S^x)); the public
-    # sign is checked separately in test_sign_problem_free.py.
+    # sign is checked separately in test_sign_problem_free.py.  Spin and
+    # BoseHubbard store their fields negated in the same way.
     if h.h_z is not None and np.linalg.norm(np.asarray(h.h_z)) > 0:
         for i, hz in enumerate(np.broadcast_to(np.asarray(h.h_z), (L,))):
             H += float(hz) * Z[i]

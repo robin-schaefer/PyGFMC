@@ -33,7 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 L = 12
 lattice = chain(L)
 h_c = 1.326
-H = Spin.create(lattice.edges, S=1.0, J_z=-1.0, h_pm=-h_c / 2)
+H = Spin.create(lattice.edges, S=1.0, J_z=-1.0, h_pm=h_c / 2)
 walkers = prepare_walkers_random(1024, L, jax.random.PRNGKey(0), states=(-1.0, 0.0, 1.0))
 guide = JastrowSpin(L, lattice.edges, beta=-0.1, d=0.0)
 sampler = nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, L))

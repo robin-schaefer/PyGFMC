@@ -213,10 +213,10 @@ def _spinhalf():
 
 def _spin1():
     e = chain(8).edges
-    H = Spin.create(e, S=1.0, J_z=1.0, J_pm=-0.5, J_pmpm=-0.1, h_z=0.1, h_pm=-0.2, dtype=F64)
+    H = Spin.create(e, S=1.0, J_z=1.0, J_pm=-0.5, J_pmpm=-0.1, h_z=-0.1, h_pm=0.2, dtype=F64)
     diag = {"zz": Spin.create(e, S=1.0, J_z=1.0, dtype=F64)}
     off = {"pm": Spin.create(e, S=1.0, J_pm=0.5, sign_check=False, dtype=F64),
-           "hpm": Spin.create(e, S=1.0, h_pm=0.2, sign_check=False, dtype=F64)}
+           "hpm": Spin.create(e, S=1.0, h_pm=-0.2, sign_check=False, dtype=F64)}
     guides = {"none": lambda: None,
               "jastrow": lambda: JastrowSpin(8, e, beta=0.2, h=0.05, d=0.1, dtype=F64),
               "exact": lambda: _exact_guide(H)}
@@ -226,7 +226,7 @@ def _spin1():
 
 def _bose():
     e = chain(6).edges
-    H = BoseHubbard.create(e, t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=-0.2, n_max=2, dtype=F64)
+    H = BoseHubbard.create(e, t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=0.2, n_max=2, dtype=F64)
     diag = {"nn": BoseHubbard.create(e, U=2.0, n_max=2, dtype=F64)}
     off = {"hop": BoseHubbard.create(e, t=-1.0, n_max=2, sign_check=False, dtype=F64),
            "pair": BoseHubbard.create(e, eta=-0.3, n_max=2, sign_check=False, dtype=F64)}

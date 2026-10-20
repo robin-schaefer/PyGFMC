@@ -121,12 +121,12 @@ print(E[0], off["Sx"][0])     # -4.2545411175...  3.7344172909...
 | Class | Hamiltonian | Parameters | SPF condition (checked by `create`) | `M_total` |
 |---|---|---|---|---|
 | `SpinHalf` | `Σ_<ij> (J_x SˣSˣ + J_y SʸSʸ + J_z SᶻSᶻ) − Σ_i (h_z Sᶻ + h_x Sˣ)` | `edges, J_x, J_y, J_z, h_z, h_x, N` | `J_pm = (J_x+J_y)/4 ≤ 0`, `J_pmpm = (J_x−J_y)/4 ≤ 0`, `h_x ≥ 0` | `1 + [N if h_x≠0] + [n_edges if J_pm or J_pmpm ≠ 0]` |
-| `Spin` (any S) | `Σ_<ij> [J_z SᶻSᶻ + J_pm (S⁺S⁻+S⁻S⁺) + J_pmpm (S⁺S⁺+S⁻S⁻)] + Σ_i [h_z Sᶻ + h_pm (S⁺+S⁻)]` | `edges, S, J_z, J_pm, J_pmpm, h_z, h_pm, N` | `J_pm ≤ 0`, `J_pmpm ≤ 0`, `h_pm ≤ 0` | `1 + 2n_edges·[J_pm≠0] + 2n_edges·[J_pmpm≠0] + 2N·[h_pm≠0]` |
-| `BoseHubbard` | `−t Σ (b†b + h.c.) − η Σ (b†b† + bb) + U/2 Σ n(n−1) − μ Σ n + h_pm Σ (b† + b)` | `edges, t, eta, U, mu, h_pm, N, n_max` | `t ≥ 0`, `η ≥ 0`, `h_pm ≤ 0` | `1 + 2n_edges·[t≠0] + 2n_edges·[η≠0] + 2N·[h_pm≠0]` |
+| `Spin` (any S) | `Σ_<ij> [J_z SᶻSᶻ + J_pm (S⁺S⁻+S⁻S⁺) + J_pmpm (S⁺S⁺+S⁻S⁻)] − Σ_i [h_z Sᶻ + h_pm (S⁺+S⁻)]` | `edges, S, J_z, J_pm, J_pmpm, h_z, h_pm, N` | `J_pm ≤ 0`, `J_pmpm ≤ 0`, `h_pm ≥ 0` | `1 + 2n_edges·[J_pm≠0] + 2n_edges·[J_pmpm≠0] + 2N·[h_pm≠0]` |
+| `BoseHubbard` | `−t Σ (b†b + h.c.) − η Σ (b†b† + bb) + U/2 Σ n(n−1) − μ Σ n − h_pm Σ (b† + b)` | `edges, t, eta, U, mu, h_pm, N, n_max` | `t ≥ 0`, `η ≥ 0`, `h_pm ≥ 0` | `1 + 2n_edges·[t≠0] + 2n_edges·[η≠0] + 2N·[h_pm≠0]` |
 | `PlaquetteModel` | `−g Σ_p flip_p + mu Σ_p \|flippable_p⟩⟨flippable_p\|` | `plaquettes, g, mu` | `g ≥ 0` (a measurement operator needs `g ≤ 0`) | `1 + N_plaquette` |
 | `ToricCode` | `−A_s Σ_v Π σˣ − B_p Σ_p Π σᶻ − h_z Σ σᶻ − h_x Σ σˣ` | `Lx, Ly, A_s, B_p, h_z, h_x` | `A_s ≥ 0`, `h_x ≥ 0` (elementwise) | `1 + Lx·Ly·[A_s≠0] + N·[h_x≠0]` |
 
-The same spin-1/2 Hamiltonian is a `SpinHalf` or a `Spin(S=0.5)` with `Spin.J_z = SpinHalf.J_z`, `Spin.J_pm = (J_x+J_y)/4`, `Spin.J_pmpm = (J_x−J_y)/4`, `Spin.h_z = −SpinHalf.h_z`, `Spin.h_pm = −h_x/2` (the fields enter `SpinHalf` with a minus sign, and `h_pm (S⁺+S⁻) = 2 h_pm Sˣ`); configurations are `σ = ±1` for `SpinHalf` and `m = σ/2` for `Spin`. The rate layouts differ: `Spin` has two edge slots per edge (`S⁺S⁻` and `S⁻S⁺`, likewise for `J_pmpm`) and two site slots per site where `SpinHalf` has one, so `M_total` differs, while the diagonal and the per-edge / per-site sums of the off-diagonal rates agree.
+The same spin-1/2 Hamiltonian is a `SpinHalf` or a `Spin(S=0.5)` built from `Spin.create(..., J_z=J_z, J_pm=(J_x+J_y)/4, J_pmpm=(J_x−J_y)/4, h_z=h_z, h_pm=h_x/2)` (all fields enter with a minus sign, and `h_pm (S⁺+S⁻) = 2 h_pm Sˣ`); configurations are `σ = ±1` for `SpinHalf` and `m = σ/2` for `Spin`. The rate layouts differ: `Spin` has two edge slots per edge (`S⁺S⁻` and `S⁻S⁺`, likewise for `J_pmpm`) and two site slots per site where `SpinHalf` has one, so `M_total` differs, while the diagonal and the per-edge / per-site sums of the off-diagonal rates agree.
 
 `_common.py` holds what the classes share: `edges_array(edges)` validates an
 edge list and infers the site count, and `two_site_update(config, state_idx,
@@ -218,7 +218,7 @@ layout (blocks present only when their coupling is nonzero): `J_pm` forward
 Forbidden moves at `m = ±S` carry zero rate; their successor configurations lie
 outside the physical basis and are never sampled.
 
-- `Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, dtype=jnp.float32, sign_check=True)` — build the model. `h_pm` is one amplitude multiplying both `S⁺` and `S⁻` (keeps H Hermitian).
+- `Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, dtype=jnp.float32, sign_check=True)` — build the model. The fields enter as `−h_z Σ Sᶻ − h_pm Σ (S⁺+S⁻)`, as in `SpinHalf`; `create` stores their negatives (attributes `h_z`, `h_pm`). `h_pm` is one amplitude multiplying both `S⁺` and `S⁻` (keeps H Hermitian).
 - `diagonal_weight`, `get_rates`, `generate_state` — protocol.
 - `edges`, `n_edges`, `n_off`, `M_total`, `d` (= 2S+1) — derived sizes.
 - `local_hilbert_space` — `(−S, ..., S)`.
@@ -233,7 +233,7 @@ rate `−t√(n_i(n_j+1))` etc.), pair creation / annihilation (n_edges each), t
 `b†_i` and `b_i` (N each, amplitude `h_pm`). Moves beyond `n_max` or below 0
 have rate 0.
 
-- `BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, dtype=jnp.float32, sign_check=True)` — build the model. A nonzero `h_pm` always contributes both the `b†` and the `b` block.
+- `BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, dtype=jnp.float32, sign_check=True)` — build the model. The field enters as `−h_pm Σ (b† + b)` and is stored negated (attribute `h_pm`). A nonzero `h_pm` always contributes both the `b†` and the `b` block.
 - `diagonal_weight` (`U/2 Σ n(n−1) − μ Σ n`), `get_rates`, `generate_state` — protocol.
 - `edges`, `n_edges`, `n_off`, `M_total` — derived sizes.
 - `local_hilbert_space` — `(0, ..., n_max)`.
@@ -261,7 +261,7 @@ one star move per vertex (`−A_s`), then single-site `σˣ` flips (`−h_x`); t
 off-diagonal rates are configuration-independent. Star moves conserve every
 `B_p`, so start walkers in the intended plaquette sector (e.g. all `+1`).
 
-- `ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, dtype=jnp.float32, sign_check=True)` — `A_s`, `B_p` scalar or `(Lx·Ly,)`; `h_z`, `h_x` scalar or `(N,)`.
+- `ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_x=0.0, h_z=0.0, dtype=jnp.float32, sign_check=True)` — `A_s`, `B_p` scalar or `(Lx·Ly,)`; `h_z`, `h_x` scalar or `(N,)`.
 - `diagonal_weight`, `get_rates`, `generate_state` — protocol; `n_off`, `M_total`.
 - `local_hilbert_space` — `(1.0, -1.0)`, as `SpinHalf`.
 

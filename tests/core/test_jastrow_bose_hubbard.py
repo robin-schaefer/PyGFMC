@@ -26,8 +26,8 @@ RNG = np.random.default_rng(3)
 MODELS = {
     "hopping": dict(t=1.0, U=2.0, n_max=2),
     "hopping+pairs": dict(t=1.0, eta=0.25, U=4.0, mu=1.0, n_max=3),
-    "pairs+h_pm": dict(eta=0.3, h_pm=-0.2, U=1.0, n_max=3, N=L),
-    "all": dict(t=1.0, eta=0.2, h_pm=-0.1, U=3.0, mu=0.5, n_max=2, N=L),
+    "pairs+h_pm": dict(eta=0.3, h_pm=0.2, U=1.0, n_max=3, N=L),
+    "all": dict(t=1.0, eta=0.2, h_pm=0.1, U=3.0, mu=0.5, n_max=2, N=L),
 }
 
 FORMS = {

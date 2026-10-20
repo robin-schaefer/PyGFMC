@@ -81,7 +81,7 @@ def test_resume_without_raw_handles_diagonal_lead_in(tmp_path):
     assert np.isfinite(resumed[1][2])
 
 
-@pytest.mark.parametrize("h", [Spin.create([], N=2, S=1, h_pm=-1),
+@pytest.mark.parametrize("h", [Spin.create([], N=2, S=1, h_pm=1),
                                BoseHubbard.create([(0, 1)], n_max=2)])
 def test_nonergodic_default_training_sampler_rejected_before_netket(h):
     with pytest.raises(ValueError, match="explicit ergodic sampler"):
@@ -118,7 +118,7 @@ jax.tree_util.register_pytree_node(NestedGuide, lambda x: ((), None),
 
 @pytest.mark.parametrize("method", ["single_step", "multi_step", "cont_time"])
 def test_nested_incremental_state_tracks_configuration(method):
-    h = Spin.create([], N=1, S=1, h_pm=-0.5)
+    h = Spin.create([], N=1, S=1, h_pm=0.5)
     guide = NestedGuide()
     w = walkers(8, 1)
     state = jax.vmap(lambda x: guide.init_state(x, None))(w.config)

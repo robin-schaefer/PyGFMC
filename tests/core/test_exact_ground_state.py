@@ -25,10 +25,10 @@ _MODELS = {
     "spinhalf": (lambda: SpinHalf.create(chain(4).edges, -1.0, -1.0, 1.0, h_x=0.3),
                  (-1.0, 1.0)),
     "spin_S1": (lambda: Spin.create(chain(3).edges, S=1.0, J_pm=-1.0, J_z=1.0,
-                                    h_pm=-0.2),
+                                    h_pm=0.2),
                 (-1.0, 0.0, 1.0)),
     "bose_hubbard": (lambda: BoseHubbard.create(chain(3).edges, t=1.0, U=2.0, mu=0.5,
-                                                h_pm=-0.1, eta=0.2, n_max=2),
+                                                h_pm=0.1, eta=0.2, n_max=2),
                      (0.0, 1.0, 2.0)),
     "toric": (lambda: ToricCode.create(2, 2, A_s=1.0, B_p=0.5), (-1.0, 1.0)),
 }

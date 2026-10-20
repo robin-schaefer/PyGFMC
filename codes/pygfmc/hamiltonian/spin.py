@@ -3,14 +3,18 @@
     H = J_z    Σ_<ij> Sz_i Sz_j
       + J_pm   Σ_<ij> (S+_i S-_j + S-_i S+_j)
       + J_pmpm Σ_<ij> (S+_i S+_j + S-_i S-_j)
-      + h_z    Σ_i Sz_i
-      + h_pm   Σ_i (S+_i + S-_i)          (= 2 h_pm Σ_i Sx_i)
+      - h_z    Σ_i Sz_i
+      - h_pm   Σ_i (S+_i + S-_i)          (= -2 h_pm Σ_i Sx_i)
+
+The fields enter with a minus sign, as in SpinHalf and ToricCode; ``create``
+stores their negatives (``self.h_z = -h_z``, ``self.h_pm = -h_pm``), so the
+rate code below works with ``+ stored value``.
 
 Configurations hold the magnetic quantum numbers ``config[i] ∈ {-S, -S+1, …, S}``,
 stored as floats.  ``S`` is the spin per site (integer or half-integer,
 e.g. 0.5, 1, 1.5, 2); ``2S`` must be a non-negative integer.
 
-Sign-problem-free convention: ``J_pm ≤ 0``, ``J_pmpm ≤ 0``, ``h_pm ≤ 0``;
+Sign-problem-free convention: ``J_pm ≤ 0``, ``J_pmpm ≤ 0``, ``h_pm ≥ 0``;
 ``J_z`` and ``h_z`` have no sign restriction.
 
 Off-diagonal layout (each block dropped if its coupling is zero)
@@ -129,10 +133,11 @@ class Spin(NamedTuple):
             J_z:       scalar or (n_edges,) Sz Sz coupling.       Any sign (diagonal).
             J_pm:      scalar or (n_edges,) S+S- + h.c. coupling. ≤ 0 (SPF).
             J_pmpm:    scalar or (n_edges,) S+S+ + h.c. coupling. ≤ 0 (SPF).
-            h_z:       scalar, (N,), or None. Any sign (diagonal).
-            h_pm:      scalar, (N,), or None. ≤ 0 (SPF).  ONE amplitude
+            h_z:       scalar, (N,), or None. Any sign (diagonal); enters
+                       H as -h_z * sum_i S^z_i.
+            h_pm:      scalar, (N,), or None. ≥ 0 (SPF).  ONE amplitude
                        multiplying both S^+ and S^-, i.e. the transverse
-                       field h_pm * sum_i (S^+_i + S^-_i) = 2 h_pm * sum_i
+                       field -h_pm * sum_i (S^+_i + S^-_i) = -2 h_pm * sum_i
                        S^x_i.  A single shared amplitude keeps H Hermitian.
             N:         number of sites.  Inferred from ``edges`` and any
                        per-site array when None; give it explicitly for an
@@ -145,6 +150,9 @@ class Spin(NamedTuple):
         if abs(round(twoS) - twoS) > 1e-9 or twoS < 0:
             raise ValueError(f"S must be a non-negative half-integer; got {S}")
         S = float(S)
+        # the fields enter H with a minus sign; store their negatives
+        h_z = None if h_z is None else -np.asarray(h_z) if isinstance(h_z, (list, tuple)) else -h_z
+        h_pm = None if h_pm is None else -np.asarray(h_pm) if isinstance(h_pm, (list, tuple)) else -h_pm
 
         edges_arr, n_edges, N_min = edges_array(edges)
 
@@ -199,7 +207,7 @@ class Spin(NamedTuple):
             if jnp.any(Jpmpm_a > 0):
                 raise ValueError("J_pmpm must be ≤ 0 (sign-problem-free convention).")
             if hpm_a is not None and jnp.any(hpm_a > 0):
-                raise ValueError("h_pm must be ≤ 0 (sign-problem-free convention).")
+                raise ValueError("h_pm must be ≥ 0 (sign-problem-free convention).")
             # No Hermiticity check is needed: S^+ and S^- share the single
             # amplitude h_pm by construction, so h_pm (S^+ + S^-) is
             # Hermitian for real h_pm.

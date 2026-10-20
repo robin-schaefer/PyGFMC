@@ -12,7 +12,7 @@
         "n2_tot",
         "n_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 4.0,
@@ -42,7 +42,7 @@
         "n_tot",
         "pair_bond"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 2.0,
@@ -70,7 +70,7 @@
         "n2_tot",
         "n_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 4.0,
@@ -98,7 +98,7 @@
         "n2_tot",
         "n_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 2.0,
@@ -126,7 +126,7 @@
         "n2_tot",
         "n_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 4.0,
@@ -154,7 +154,7 @@
         "n2_tot",
         "n_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "U": 2.0,
@@ -181,7 +181,7 @@
       "measured_observables": [
         "flippable_frac"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "g": 1.0,
@@ -206,7 +206,7 @@
         "flippable_frac",
         "ring_flip_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "g": 1.0,
@@ -230,21 +230,21 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_pmpm": -0.5,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -0.5,
-        "h_z": -4.0
+        "h_pm": 0.5,
+        "h_z": 4.0
       },
       "phase": "field_polarized",
       "reference_bond": "first edge",
       "sector": "see_initial_charge"
     },
-    "sha256": "8a9d2f3951e748fbfe9a490d2b1142d6882176e7b3818666e732864766d0d84a"
+    "sha256": "711278a46294723f98779d73827b44ac7ee978b79920521a87ef03fc9562fa94"
   },
   "spin_graphN4_fm_sign_isotropic": {
     "contract": {
@@ -260,7 +260,7 @@
         "pm_tot",
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
@@ -285,19 +285,19 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -2.0
+        "h_pm": 2.0
       },
       "phase": "transverse_coverage",
       "reference_bond": "first edge",
       "sector": "see_initial_charge"
     },
-    "sha256": "61417126c218dc1fe703fcc7d54198925caca9ff087b948bf1b11bc70261e91a"
+    "sha256": "e31d90b22b4d36c038d42cb1c39aedc7ac6a66a7152d940b9045bc35a1c36255"
   },
   "spin_graphN9_field_polarized": {
     "contract": {
@@ -311,21 +311,21 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_pmpm": -0.5,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -0.5,
-        "h_z": -4.0
+        "h_pm": 0.5,
+        "h_z": 4.0
       },
       "phase": "field_polarized",
       "reference_bond": "first edge",
       "sector": "see_initial_charge"
     },
-    "sha256": "f341a0e75665805e77e3010b42f20f35ecaf6a31da922dba8df9f67fd62e2520"
+    "sha256": "aea18724211170e6aa74f1e27d0011aa2235cb7d3212468874c1ac43a782467f"
   },
   "spin_graphN9_fm_sign_isotropic": {
     "contract": {
@@ -339,7 +339,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
@@ -364,19 +364,19 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -2.0
+        "h_pm": 2.0
       },
       "phase": "transverse_coverage",
       "reference_bond": "first edge",
       "sector": "see_initial_charge"
     },
-    "sha256": "49dbcfb59fa94cc3844c8d58121149c62e1c4c666333a3ec42c09b319d26f70b"
+    "sha256": "a7fabd3d19d9d35e318db4c43a46d562d6bff8783c6c577d241c39dbd046f610"
   },
   "spin_ladderL50_field_polarized": {
     "contract": {
@@ -390,21 +390,21 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_pmpm": -0.5,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -0.5,
-        "h_z": -4.0
+        "h_pm": 0.5,
+        "h_z": 4.0
       },
       "phase": "field_polarized",
       "reference_bond": "middle rung",
       "sector": "see_initial_charge"
     },
-    "sha256": "c69243a5a267065724505e2ec9a14dcaa04ddab2fa644462fa5abbec2c2b8de8"
+    "sha256": "2eaf1091f040c0996b249442dc296572612ba804a12cd8f4b984880c5fcd94c8"
   },
   "spin_ladderL50_fm_sign_isotropic": {
     "contract": {
@@ -418,7 +418,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
@@ -443,19 +443,19 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_pm": -1.0,
         "J_z": 1.0,
         "S": 1.0,
-        "h_pm": -2.0
+        "h_pm": 2.0
       },
       "phase": "transverse_coverage",
       "reference_bond": "middle rung",
       "sector": "see_initial_charge"
     },
-    "sha256": "667e28287762c2021c93b815ea7757f91746d9231dafd62fa16bbdeeb450da07"
+    "sha256": "321bc3bd0b691686866c405c0ab3df5c0b4be2d64330657fd2c7daf3f54cbd18"
   },
   "spinhalf_graphN13_field_polarized": {
     "contract": {
@@ -469,7 +469,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -495,7 +495,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": -1.0,
@@ -520,7 +520,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -546,7 +546,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -572,7 +572,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": -1.0,
@@ -599,7 +599,7 @@
         "x_tot",
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -625,7 +625,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -651,7 +651,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": -1.0,
@@ -676,7 +676,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -702,7 +702,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -728,7 +728,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": -1.0,
@@ -753,7 +753,7 @@
       "measured_observables": [
         "z_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "J_x": 0.0,
@@ -780,7 +780,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -811,7 +811,7 @@
         "Bp_avg",
         "x_tot"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -840,7 +840,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -869,7 +869,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -898,7 +898,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -927,7 +927,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -956,7 +956,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -985,7 +985,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -1014,7 +1014,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -1043,7 +1043,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -1072,7 +1072,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,
@@ -1101,7 +1101,7 @@
       "measured_observables": [
         "Bp_avg"
       ],
-      "measurement_protocol_sha256": "4d096136db1be4bc8f1df424e270f851e26e2d8675b4cfd8b29c30222ad10901",
+      "measurement_protocol_sha256": "cfd6446fa7ac490b8bd5ecffc00f919cc65c28aac9b51d3853dd66912204abe2",
       "normalization": "E0=total; *_tot=total; *_avg/*_frac=average; SpinHalf z_tot=sum(Sz), x_tot=sum(PauliX); ToricCode=Pauli; ring_flip=positive stoquastic",
       "params": {
         "A_s": 1.0,

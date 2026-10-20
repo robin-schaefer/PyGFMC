@@ -89,12 +89,12 @@ def _lam_plaquette(max_flippable, mu, margin=MARGIN):
 SPIN_PHASES = [
     ("fm_sign_isotropic",  dict(S=1.0, J_z=1.0, J_pm=-1.0)),
     # J_pmpm changes Sz_tot by +-2 but conserves its parity, and at L=50 the
-    # two parity sectors are degenerate far below any tolerance.  h_pm = -0.5
-    # (negative for sign-problem freedom) breaks the parity and makes the
-    # ground state unique.
-    ("field_polarized",    dict(S=1.0, J_z=1.0, J_pm=-1.0, J_pmpm=-0.5, h_z=-4.0,
-                                h_pm=-0.5)),
-    ("transverse_coverage", dict(S=1.0, J_z=1.0, J_pm=-1.0, h_pm=-2.0)),
+    # two parity sectors are degenerate far below any tolerance.  h_pm = 0.5
+    # (positive for sign-problem freedom; the field enters H as -h_pm) breaks
+    # the parity and makes the ground state unique.
+    ("field_polarized",    dict(S=1.0, J_z=1.0, J_pm=-1.0, J_pmpm=-0.5, h_z=4.0,
+                                h_pm=0.5)),
+    ("transverse_coverage", dict(S=1.0, J_z=1.0, J_pm=-1.0, h_pm=2.0)),
 ]
 
 SPINHALF_PHASES = [

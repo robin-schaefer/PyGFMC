@@ -67,20 +67,6 @@ def _jpm_message(value):
     )
 
 
-def _negate_field(v):
-    """Return ``-v`` for a scalar, list/tuple or array field (None stays None).
-
-    Negation is exact in floating point, so negating here and storing keeps
-    every rate bit-identical to passing the negated value to a
-    ``+Σ``-convention constructor.
-    """
-    if v is None:
-        return None
-    if isinstance(v, (list, tuple)):
-        return [-x for x in v]
-    return -v
-
-
 class SpinHalf(NamedTuple):
     """Spin-1/2 XYZ model with longitudinal and transverse fields.
 
@@ -189,8 +175,8 @@ class SpinHalf(NamedTuple):
         # bit-identical to a +Σ-convention model with negated fields).  The
         # h_x sign check below therefore tests the NEGATED value for > 0,
         # i.e. the public h_x for < 0.
-        h_z = _negate_field(h_z)
-        h_x = _negate_field(h_x)
+        h_z = None if h_z is None else -np.asarray(h_z) if isinstance(h_z, (list, tuple)) else -h_z
+        h_x = None if h_x is None else -np.asarray(h_x) if isinstance(h_x, (list, tuple)) else -h_x
 
         edges_arr, _, N_min = edges_array(edges)
         # site-only operators: take the size from a per-site array too

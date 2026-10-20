@@ -43,19 +43,19 @@ PyGFMC includes five Hamiltonian classes that can be initialized with :code:`.cr
       - :code:`SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None, N=None, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.Spin`
       - Spin-:math:`S` model
-      - :math:`H = \sum_{\langle ij\rangle} \left[ J_{z,ij} S^z_i S^z_j + J_{\pm,ij} \left( S^+_i S^-_j + S^-_i S^+_j \right) + J_{\pm\pm,ij} \left( S^+_i S^+_j + S^-_i S^-_j \right) \right] + \sum_i \left[ h_{z,i} S^z_i + h_{\pm,i} \left( S^+_i + S^-_i \right) \right]`
-      - :math:`J_{\pm} \le 0`, :math:`J_{\pm\pm} \le 0`, :math:`h_{\pm} \le 0`
+      - :math:`H = \sum_{\langle ij\rangle} \left[ J_{z,ij} S^z_i S^z_j + J_{\pm,ij} \left( S^+_i S^-_j + S^-_i S^+_j \right) + J_{\pm\pm,ij} \left( S^+_i S^+_j + S^-_i S^-_j \right) \right] - \sum_i \left[ h_{z,i} S^z_i + h_{\pm,i} \left( S^+_i + S^-_i \right) \right]`
+      - :math:`J_{\pm} \le 0`, :math:`J_{\pm\pm} \le 0`, :math:`h_{\pm} \ge 0`
       - :code:`Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.BoseHubbard`
       - Bose-Hubbard model, occupations :math:`0,\dots,n_\mathrm{max}`
-      - :math:`H = -\sum_{\langle ij\rangle} \left[ t_{ij} \left( b^\dagger_i b_j + \mathrm{h.c.} \right) + \eta_{ij} \left( b^\dagger_i b^\dagger_j + \mathrm{h.c.} \right) \right] + \sum_i \left[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i n_i + h_{\pm,i} \left( b^\dagger_i + b_i \right) \right]`
-      - :math:`t \ge 0`, :math:`\eta \ge 0`, :math:`h_{\pm} \le 0`
+      - :math:`H = -\sum_{\langle ij\rangle} \left[ t_{ij} \left( b^\dagger_i b_j + \mathrm{h.c.} \right) + \eta_{ij} \left( b^\dagger_i b^\dagger_j + \mathrm{h.c.} \right) \right] + \sum_i \left[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i n_i - h_{\pm,i} \left( b^\dagger_i + b_i \right) \right]`
+      - :math:`t \ge 0`, :math:`\eta \ge 0`, :math:`h_{\pm} \ge 0`
       - :code:`BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.ToricCode`
       - Toric code on an :math:`L_x \times L_y` torus
       - :math:`H = -\sum_v A_s^{(v)} \prod_{i \in \star(v)} \sigma^x_i - \sum_p B_p^{(p)} \prod_{i \in \Box(p)} \sigma^z_i - \sum_i h_{z,i} \sigma^z_i - \sum_i h_{x,i} \sigma^x_i`
       - :math:`A_s \ge 0`, :math:`h_x \ge 0`
-      - :code:`ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, sign_check=True)`
+      - :code:`ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_x=0.0, h_z=0.0, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.PlaquetteModel`
       - Ring exchange / Rokhsar-Kivelson model
       - :math:`H = -\sum_{p=(i,j,\ldots,k)} g_p \left( S^+_i S^-_j \cdots S^-_k + \mathrm{h.c.} \right) + \sum_p \mu_p\, n^\mathrm{flip}_p`
@@ -76,7 +76,7 @@ As an example, we simulate the spin-1 transverse-field Ising chain at its critic
     \qquad J = 1\,,\quad h = h_c = 1.326\,,
 
 with the critical field of `C. West et al., Phys. Rev. B 92, 115103 (2015) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.115103>`_.
-:class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`h_\pm \sum_i (S^+_i + S^-_i) = 2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :code:`h_pm=-h/2`:
+:class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`-h_\pm \sum_i (S^+_i + S^-_i) = -2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :del:`h_pm=-h/2` :code:`h_pm=h/2`:
 
 .. code-block:: python
 
@@ -85,7 +85,7 @@ with the critical field of `C. West et al., Phys. Rev. B 92, 115103 (2015) <http
 
     L = 12
     lattice = chain(L)
-    H = Spin.create(lattice.edges, S=1.0, J_z=-1.0, h_pm=-1.326 / 2)
+    H = Spin.create(lattice.edges, S=1.0, J_z=-1.0, h_pm=1.326 / 2)
 
 
 Within PyGFMC, you can further define your own Hamiltonian. The class must be a JAX pytree and provide
@@ -238,9 +238,9 @@ Observables are passed as dictionaries of operators:
     # nearest-neighbor correlator sum_i S^z_i S^z_i+1: diagonal
     zz = Spin.create(lattice.edges, S=1.0, J_z=1.0)
     diag_operators = {"ZZ": zz}
-    # transverse magnetization sum_i S^x_i = 0.5 sum_i (S^+_i + S^-_i): off-diagonal,
-    # non-negative rates need h_pm > 0
-    Sx = Spin.create([], S=1.0, N=L, h_pm=0.5, sign_check=False)
+    # transverse magnetization sum_i S^x_i = 0.5 sum_i (S^+_i + S^-_i) = -h_pm sum_i (S^+_i + S^-_i)
+    # with h_pm = -0.5: off-diagonal with non-negative rates
+    Sx = Spin.create([], S=1.0, N=L, h_pm=-0.5, sign_check=False)
     off_diag_operators = {"Sx": Sx}
 
     # exact references for small systems

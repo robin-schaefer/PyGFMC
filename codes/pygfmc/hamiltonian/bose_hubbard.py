@@ -4,12 +4,12 @@
         - η Σ_<ij> (b†_i b†_j + b_i b_j)        # nearest-neighbour pairing
         + (U/2) Σ_i n_i (n_i - 1)               # onsite repulsion
         - μ Σ_i n_i                             # chemical potential
-        + h_pm Σ_i (b†_i + b_i)                 # single-site source / sink
+        - h_pm Σ_i (b†_i + b_i)                 # single-site source / sink
 
 Configurations are occupation numbers ``config[i] ∈ {0, …, n_max}``, stored
 as floats (non-negative integers, not ±1 spins).
 
-Sign-problem-free convention: ``t ≥ 0``, ``η ≥ 0``, ``h_pm ≤ 0``
+Sign-problem-free convention: ``t ≥ 0``, ``η ≥ 0``, ``h_pm ≥ 0``
 so that every off-diagonal matrix element of H is non-positive.  (``η``
 carries the same explicit minus-sign convention as ``t``.)
 
@@ -144,9 +144,11 @@ class BoseHubbard(NamedTuple):
             U:          scalar or (N,) onsite repulsion.  Any sign (diagonal).
             mu:         scalar or (N,) chemical potential.  Any sign (diagonal).
             h_pm:       scalar or (N,) amplitude multiplying BOTH b^dagger_i
-                        and b_i, i.e. h_pm * sum_i (b^dagger_i + b_i).
-                        ``None`` to disable.  One shared amplitude keeps H
-                        Hermitian.  Must be ≤ 0 for sign-problem-free GFMC.
+                        and b_i, i.e. -h_pm * sum_i (b^dagger_i + b_i) (minus
+                        sign as for the fields of SpinHalf and Spin; stored
+                        negated).  ``None`` to disable.  One shared amplitude
+                        keeps H Hermitian.  Must be ≥ 0 for sign-problem-free
+                        GFMC.
             N:          number of sites.  Inferred from ``edges`` and any
                         per-site array when None; give it explicitly for an
                         operator without two-body terms (``edges=[]``).
@@ -154,6 +156,8 @@ class BoseHubbard(NamedTuple):
             dtype:      JAX dtype for amplitudes.
             sign_check: if True, enforce the sign-problem-free convention.
         """
+        # the field enters H with a minus sign; store its negative
+        h_pm = None if h_pm is None else -np.asarray(h_pm) if isinstance(h_pm, (list, tuple)) else -h_pm
         edges_arr, n_edges, N_min = edges_array(edges)
 
         # Need to know N up front to broadcast site-indexed couplings.
@@ -213,7 +217,7 @@ class BoseHubbard(NamedTuple):
             if jnp.any(eta_arr < 0):
                 raise ValueError("eta must be ≥ 0 (sign-problem-free convention).")
             if hpm_arr is not None and jnp.any(hpm_arr > 0):
-                raise ValueError("h_pm must be ≤ 0 (sign-problem-free convention).")
+                raise ValueError("h_pm must be ≥ 0 (sign-problem-free convention).")
             # No Hermiticity check needed: b^dagger and b share the single
             # amplitude h_pm, so h_pm (b^dagger + b) is Hermitian for real
             # h_pm.

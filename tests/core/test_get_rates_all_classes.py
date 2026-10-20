@@ -64,7 +64,7 @@ def _model_spin_s1():
     n = len(_EDGES_6)
     h = Spin.create(_EDGES_6, S=1.0, J_z=rng.uniform(-1, 1, n),
                     J_pm=-rng.uniform(0.2, 1.0, n), J_pmpm=-rng.uniform(0.1, 0.5, n),
-                    h_z=rng.uniform(-1, 1, 6), h_pm=-rng.uniform(0.1, 0.5, 6),
+                    h_z=-rng.uniform(-1, 1, 6), h_pm=rng.uniform(0.1, 0.5, 6),
                     dtype=_DTYPE)
     return h, (-1.0, 0.0, 1.0)
 
@@ -153,9 +153,9 @@ def test_toric_per_object_couplings():
 
 _MOVE_MODELS = {
     "spin": lambda: Spin.create(np.asarray([[i, (i + 1) % 6] for i in range(6)]), S=1.0,
-                                J_z=0.3, J_pm=-0.5, J_pmpm=-0.2, h_z=0.1, h_pm=-0.3, N=6),
+                                J_z=0.3, J_pm=-0.5, J_pmpm=-0.2, h_z=-0.1, h_pm=0.3, N=6),
     "bose_hubbard": lambda: BoseHubbard.create(np.asarray([[i, (i + 1) % 6] for i in range(6)]),
-                                               t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=-0.2,
+                                               t=1.0, eta=0.3, U=2.0, mu=0.5, h_pm=0.2,
                                                N=6, n_max=2),
 }
 

@@ -36,8 +36,8 @@ def _build_spin_model(S, seed):
     rng = np.random.default_rng(seed)
     n_e = len(EDGES)
     return Spin.create(EDGES, S=S, J_z=rng.uniform(-1, 1, n_e), J_pm=-rng.uniform(0.2, 1, n_e),
-                       J_pmpm=-rng.uniform(0.1, 0.5, n_e), h_z=rng.uniform(-0.5, 0.5, L),
-                       h_pm=-rng.uniform(0.1, 0.6, L), N=L)
+                       J_pmpm=-rng.uniform(0.1, 0.5, n_e), h_z=-rng.uniform(-0.5, 0.5, L),
+                       h_pm=rng.uniform(0.1, 0.6, L), N=L)
 
 
 # built once, each from its own seed, so no test depends on which ran before it
@@ -114,7 +114,7 @@ def test_incremental_mode_does_not_depend_on_the_output_chunking(tmp_path):
     the contiguous run (the refresh at step 100 falls into the second block)."""
     from pygfmc import write_to_HDF5, run_from_HDF5
     n = 6
-    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=-0.65)
+    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=0.65)
     guide = JastrowSpin(n, chain(n).edges, beta=-0.3, d=0.1, incremental=True)
     w0 = prepare_walkers_from_configs(jnp.ones((128, n)))
     key = jax.random.PRNGKey(3)
@@ -164,7 +164,7 @@ def test_forbidden_transitions_keep_their_zero_rate_under_a_huge_field():
     guide ratio evaluated on the unphysical successor may overflow, and the
     product must stay an exact 0 rather than 0 * inf = NaN."""
     from pygfmc.engine.evolution import transition_rates
-    H = Spin.create(np.zeros((0, 2), dtype=np.int64), S=1.0, h_pm=-0.5, N=3)
+    H = Spin.create(np.zeros((0, 2), dtype=np.int64), S=1.0, h_pm=0.5, N=3)
     guide = JastrowSpin(3, [], beta=0.0, h=100.0)
     x = jnp.asarray([1.0, 1.0, 1.0], dtype=jnp.float32)        # every S+ forbidden
     rates = np.asarray(transition_rates(x, H, guide, cache=guide.build_cache(H))[0])
@@ -222,7 +222,7 @@ def test_gfmc_spin1_tfim_matches_ed(incremental):
     """A short guided GFMC run on the spin-1 transverse-field Ising chain, with
     the neighbor sums rebuilt at every evaluation and in the incremental mode."""
     n = 6
-    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=-0.65)   # h = 1.3, near h_c
+    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=0.65)   # h = 1.3, near h_c
     E0 = float(exact_diagonalization(H, number_of_states=1)[0][0])
     guide = JastrowSpin(n, chain(n).edges, beta=-0.3, d=0.1, incremental=incremental)
     walkers = prepare_walkers_from_configs(jnp.ones((256, n)))
@@ -237,7 +237,7 @@ def test_train_with_netket_keeps_the_form():
     from pygfmc.wavefunction import train_with_netket, make_hilbert
     import netket as nk
     n = 6
-    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=-0.65)
+    H = Spin.create(chain(n).edges, S=1.0, J_z=-1.0, h_pm=0.65)
     sampler = nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, n))
     assert sorted(np.asarray(sampler.hilbert.local_states).tolist()) == [-1, 0, 1]
     guide = JastrowSpin(n, chain(n).edges, beta=-0.1, d=0.0)

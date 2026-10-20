@@ -88,7 +88,7 @@ class ToricCode(NamedTuple):
         return 1 + self.n_stars_off + self.n_hx_off
 
     @classmethod
-    def create(cls, Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, *,
+    def create(cls, Lx, Ly, A_s=1.0, B_p=1.0, h_x=0.0, h_z=0.0, *,
                dtype=jnp.float32, sign_check=True):
         """Build the toric code Hamiltonian on an Lx × Ly torus.
 
@@ -98,9 +98,9 @@ class ToricCode(NamedTuple):
                          (Lx*Ly,) per star.  ≥ 0 for sign-problem-free GFMC.
             B_p:         plaquette coefficient; scalar or (n_plaq,) = (Lx*Ly,)
                          per plaquette (diagonal, any sign).
-            h_z:         σ^z field; scalar or (N,) per site (diagonal, any sign).
             h_x:         σ^x field; scalar or (N,) per site.  ≥ 0 for
                          sign-problem-free GFMC.
+            h_z:         σ^z field; scalar or (N,) per site (diagonal, any sign).
             dtype:       JAX dtype (default float32)
             sign_check:  raise ValueError if any A_s < 0 or h_x < 0 (default True)
 

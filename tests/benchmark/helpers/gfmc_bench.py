@@ -132,10 +132,10 @@ def measurement_operators(cfg, dtype=jnp.float32):
                                                 dtype=dtype, sign_check=False)
     elif family == "Spin":
         S = params["S"]
-        diag_ops["z_tot"] = Spin.create(edges, S=S, h_z=1.0, N=N, dtype=dtype)
+        diag_ops["z_tot"] = Spin.create(edges, S=S, h_z=-1.0, N=N, dtype=dtype)
         off_diag_ops["pm_bond"] = Spin.create(
             edges, S=S, J_pm=_onehot(n_edges, 0, 1.0), N=N, dtype=dtype, sign_check=False)
-        off_diag_ops["pm_tot"] = Spin.create(edges, S=S, h_pm=1.0, N=N,
+        off_diag_ops["pm_tot"] = Spin.create(edges, S=S, h_pm=-1.0, N=N,
                                              dtype=dtype, sign_check=False)
     elif family == "BoseHubbard":
         n_max = params["n_max"]
