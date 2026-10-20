@@ -1656,11 +1656,11 @@ By exploiting the substantial computational capabilities of modern GPUs, it can 
 %
 The resulting speedup of nearly three orders of magnitude enables more expressive guiding wavefunctions and walker populations of up to $10^7$ (see \autoref{fig:throughput}).
 %
-We have demonstrated that \PyGFMC{} reliably resolves the ground state of frustrated magnets for which other quantum Monte Carlo methods such as the stochastic series expansion struggle to reach low temperatures~\cite{kato_numerical_2015,huang_extended_2020}.
+We have demonstrated that \PyGFMC{} reliably resolves the ground state of frustrated magnets for which other quantum Monte Carlo methods, such as the stochastic series expansion, struggle to reach low temperatures~\cite{kato_numerical_2015,huang_extended_2020}.
 %
-GFMC is therefore a competitive alternative for ground-state properties.
+This makes it a competitive alternative for ground-state properties.
 
-The library provides pre-implemented Hamiltonians and guiding wavefunctions, diagonal and off-diagonal estimators, HDF5-based continuation, and support for custom classes without modifying the core engine.
+The library provides built-in Hamiltonians and guiding wavefunctions, diagonal and off-diagonal estimators, HDF5-based storage and continuation, and support for custom classes without modifying the core engine.
 %
 Furthermore, it integrates with \texttt{NetKet}~\cite{SciPostPhysCodeb.7,SciPostPhysCodeb.7-r3.4}, providing access to a broad range of variational wavefunctions and robust training procedures.
 %
