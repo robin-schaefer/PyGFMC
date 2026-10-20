@@ -877,7 +877,7 @@ The model has a zero-temperature phase transition at the critical point $h_x=J_z
 
 We use a single-parameter, nearest-neighbor Jastrow ansatz as a guiding wavefunction:
 \begin{align}
-	\log\psi_T(\sigma) = -\beta_{\rm Jastrow}(h_x)\sum_i \sigma_i\sigma_{i+1}\,.\label{eq:jastrow_TFIM}
+	\log\psi_T(x) = -\beta_{\rm Jastrow}(h_x)\sum_i \sigma^z_i\sigma^z_{i+1}\,.\label{eq:jastrow_TFIM}
 \end{align}
 We cap its magnitude at $|\beta_{\rm Jastrow}|\leq 0.3$ to prevent the walker population from freezing.
 %
@@ -1038,11 +1038,11 @@ The transition occurs at a small value, $|J_{xy}|/J_z\approx 0.1036$~\cite{baner
 %
 To overcome this difficulty, we employ a Jastrow-type guiding wavefunction that provides a good approximation of the ground state.
 %
-We parameterize the guide as $\log\psi(\sigma) = \sum_c \Phi(\sigma_c)$, where $c$ runs over all $18$-site clusters formed by the closed loop of six tetrahedra surrounding a hexagonal plaquette.
+We parameterize the guide as $\log\psi_T(x) = \sum_c \Phi(c[x])$, where $c$ runs over all $18$-site clusters formed by the closed loop of six tetrahedra surrounding a hexagonal plaquette.
 %
 We refer to these clusters as \emph{crowns}.
 %
-Here, $\sigma_c$ denotes the configuration of the $18$ spins on cluster $c$.
+Here, $c[x]$ denotes the configuration of the $18$ spins on cluster $c$.
 %
 A pyrochlore lattice with $N$ sites hosts $N$ crowns, and each $\Phi_c$ maps the $2^{18}$ configurations to real numbers.
 %
@@ -1204,20 +1204,20 @@ A Hamiltonian class must include the following attributes and methods:
 \begin{itemize}
 	\item \pyinline{Spin.create(edges, S, J_z, J_pm, J_pmpm, h_z, h_pm, N)}: spin-$S$ Hamiltonian with one- and two-body operators:
 	\begin{align}
-		H={}&\sum_{\langle i,j\rangle}\Big[J^z S_i^zS_j^z+J^\pm\big(S_i^+S_j^-+{\rm h.c.}\big)+J^{\pm\pm}\big(S_i^+S_j^++{\rm h.c.}\big)\Big]\notag\\
-		&+\sum_i\Big[h^zS_i^z+h^\pm\big(S_i^++S_i^-\big)\Big].
+		H={}&\sum_{\langle i,j\rangle}\Big[J_z S_i^zS_j^z+J_{\pm}\big(S_i^+S_j^-+{\rm h.c.}\big)+J_{\pm\pm}\big(S_i^+S_j^++{\rm h.c.}\big)\Big]\notag\\
+		&+\sum_i\Big[h_zS_i^z+h_{\pm}\big(S_i^++S_i^-\big)\Big].
 		\label{eq:H_spin_generic}
 	\end{align}
 
 	\item \pyinline{SpinHalf.create(edges, J_x, J_y, J_z, h_z, h_x, N)}: optimized XYZ Hamiltonian for $S = 1/2$ (used in \autoref{sec:ex:tfim} and \autoref{sec:ex:pyro_nn}):
 	\begin{align}
-		H=\sum_{\langle i,j\rangle}\Big[J^xS_i^xS_j^x+J^yS_i^yS_j^y+J^zS_i^zS_j^z\Big]-\sum_i\Big[h^zS_i^z+h^xS_i^x\Big].
+		H=\sum_{\langle i,j\rangle}\Big[J_xS_i^xS_j^x+J_yS_i^yS_j^y+J_zS_i^zS_j^z\Big]-\sum_i\Big[h_zS_i^z+h_xS_i^x\Big].
 		\label{eq:H_spinhalf_generic}
 	\end{align}
 
 	\item \pyinline{ToricCode.create(Lx, Ly, A_s, B_p, h_z, h_x)}: toric code Hamiltonian with local $z$ and $x$ fields:
 	\begin{align}
-		H=-A_s\sum_v\prod_{i\in\star(v)}\sigma_i^x-B_p\sum_p\prod_{i\in\Box(p)}\sigma_i^z-h^z\sum_i\sigma_i^z-h^x\sum_i\sigma_i^x.
+		H=-A_s\sum_v\prod_{i\in\star(v)}\sigma_i^x-B_p\sum_p\prod_{i\in\Box(p)}\sigma_i^z-h_z\sum_i\sigma_i^z-h_x\sum_i\sigma_i^x.
 		\label{eq:H_toric_generic}
 	\end{align}
 
@@ -1225,7 +1225,7 @@ A Hamiltonian class must include the following attributes and methods:
 	\begin{align}
 		H={}&-t\sum_{\langle i,j\rangle}\big(b_i^\dagger b_j+{\rm h.c.}\big)
 		 -\eta\sum_{\langle i,j\rangle}\big(b_i^\dagger b_j^\dagger+{\rm h.c.}\big)\notag\\
-		&+\sum_i\Big[\tfrac{U}{2}n_i(n_i-1)-\mu n_i+h^\pm\big(b_i^\dagger+b_i\big)\Big].
+		&+\sum_i\Big[\tfrac{U}{2}n_i(n_i-1)-\mu n_i+h_{\pm}\big(b_i^\dagger+b_i\big)\Big].
 		\label{eq:H_bosehubbard}
 	\end{align}
 
@@ -1296,7 +1296,7 @@ If the initial walker ensemble is spread across different sectors, it samples th
 \item \pyinline{prepare_walkers_random(N_walkers, N_sites, rng_key, states=(-1,1))}: each site is drawn independently and uniformly from \pyinline{states}, which encodes, for example, spin-$1/2$ degrees of freedom by setting it to \pyinline{(-1,1)} or \pyinline{(-0.5,0.5)}, higher-spin values to \pyinline{(-1,0,1)}, or bosonic occupation numbers to $(0,\ldots,n_{\max})$.
 	\item \pyinline{prepare_walkers_sz(N_walkers, N_sites, rng_key, sz=0, states=(-1,1))}: random configurations at a fixed total charge.
 		%
-		\pyinline{states} defines the local Hilbert space and \pyinline{sz} simply refers to the sum over all sites $\sum_i\sigma_i$.
+		\pyinline{states} defines the local Hilbert space and \pyinline{sz} simply refers to the sum over all sites $\sum_i\sigma^z_i$.
 	\item \pyinline{prepare_walkers_from_configs(configs)}: the walkers are initialized with the given configurations \pyinline{configs} of shape \pyinline{(N_walkers, N_sites)}.
 \end{itemize}
 The configuration's data type is determined by \pyinline{states} or \pyinline{configs}.
@@ -1934,20 +1934,20 @@ We recommend using \pyinline{jnp.float32}, as GPUs are substantially slower when
 This class is optimized for spin-1/2 Hamiltonians and takes the following single- and two-body terms:
 \begin{align}
 	H \;=\; \sum_{\langle ij \rangle } \left(
-		J^x_{ij}\, S^x_i S^x_j + J^y_{ij}\, S^y_i S^y_j + J^z_{ij}\, S^z_i S^z_j
+		J_{x,ij}\, S^x_i S^x_j + J_{y,ij}\, S^y_i S^y_j + J_{z,ij}\, S^z_i S^z_j
 	\right)
-	\;-\; \sum_{i} \left( h^z_i\, S^z_i + h^x_i\, S^x_i \right),
+	\;-\; \sum_{i} \left( h_{z,i}\, S^z_i + h_{x,i}\, S^x_i \right),
 	\label{eq:H_spinhalf}
 \end{align}
 where $\langle ij \rangle$ runs over a given edge list.
 %
 The couplings may be uniform or defined per edge and per site.
 %
-Internally the transverse couplings are stored as $J^\pm = (J^x + J^y)/4$ (spin exchange) and $J^{\pm\pm} = (J^x - J^y)/4$ (double spin flip).
+Internally the transverse couplings are stored as $J_{\pm} = (J_x + J_y)/4$ (spin exchange) and $J_{\pm\pm} = (J_x - J_y)/4$ (double spin flip).
 %
-The model is sign-problem-free for $J^\pm, J^{\pm\pm} \leq 0$ and $h^x \geq 0$.
+The model is sign-problem-free for $J_{\pm}, J_{\pm\pm} \leq 0$ and $h_x \geq 0$.
 %
-Notice that, when $J^{\pm\pm}>0$ and $h^x=0$, it is possible to swap $J^x$ and $J^y$.\\
+Notice that, when $J_{\pm\pm}>0$ and $h_x=0$, it is possible to swap $J_x$ and $J_y$.\\
 
 \begin{lstlisting}
 SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None,
@@ -1957,15 +1957,15 @@ SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None,
 \paragraph{Spin.}
 Generic spin-\pyinline{S} Hamiltonian with a local Hilbert space of dimension $2S+1$, spanned by the values $-S, \dots, S$:
 \begin{align}
-	H \;=\; \sum_{\langle ij \rangle} \Big[ &J^z_{ij}\, S^z_i S^z_j
-		+ J^{\pm}_{ij} \big( S^+_i S^-_j + S^-_i S^+_j \big)
-		+ J^{\pm\pm}_{ij} \big( S^+_i S^+_j + S^-_i S^-_j \big) \Big] \notag \\
-		&+ \sum_i \Big[ h^z_i\, S^z_i + h^{\pm}_i \big( S^+_i + S^-_i \big) \Big].
+	H \;=\; \sum_{\langle ij \rangle} \Big[ &J_{z,ij}\, S^z_i S^z_j
+		+ J_{\pm,ij} \big( S^+_i S^-_j + S^-_i S^+_j \big)
+		+ J_{\pm\pm,ij} \big( S^+_i S^+_j + S^-_i S^-_j \big) \Big] \notag \\
+		&+ \sum_i \Big[ h_{z,i}\, S^z_i + h_{\pm,i} \big( S^+_i + S^-_i \big) \Big].
 	\label{eq:H_spin_app}
 \end{align}
 Here the transverse couplings are passed directly as \pyinline{J_pm} (spin exchange) and \pyinline{J_pmpm} (double spin flip).
 %
-The model is sign-problem-free for $J^\pm, \, J^{\pm\pm}, \, h^\pm \leq 0$.
+The model is sign-problem-free for $J_{\pm}, \, J_{\pm\pm}, \, h_{\pm} \leq 0$.
 
 \begin{lstlisting}
 Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0,
@@ -1978,10 +1978,10 @@ Bose--Hubbard model with hopping \pyinline{t} on each edge, a pairing amplitude 
 	H \;=\; -\sum_{\langle ij \rangle} \Big[ &t_{ij} \big( b^\dagger_i b_j + {\rm h.c.} \big)
 		+ \eta_{ij} \big( b^\dagger_i b^\dagger_j + {\rm h.c.} \big) \Big] \notag \\
 		&+ \sum_i \Big[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i\, n_i
-		+ h^{\pm}_i \big( b^\dagger_i + b_i \big) \Big].
+		+ h_{\pm,i} \big( b^\dagger_i + b_i \big) \Big].
 	\label{eq:H_bosehubbard_app}
 \end{align}
-Configurations are occupation numbers $0, \dots, n_{\rm max}$; the model is sign-problem-free for $t, \eta \geq 0$ and $h^{\pm} \leq 0$.\\
+Configurations are occupation numbers $0, \dots, n_{\rm max}$; the model is sign-problem-free for $t, \eta \geq 0$ and $h_{\pm} \leq 0$.\\
 
 \begin{lstlisting}
 BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0,
@@ -1993,7 +1993,7 @@ Toric code on an $L_x \times L_y$ torus with stabilizer couplings \pyinline{A_s}
 \begin{align}
 	H \;=\; -\sum_v A_s^{(v)} \prod_{i \in \star(v)} \sigma^x_i
 		\;-\; \sum_p B_p^{(p)} \prod_{i \in \Box(p)} \sigma^z_i
-		\;-\; \sum_i h^z_i\, \sigma^z_i \;-\; \sum_i h^x_i\, \sigma^x_i.
+		\;-\; \sum_i h_{z,i}\, \sigma^z_i \;-\; \sum_i h_{x,i}\, \sigma^x_i.
 	\label{eq:H_toric_app}
 \end{align}
 Note that this class uses Pauli operators rather than spin-$1/2$ operators.
@@ -2002,7 +2002,7 @@ All four couplings may be uniform or specified per star, plaquette, or site.
 %
 The spins live on the $2 L_x L_y$ edges of the square lattice.
 %
-The model is sign-problem-free for $A_s^{(v)}, h^x_i \geq 0$ everywhere.\\
+The model is sign-problem-free for $A_s^{(v)}, h_{x,i} \geq 0$ everywhere.\\
 
 \begin{lstlisting}
 ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, sign_check=True)
@@ -2197,7 +2197,7 @@ It is a two-dimensional array of size $(N_A,L_g)$, where $N_A$ is the number of 
 %
 \pyinline{parity} is a Boolean (\pyinline{True} or \pyinline{False}) referring to the global spin flip $\sigma^z\to-\sigma^z$ symmetry.
 %
-The symmetry holds for $h^z=0$.
+The symmetry holds for $h_z=0$.
 %
 Together, these identify the symmetry-equivalent entries of $\Phi_g$ and reduce the table to its inequivalent orbits.
 %

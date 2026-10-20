@@ -38,23 +38,23 @@ PyGFMC includes five Hamiltonian classes that can be initialized with :code:`.cr
       - Constructor
     * - :class:`~pygfmc.hamiltonian.SpinHalf`
       - Spin-1/2 XYZ model
-      - :math:`H = \sum_{\langle ij\rangle} \left( J^x_{ij} S^x_i S^x_j + J^y_{ij} S^y_i S^y_j + J^z_{ij} S^z_i S^z_j \right) - \sum_i \left( h^z_i S^z_i + h^x_i S^x_i \right)`
-      - :math:`J^\pm = (J^x + J^y)/4 \le 0`, :math:`J^{\pm\pm} = (J^x - J^y)/4 \le 0`, :math:`h^x \ge 0`
+      - :math:`H = \sum_{\langle ij\rangle} \left( J_{x,ij} S^x_i S^x_j + J_{y,ij} S^y_i S^y_j + J_{z,ij} S^z_i S^z_j \right) - \sum_i \left( h_{z,i} S^z_i + h_{x,i} S^x_i \right)`
+      - :math:`J_{\pm} = (J_x + J_y)/4 \le 0`, :math:`J_{\pm\pm} = (J_x - J_y)/4 \le 0`, :math:`h_x \ge 0`
       - :code:`SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None, N=None, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.Spin`
       - Spin-:math:`S` model
-      - :math:`H = \sum_{\langle ij\rangle} \left[ J^z_{ij} S^z_i S^z_j + J^\pm_{ij} \left( S^+_i S^-_j + S^-_i S^+_j \right) + J^{\pm\pm}_{ij} \left( S^+_i S^+_j + S^-_i S^-_j \right) \right] + \sum_i \left[ h^z_i S^z_i + h^\pm_i \left( S^+_i + S^-_i \right) \right]`
-      - :math:`J^\pm \le 0`, :math:`J^{\pm\pm} \le 0`, :math:`h^\pm \le 0`
+      - :math:`H = \sum_{\langle ij\rangle} \left[ J_{z,ij} S^z_i S^z_j + J_{\pm,ij} \left( S^+_i S^-_j + S^-_i S^+_j \right) + J_{\pm\pm,ij} \left( S^+_i S^+_j + S^-_i S^-_j \right) \right] + \sum_i \left[ h_{z,i} S^z_i + h_{\pm,i} \left( S^+_i + S^-_i \right) \right]`
+      - :math:`J_{\pm} \le 0`, :math:`J_{\pm\pm} \le 0`, :math:`h_{\pm} \le 0`
       - :code:`Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.BoseHubbard`
       - Bose-Hubbard model, occupations :math:`0,\dots,n_\mathrm{max}`
-      - :math:`H = -\sum_{\langle ij\rangle} \left[ t_{ij} \left( b^\dagger_i b_j + \mathrm{h.c.} \right) + \eta_{ij} \left( b^\dagger_i b^\dagger_j + \mathrm{h.c.} \right) \right] + \sum_i \left[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i n_i + h^\pm_i \left( b^\dagger_i + b_i \right) \right]`
-      - :math:`t \ge 0`, :math:`\eta \ge 0`, :math:`h^\pm \le 0`
+      - :math:`H = -\sum_{\langle ij\rangle} \left[ t_{ij} \left( b^\dagger_i b_j + \mathrm{h.c.} \right) + \eta_{ij} \left( b^\dagger_i b^\dagger_j + \mathrm{h.c.} \right) \right] + \sum_i \left[ \tfrac{U_i}{2}\, n_i (n_i - 1) - \mu_i n_i + h_{\pm,i} \left( b^\dagger_i + b_i \right) \right]`
+      - :math:`t \ge 0`, :math:`\eta \ge 0`, :math:`h_{\pm} \le 0`
       - :code:`BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.ToricCode`
       - Toric code on an :math:`L_x \times L_y` torus
-      - :math:`H = -\sum_v A_s^{(v)} \prod_{i \in \star(v)} \sigma^x_i - \sum_p B_p^{(p)} \prod_{i \in \Box(p)} \sigma^z_i - \sum_i h^z_i \sigma^z_i - \sum_i h^x_i \sigma^x_i`
-      - :math:`A_s \ge 0`, :math:`h^x \ge 0`
+      - :math:`H = -\sum_v A_s^{(v)} \prod_{i \in \star(v)} \sigma^x_i - \sum_p B_p^{(p)} \prod_{i \in \Box(p)} \sigma^z_i - \sum_i h_{z,i} \sigma^z_i - \sum_i h_{x,i} \sigma^x_i`
+      - :math:`A_s \ge 0`, :math:`h_x \ge 0`
       - :code:`ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_z=0.0, h_x=0.0, sign_check=True)`
     * - :class:`~pygfmc.hamiltonian.PlaquetteModel`
       - Ring exchange / Rokhsar-Kivelson model
