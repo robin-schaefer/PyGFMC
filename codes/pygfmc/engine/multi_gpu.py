@@ -43,6 +43,7 @@ from .estimators import (_estimate_observables,
 from .driver import (run_gfmc, _AUX_ROOT, _AUX_POSITIVITY, _check_population,
                      _POSITIVITY_PROBE_STEPS, _warmup_stage_key, _traced_alw,
                      _measurement_plan, _measured_steps, _warmup_schedule,
+                     _require_warmup_or_alw, _default_warmup,
                      _off_by_name, _lineage_warning, _run_stats, _raw_series)
 from .._validation import _validated_int
 from .._output import emit
@@ -505,11 +506,10 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
                   rng_key: Optional[jax.Array] = None, lam: Optional[float] = None,
                   diag_operators: Optional[Mapping[str, DiagonalOperator]] = None,
                   off_diag_operators: Optional[Mapping[str, Operator]] = None,
-                  avg_log_weight: Optional[float] = None, warmup_steps: int = 0,
+                  avg_log_weight: Optional[float] = None, warmup_steps: Optional[int] = None,
                   verbosity: int = 7, number_of_outputs: int = 100,
                   n_devices: Optional[int] = None, return_raw: bool = True,
                   off_diag_stride: int = 1, off_diag_batch_size: Optional[int] = None,
-                  off_diag_equal_windows: Optional[bool] = None,
                   _step_offset: int = 0) -> tuple:
     """Multi-device GFMC main loop.  Energy + off-diagonal operators.
 
@@ -534,8 +534,10 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
 
     The warm-up follows ``run_gfmc``: the ramp runs whenever
     ``warmup_steps > 0``; a supplied ``avg_log_weight`` is kept fixed (the
-    ramp then only equilibrates the walkers).  The default ``warmup_steps=0``
-    runs no warm-up; pass e.g. ``warmup_steps=10000`` for a fresh start.
+    ramp then only equilibrates the walkers).  The default
+    ``warmup_steps=None`` runs 1000 warm-up steps without an
+    ``avg_log_weight`` and none with one; an explicit ``warmup_steps=0``
+    without ``avg_log_weight`` raises.
     ``stats`` carries the same ``parameters/*`` entries as ``run_gfmc``,
     including ``parameters/rng_key_next``.
 
@@ -585,7 +587,8 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
     require_step_size(method, step_size)
     lam_given = lam                   # recorded in stats as the caller gave it
     lam = require_lam(method, lam)
-    warmup_steps = _validated_int("warmup_steps", warmup_steps, 0)
+    warmup_steps = _validated_int(
+        "warmup_steps", _default_warmup(avg_log_weight, warmup_steps), 0)
     number_of_outputs = _validated_int(
         "number_of_outputs", number_of_outputs, 1)
     if n_devices > jax.local_device_count():
@@ -621,8 +624,8 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
         )
     # The window grid and the measurement gating, planned exactly as in
     # run_gfmc, so the two backends measure the same steps.
-    plan = _measurement_plan(n_steps, p_array, n_off, off_diag_stride,
-                             off_diag_equal_windows, return_raw)
+    plan = _measurement_plan(n_steps, p_array, n_off, off_diag_stride, return_raw)
+    _require_warmup_or_alw(avg_log_weight, warmup_steps)
     m_array = plan.m_array
 
     walkers_sharded = shard_walkers(walkers, n_devices)

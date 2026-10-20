@@ -95,13 +95,14 @@ consecutive step weights, and analogous centred windows for the operators.
   `run_from_HDF5` do the whole thing for you. Re-passing an old key replays
   the same random numbers, which silently correlates the new data with the
   old.
-- **Warm-up — off by default.** `warmup_steps` defaults to **0** for
-  `run`, `run_gfmc` and `run_gfmc_pmap`: no warm-up, which is right when
-  continuing from an equilibrated ensemble (walkers returned by a previous run
-  or loaded from a checkpoint). **For a fresh start from unequilibrated
-  walkers pass a warm-up explicitly**, e.g. `warmup_steps=10000`; otherwise
-  the first production steps are not equilibrated and `avg_log_weight` stays
-  at its initial estimate (`estimate_average_log_branch_weight`). With
+- **Warm-up — automatic without `avg_log_weight`.** `warmup_steps` defaults
+  to `None` for `run`, `run_gfmc` and `run_gfmc_pmap`: 1000 steps
+  (`DEFAULT_WARMUP_STEPS`) when no `avg_log_weight` is given, and none when
+  one is, which is right when continuing from an equilibrated ensemble with
+  `stats['avg_log_weight']` of the previous run (`run_from_HDF5` does this).
+  A fresh start of a large system may need more, e.g. `warmup_steps=10000`.
+  An explicit `warmup_steps=0` without `avg_log_weight` raises `ValueError`.
+  With
   `warmup_steps > 0` the driver runs a 4-stage step-size ramp
   (`step_size/8 → /4 → /2 → step_size`) that equilibrates the walkers and,
   unless `avg_log_weight` is supplied (then it is kept fixed), measures
@@ -327,13 +328,14 @@ function, imported from its module (e.g.
 
 ### `driver.py` — single-device driver
 
-- **`run_gfmc(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, return_raw=True, avg_log_weight=None, warmup_steps=0, verbosity=7, number_of_outputs=100, off_diag_stride=1, off_diag_batch_size=None, off_diag_equal_windows=None)`**
+- **`run_gfmc(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, return_raw=True, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, off_diag_stride=1, off_diag_batch_size=None)`**
   — optional warm-up (none by default), production scan, windowed estimation
   and end-of-run `statistics`. Returns `(walkers, energy, obs, stats, raw)` (4-tuple without
   `raw` when `return_raw=False`). `rng_key` is required.
-  `off_diag_equal_windows` restricts the off-diagonal measurements to the
-  steps usable by every `p`; its default `None` means `not return_raw`,
-  i.e. gate exactly when the raw series are not kept for re-estimation.
+  With `return_raw=False` the off-diagonal measurements are restricted to the
+  steps usable by every `p` (equal windows): the per-call numbers are then
+  final and comparable across `p`. With the raw series kept, every step is
+  measured and the windows can span run boundaries on re-estimation.
   Before anything is walked the plan checks that `max(p) < n_steps`, that
   with off-diagonal operators `n_steps > max(p) + max(p)//2`, and that with
   equal windows the band `[max(p), n_steps - max(p)//2 - 1]` contains a
@@ -359,11 +361,11 @@ function, imported from its module (e.g.
   `diag_operators` — those fall back to `run_gfmc`. Off-diagonal
   measurement gating (`off_diag_stride > 1`, `return_raw=False`) works on
   both backends and measures the same steps.
-- `run_gfmc_pmap(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, avg_log_weight=None, warmup_steps=0, verbosity=7, number_of_outputs=100, n_devices=None, return_raw=True, off_diag_stride=1, off_diag_batch_size=None, off_diag_equal_windows=None)`
+- `run_gfmc_pmap(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, n_devices=None, return_raw=True, off_diag_stride=1, off_diag_batch_size=None)`
   — walkers sharded over devices, global reconfiguration. Energy and
   off-diagonal operators only: `diag_operators` raise `NotImplementedError`.
-  Off-diagonal measurement gating (`off_diag_stride`,
-  `off_diag_equal_windows`) measures the same steps as `run_gfmc`, and
+  Off-diagonal measurement gating (`off_diag_stride`, the equal windows of
+  `return_raw=False`) measures the same steps as `run_gfmc`, and
   `raw['off_diag_steps']` labels each stored row. Warm-up, the positivity
   check, `stats` (including `parameters/*` and `parameters/rng_key_next`)
   and continuation follow `run_gfmc`, but the chain differs from the

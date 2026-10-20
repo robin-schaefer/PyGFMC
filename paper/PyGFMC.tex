@@ -1500,7 +1500,6 @@ The most important keywords are:
 	\item \pyinlinebold{walkers}: the initial walker ensemble (\autoref{sec:pkg:walker});
 	\item \pyinlinebold{n_steps}: number of production branching steps;
 	\item \pyinlinebold{hamiltonian}: the Hamiltonian;
-	\item \pyinlinebold{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
 	\item \pyinlinebold{step_size}: an integer number of steps for the discrete methods (\pyinline{"single_step"}, \pyinline{"multi_step"}), or a positive real imaginary-time length~$\beta$ for \pyinline{"cont_time"} (see \autoref{sec:gfmc:cont_time});
 	\item \pyinlinebold{guide}: guiding wavefunction (use \pyinline{None} if no guide should be used);
 	\item \pyinlinebold{p_array}: list containing the number of branching steps $p$ defining the projection depth (see \autoref{sec:gfmc:params});
@@ -1512,6 +1511,7 @@ The most important keywords are:
 			\end{itemize}
 	       (Default: \pyinline{"cont_time"});
 	   \item \pyinlinebold{rng_key}: \JAX{} PRNG seed;
+	   \item \pyinlinebold{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
 	   \item \pyinlinebold{diag_operators}: diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None});
 	   \item \pyinlinebold{off_diag_operators}: off-diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None}).
 \end{itemize}
@@ -1696,10 +1696,9 @@ This work was funded by the DFG under Project No.~575641691.
 \section{Arguments for the production run}\label{app:run_input}
 The production \pyinline{run} takes the following arguments:
 \begin{itemize}
-	\item \pyinline{walkers}: the initial walker batch (\autoref{sec:pkg:walker});
+	\item \pyinline{walkers}: the initial walker ensemble (\autoref{sec:pkg:walker});
 	\item \pyinline{n_steps}: number of production branching steps;
 	\item \pyinline{hamiltonian}: the Hamiltonian;
-	\item \pyinline{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
 	\item \pyinline{step_size}: an integer number of steps for the discrete methods (\pyinline{"single_step"}, \pyinline{"multi_step"}), or a positive real imaginary-time length~$\beta$ for \pyinline{"cont_time"} (see \autoref{sec:gfmc:cont_time});
 	\item \pyinline{guide}: guiding wavefunction (use \pyinline{None} if no guide should be used);
 	\item \pyinline{p_array}: list containing the number of branching steps $p$ defining the projection depth (see \autoref{sec:gfmc:params});
@@ -1711,6 +1710,7 @@ The production \pyinline{run} takes the following arguments:
 			\end{itemize}
 	       (Default: \pyinline{"cont_time"});
    \item \pyinline{rng_key}: \JAX{} PRNG seed;
+	\item \pyinline{lam}: diagonal shift~$\lambda$ (only required for discrete propagation methods);
    \item \pyinline{n_devices}: number of devices used by \pyinline{run} (Default: \pyinline{None}, meaning \pyinline{jax.device_count()}).
    %
    Set $1$ to force single-device execution.
@@ -1718,27 +1718,19 @@ The production \pyinline{run} takes the following arguments:
    Runs containing diagonal observables automatically fall back to a single device;
    \item \pyinline{diag_operators}: diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None});
    \item \pyinline{off_diag_operators}: off-diagonal observables as a keyed \texttt{dictionary} as described in \autoref{sec:pkg:obs} (Default: \pyinline{None});
-	\item \pyinline{off_diag_stride}: measure the off-diagonal operators only every \pyinline{off_diag_stride}-th production step (see \autoref{sec:gfmc:simulation}) instead of at every step (Default: $1$);
-	\item \pyinline{off_diag_equal_windows}: restrict off-diagonal measurements to steps usable by every requested projection window.
-	%
-	When enabled, this requires $\nsteps > 3\max(p)/2$.
-	%
-	The default \pyinline{None} resolves to \pyinline{not return_raw}; pass \pyinline{True} or \pyinline{False} explicitly to choose the measurement policy independently of the return format;
+	\item \pyinline{off_diag_stride}: measure the off-diagonal operators only every \pyinline{off_diag_stride}-th production step (see \autoref{sec:pkg:obs}) instead of at every step (Default: $1$);
 	\item \pyinline{off_diag_batch_size}: number of walkers to which an off-diagonal operator is applied at once.
 		%
 		This reduces the memory peak when an off-diagonal operator is applied to an ensemble by a factor of $\nwalker/\pyinline{off_diag_batch_size}$ (Default: \pyinline{None});
+	\item \pyinline{warmup_steps}: total number of warm-up steps, split across four stages. If \pyinline{avg_log_weight} (see below) is not given, the warm-up determines \pyinline{avg_log_weight} (Default: \pyinline{None});
 	\item \pyinline{avg_log_weight}: average logarithm of the weight obtained at each branching event (see \autoref{eq:avg_weight}).
 		%
-		When not given, it is estimated during a four-stage warm-up (Default: \pyinline{None});
-	\item \pyinline{warmup_steps}: total number of warm-up steps, split across four stages; the default $0$ is appropriate when continuing from an equilibrated ensemble; a fresh start needs e.g. $10000$ (Default: $0$);
+		When not given and \pyinline{warmup_steps} is not set, $1000$ warm-up steps are executed to determine it (Default: \pyinline{None});
 	\item \pyinline{verbosity}: integer $0$--$10$ controlling the amount of printed output (Default: $7$);
 	\item \pyinline{number_of_outputs}: number of progress lines printed during production (Default: $100$);
 	\item \pyinline{return_raw}: return \pyinline{(walkers, energy, obs, stats, raw)} when \pyinline{True} (Default), or \pyinline{(walkers, energy, obs, stats)} when \pyinline{False}.
-	%
-	Unless \pyinline{off_diag_equal_windows} is explicitly set, \pyinline{False} also enables equal-window measurement gating.
-	%
-	Changing this flag can therefore change the reported off-diagonal estimates, not just the return format.
 \end{itemize}
+The first six arguments are positional; all others are keyword arguments.
 \section{Validation}\label{sec:pkg:tests}
 We have implemented several tests to verify the code.
 %

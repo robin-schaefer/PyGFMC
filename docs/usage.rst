@@ -303,7 +303,7 @@ The most important arguments are:
 * :code:`p_array`: the number of branching steps :math:`p` defining the projection depth.
   Each side of an estimate is projected by :math:`\tau = (p/2)\,\beta`.
   How to choose :code:`p_array` and :code:`step_size` is described in :ref:`Running a good simulation <GoodSimulation>`.
-* :code:`warmup_steps`: warm-up steps before production.
+* :code:`warmup_steps`: warm-up steps before production; by default 1000 when no :code:`avg_log_weight` is given (the warm-up measures it), otherwise none.
 * :code:`rng_key`: a JAX random key.
 * :code:`diag_operators`, :code:`off_diag_operators`, :code:`off_diag_stride`: the :ref:`observables <usage-observables>`
 * :code:`verbosity`: 0 (silent) to 10 (all observables at every progress line).

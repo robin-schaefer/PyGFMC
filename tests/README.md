@@ -4,7 +4,7 @@ Two test suites for the `pygfmc` package in `../codes`.
 
 | Folder | Cases | Runtime (CPU) | Purpose |
 |---|---|---|---|
-| [`core/`](core/README.md) | 615 | about 50 minutes | Exactness checks of the building blocks, checkpointing, guides, multi-device runs, and benchmark reference contracts. Run after every change. |
+| [`core/`](core/README.md) | 616 | about 50 minutes | Exactness checks of the building blocks, checkpointing, guides, multi-device runs, and benchmark reference contracts. Run after every change. |
 | [`benchmark/`](benchmark/README.md) | 72 | about 140 minutes | Broad external-reference regressions plus multi-seed small-system accuracy and convergence checks. Opt-in. |
 
 **Each folder has its own README** that lists every test with what it checks

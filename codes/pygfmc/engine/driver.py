@@ -434,8 +434,33 @@ def _parameter_stats(*, n_steps, walkers, step_size, lam, p_array, m_array,
 _POSITIVITY_PROBE_STEPS = 100
 
 
-def _measurement_plan(n_steps, p_array, n_off_ops, off_diag_stride,
-                      off_diag_equal_windows, return_raw):
+DEFAULT_WARMUP_STEPS = 1000
+
+
+def _default_warmup(avg_log_weight, warmup_steps):
+    """``warmup_steps=None`` (the default): ``DEFAULT_WARMUP_STEPS`` when no
+    ``avg_log_weight`` is given -- the warm-up then measures it -- and 0 when
+    one is, e.g. ``stats['avg_log_weight']`` of the run being continued."""
+    if warmup_steps is None:
+        return DEFAULT_WARMUP_STEPS if avg_log_weight is None else 0
+    return warmup_steps
+
+
+def _require_warmup_or_alw(avg_log_weight, warmup_steps):
+    """Refuse an explicit ``warmup_steps=0`` without ``avg_log_weight``.
+
+    The shift must be measured by a warm-up or passed in (``run_from_HDF5``
+    passes the stored one when continuing a chain).
+    """
+    if avg_log_weight is None and warmup_steps == 0:
+        raise ValueError(
+            "warmup_steps=0 needs an avg_log_weight: without a warm-up nothing "
+            "measures it. Pass avg_log_weight=stats['avg_log_weight'] of the run "
+            "being continued (run_from_HDF5 does this), or leave warmup_steps "
+            f"unset for the default warm-up of {DEFAULT_WARMUP_STEPS} steps.")
+
+
+def _measurement_plan(n_steps, p_array, n_off_ops, off_diag_stride, return_raw):
     """The window grid and the off-diagonal measurement grid of one call.
 
     ``p_array`` is the validated, sorted grid; ``m_array = p // 2``.
@@ -460,9 +485,7 @@ def _measurement_plan(n_steps, p_array, n_off_ops, off_diag_stride,
       return_raw=False -> nothing is kept, the per-call windowed numbers are
                           final, and the only way to make them comparable
                           across p is to gate the measurements now.
-    Hence the DEFAULT: gate exactly when the raw series are not returned.
-    A caller who takes `raw` but relies on the per-call numbers passes
-    off_diag_equal_windows=True explicitly.
+    Hence: gate exactly when the raw series are not returned.
 
     The measurement grid is CALL-local: every stride-th step of this call.
     Rows carry their own step index (raw['off_diag_steps']), so the
@@ -472,9 +495,7 @@ def _measurement_plan(n_steps, p_array, n_off_ops, off_diag_stride,
     """
     sorted_p = list(p_array)
     m_array = [p // 2 for p in sorted_p]
-    if off_diag_equal_windows is None:
-        off_diag_equal_windows = not bool(return_raw)
-    equal_windows = bool(off_diag_equal_windows)
+    equal_windows = not bool(return_raw)
     p_max = sorted_p[-1] if sorted_p else 0
     m_max_od = p_max // 2
     # What the final estimator needs, checked before anything is walked: a
@@ -500,8 +521,7 @@ def _measurement_plan(n_steps, p_array, n_off_ops, off_diag_stride,
         if not any((k + 1) % off_diag_stride == 0
                    for k in range(p_max, n_steps - m_max_od)):
             raise ValueError(
-                f"equal off-diagonal windows (off_diag_equal_windows=True, the "
-                f"default for return_raw=False) measure only the steps "
+                f"equal off-diagonal windows (return_raw=False) measure only the steps "
                 f"{p_max}..{n_steps - m_max_od - 1} (n_steps={n_steps} minus "
                 f"the lead-in max(p)={p_max} and the tail max(p)//2={m_max_od}), "
                 f"and none of them is a multiple of off_diag_stride={off_diag_stride} "
@@ -1117,10 +1137,9 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
              diag_operators: Optional[Mapping[str, DiagonalOperator]] = None,
              off_diag_operators: Optional[Mapping[str, Operator]] = None,
              return_raw: bool = True, avg_log_weight: Optional[float] = None,
-             warmup_steps: int = 0, verbosity: int = 7,
+             warmup_steps: Optional[int] = None, verbosity: int = 7,
              number_of_outputs: int = 100, off_diag_stride: int = 1,
              off_diag_batch_size: Optional[int] = None,
-             off_diag_equal_windows: Optional[bool] = None,
              _step_offset: int = 0) -> tuple:
     """Run the GFMC production loop on a single device.
 
@@ -1199,39 +1218,37 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                             ``M_total > 1``; a purely diagonal operator
                             (``M_total == 1``) accepts odd p as well.
         return_raw:         If True (default), append the ``raw`` dict to the
-                            return tuple (see Returns).  Also sets the DEFAULT
-                            of ``off_diag_equal_windows`` (below).
-        off_diag_equal_windows: Restrict the off-diagonal measurements to the
-                            band of steps usable by EVERY p: the first max(p)
-                            steps become a lead-in and the last max(p)/2 a
-                            tail, so each p rests on the identical set of
-                            measurements and n_steps > 1.5*max(p) is REQUIRED
-                            (ValueError otherwise).  ``None`` (default) means
-                            ``not return_raw``: with the raw series returned
-                            they can be stored and re-estimated over the whole
+                            return tuple (see Returns).  The raw series can
+                            then be stored and re-estimated over the whole
                             concatenated chain (``evaluate_observables``),
-                            where windows span run boundaries and gating would
-                            only throw measurements away; without them the
-                            per-call windowed numbers are final and gating is
-                            what makes them comparable across p.  Pass True or
-                            False to decide explicitly (e.g. True when you take
-                            ``raw`` but rely on the per-call numbers).
+                            where windows span run boundaries, so every
+                            off-diagonal measurement is kept.  With False the
+                            per-call windowed numbers are final, and the
+                            off-diagonal measurements are restricted to the
+                            band of steps usable by EVERY p (the first max(p)
+                            steps become a lead-in and the last max(p)/2 a
+                            tail), so each p rests on the identical set of
+                            measurements; n_steps > 1.5*max(p) is then
+                            REQUIRED (ValueError otherwise).
         avg_log_weight:     Pre-computed normalisation shift (e.g. from
                             ``stats['avg_log_weight']`` of a previous run).  When supplied it is kept
                             fixed; the warm-up ramp still runs (unless
                             ``warmup_steps=0``) but only equilibrates the
-                            walkers.  When None it is estimated and refined
-                            by the warm-up.
+                            walkers.  When None it is measured by the warm-up
+                            (see ``warmup_steps``).
         warmup_steps:       Total warm-up steps split across 4 ramp stages
                             (step_size/8 → step_size/4 → step_size/2 →
                             step_size; integer division, floored at 1, for the
-                            discrete methods).  Default 0: no warm-up, which is
-                            right when continuing from an equilibrated ensemble
-                            (e.g. walkers returned by a previous run).  For a
-                            fresh start from unequilibrated walkers pass a
-                            warm-up explicitly, e.g. ``warmup_steps=10000``;
-                            otherwise the first steps are not equilibrated and
-                            ``avg_log_weight`` stays at its initial estimate.
+                            discrete methods).  Default None: 1000 steps
+                            (``DEFAULT_WARMUP_STEPS``) when no
+                            ``avg_log_weight`` is given, which the warm-up then
+                            measures, and 0 when one is -- right when
+                            continuing from an equilibrated ensemble with
+                            ``stats['avg_log_weight']`` of the previous run.  A
+                            fresh start of a large system may need more, e.g.
+                            ``warmup_steps=10000``.  An explicit
+                            ``warmup_steps=0`` without ``avg_log_weight``
+                            raises ValueError.
         verbosity:          Integer 0–10 controlling printed output:
 
                             * 0 — silent
@@ -1371,7 +1388,8 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
 
     n_steps = _validated_int("n_steps", n_steps, 1)
     require_step_size(method, step_size)
-    warmup_steps = _validated_int("warmup_steps", warmup_steps, 0)
+    warmup_steps = _validated_int(
+        "warmup_steps", _default_warmup(avg_log_weight, warmup_steps), 0)
     number_of_outputs = _validated_int(
         "number_of_outputs", number_of_outputs, 1)
     off_diag_stride = _validated_int("off_diag_stride", off_diag_stride, 1)
@@ -1426,7 +1444,8 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                     f"off-diagonal elements (M_total > 1); got {bad}"
                 )
     plan = _measurement_plan(n_steps, sorted(p_array), n_off_ops,
-                             off_diag_stride, off_diag_equal_windows, return_raw)
+                             off_diag_stride, return_raw)
+    _require_warmup_or_alw(avg_log_weight, warmup_steps)
     # step_size is interpreted by evolve_walkers based on method; the warm-up
     # ramp ratios apply uniformly, so it is kept as a float, which works for
     # both integer-valued discrete step counts and continuous imaginary-time

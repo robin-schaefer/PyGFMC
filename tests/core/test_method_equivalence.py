@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 
 from pygfmc import run_gfmc
+from pygfmc.engine.estimators import estimate_average_log_branch_weight
 from pygfmc.walkers import prepare_walkers_from_configs
 from pygfmc.hamiltonian import SpinHalf, chain, exact_diagonalization
 
@@ -149,7 +150,9 @@ def test_cont_time_lam_none_reports_statistics(capsys):
     checks that it formats an absent ``lam`` ("lam: not used") instead of
     raising at the end of a run.
     """
-    run_gfmc(prepare_walkers_from_configs(jnp.ones((64, _L))), 20, _model(), 0.25,
-             None, [2, 4], method="cont_time", rng_key=jax.random.PRNGKey(0),
-             warmup_steps=0, verbosity=1)
+    w = prepare_walkers_from_configs(jnp.ones((64, _L)))
+    run_gfmc(w, 20, _model(), 0.25, None, [2, 4], method="cont_time",
+             rng_key=jax.random.PRNGKey(0), verbosity=1,
+             avg_log_weight=estimate_average_log_branch_weight(
+                 w, _model(), None, method="cont_time"))
     assert "lam: not used" in capsys.readouterr().out

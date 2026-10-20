@@ -4,7 +4,7 @@ The core suite checks the building blocks of PyGFMC against exact results:
 that every Hamiltonian's rate tensor reproduces the true matrix, that the
 estimators, the forward-walking bookkeeping and the HDF5 storage are exact,
 that the three propagators agree, and that the guides, the multi-device path
-and user-defined operators and guides work end to end. It has 615 tests, runs in
+and user-defined operators and guides work end to end. It has 616 tests, runs in
 about 50 minutes on one CPU and should be run after every change.
 
 ```bash
@@ -383,17 +383,18 @@ Sign-problem-free guards: a wrong-sign coupling must be REJECTED.
 | `test_spinhalf_rejects_positive_jpmpm_instead_of_swapping` | 1 | A wrong-sign J_pmpm raises, naming the S^x <-> S^y remedy, instead of being swapped silently. |
 | `test_spinhalf_field_sign_convention` | 1 | The `get_rates` matrix of `-(h_z S^z + h_x S^x)` equals the explicit 2x2 matrix and has ToricCode's field spectrum; h_x < 0 raises unless sign_check=False. |
 
-### `test_silence_and_gating.py` (7 cases)
+### `test_silence_and_gating.py` (8 cases)
 
-`verbosity=0` prints nothing, and equal-window gating (`off_diag_equal_windows`, the suite's one home for it).
+`verbosity=0` prints nothing, and the equal-window gating of `return_raw=False` (the suite's one home for it).
 
 | Test | Cases | What it checks |
 |---|---|---|
 | `test_verbosity_zero_is_silent_even_with_duplicates_and_operators` | 1 | Duplicate `p` values, an off-diagonal operator and `write_to_HDF5(verbose=False)` print nothing. |
 | `test_verbosity_one_reports_positivity_and_statistics` | 1 | At `verbosity=1` the positivity report, the dedup notice and the statistics report appear, without a banner. |
 | `test_write_to_HDF5_prints_one_line_by_default` | 1 | The default is one line naming the group. |
-| `test_explicit_equal_windows_with_raw_returned` | 2 | `off_diag_equal_windows=True` at strides 1 and 2 keeps raw, measures exactly the stride steps of the band every p can use, and leaves the main chain and the largest window untouched. |
-| `test_equal_windows_default_follows_return_raw` | 1 | The default is `not return_raw`. |
+| `test_equal_windows_of_return_raw_false` | 2 | `return_raw=False` at strides 1 and 2 measures exactly the stride steps of the band every p can use, and leaves the main chain and the largest window untouched. |
+| `test_equal_windows_have_no_keyword` | 1 | The gating follows from `return_raw` alone (stored as `parameters/off_diag_equal_windows`); passing `off_diag_equal_windows` raises `TypeError`. |
+| `test_gated_chain_continues_gated` | 1 | A chain stored without raw series continues through `run_from_HDF5` with equal windows and appends. |
 | `test_equal_windows_is_a_must_match_parameter` | 1 | Flipping the gating on an existing file is refused. |
 
 ### `test_statistics_contract.py` (9 cases)

@@ -77,6 +77,7 @@ def _worker():
     from pygfmc import run, run_gfmc
     from pygfmc.engine.estimators import dense_and_names
     from pygfmc.engine.multi_gpu import run_gfmc_pmap
+    from pygfmc.engine.estimators import estimate_average_log_branch_weight
     from core.walkers import neel_walkers
     from pygfmc.wavefunction import JastrowSpinHalf
 
@@ -258,10 +259,12 @@ def _worker():
 
     @check
     def pmap_production_starts_at_caller_key():
-        # alw estimated (None) vs the same value pinned, no warm-up either
-        # way: estimating it must not consume or shift the production stream
+        # alw estimated from the walkers vs the same value passed back from
+        # stats, no warm-up either way: production starts at the caller key
+        alw0 = estimate_average_log_branch_weight(walkers0(), h, guide,
+                                                  method="cont_time")
         _, _, _, st1, raw1 = pmap(walkers0(), 10, rng_key=key0,
-                                  warmup_steps=0)
+                                  avg_log_weight=alw0)
         _, _, _, _, raw2 = pmap(walkers0(), 10, rng_key=key0, warmup_steps=0,
                                 avg_log_weight=st1["avg_log_weight"])
         assert np.array_equal(np.asarray(raw1["energy"]),

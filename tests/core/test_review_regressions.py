@@ -7,6 +7,7 @@ import pytest
 
 from pygfmc import run_gfmc, write_to_HDF5, run_from_HDF5, evaluate_observables
 from pygfmc.engine import evolution, driver
+from pygfmc.engine.estimators import estimate_average_log_branch_weight
 from pygfmc.engine.estimators import autocorrelation
 from pygfmc.engine.io import resume_from_HDF5
 from pygfmc.hamiltonian import SpinHalf, Spin, BoseHubbard, PlaquetteModel
@@ -33,7 +34,8 @@ def small_run(diag=None):
     h = SpinHalf.create([(0, 1)], J_z=0.2, h_x=1.0)
     out = run_gfmc(walkers(), 12, h, 0.1, None, [2],
                    diag_operators=diag, rng_key=jax.random.PRNGKey(0),
-                   warmup_steps=0, verbosity=0)
+                   avg_log_weight=estimate_average_log_branch_weight(walkers(), h, None),
+                   verbosity=0)
     return h, out
 
 
@@ -60,7 +62,8 @@ def test_checkpoint_switches_source_and_honors_override(tmp_path):
     with pytest.raises(ValueError, match="walker_hash"):
         resume_from_HDF5(str(path), hamiltonian=h, walker_filename=str(external))
     # A later embedded checkpoint supersedes the stale external file hint.
-    later = run_gfmc(next_out[0], 12, h, 0.1, None, [2], warmup_steps=0,
+    later = run_gfmc(next_out[0], 12, h, 0.1, None, [2],
+                     avg_log_weight=next_out[3]["avg_log_weight"],
                      rng_key=next_out[3]["parameters/rng_key_next"], verbosity=0)
     write(path, later)
     resumed = resume_from_HDF5(str(path), hamiltonian=h, config_dtype=jnp.int8)

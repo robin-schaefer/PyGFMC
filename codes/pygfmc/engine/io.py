@@ -1409,11 +1409,11 @@ def run_from_HDF5(filename: str, hamiltonian: Operator, guide: Optional[Guide] =
         method=str(p["method"]),
         off_diag_stride=int(p["off_diag_stride"]),
     )
-    # The measurement gating is a MUST_MATCH parameter, so the continuation
-    # reproduces the stored choice explicitly rather than re-deriving it from
-    # its own return_raw.
-    if "off_diag_equal_windows" in p:
-        call["off_diag_equal_windows"] = bool(int(p["off_diag_equal_windows"]))
+    # The measurement gating (equal off-diagonal windows, which follow from
+    # return_raw=False) is a MUST_MATCH parameter, so a chain stored without
+    # its raw series continues without them.
+    if int(p.get("off_diag_equal_windows", 0)):
+        call["return_raw"] = False
     call.update(kw)
     call.setdefault("_step_offset", steps_done)
     call.update(run_kwargs)

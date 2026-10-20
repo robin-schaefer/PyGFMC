@@ -114,12 +114,13 @@ walkers, energy, obs, stats, raw = run(
 E, O, E_err, O_err = evaluate_observables(raw, n_blocks=20)   # E_err[p] ~ 0.0016
 ```
 
-**Warm-up is off by default (`warmup_steps=0`).** That is right when you
-continue from an equilibrated ensemble (walkers returned by a previous run or
-loaded from a checkpoint). When you start from freshly prepared walkers, pass
-a warm-up explicitly, e.g. `warmup_steps=10000` (the example uses 500 because
-the system is tiny); otherwise the first production steps are not
-equilibrated and `avg_log_weight` stays at its initial estimate.
+**Warm-up is automatic without `avg_log_weight`.** By default
+(`warmup_steps=None`) a run without `avg_log_weight` warms up for 1000 steps,
+which equilibrates the walkers and measures `avg_log_weight`; a run with
+`avg_log_weight` (e.g. `stats['avg_log_weight']` of the run being continued)
+does not warm up. A fresh start of a large system may need more, e.g.
+`warmup_steps=10000` (the example uses 500 because the system is tiny). An
+explicit `warmup_steps=0` without `avg_log_weight` raises `ValueError`.
 
 ## Example notebooks
 
