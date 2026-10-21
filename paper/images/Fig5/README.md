@@ -1,4 +1,4 @@
-# Fig. 5 — TFIM observables versus transverse field (`images/Fig5.pdf`)
+# Fig. 5: TFIM observables versus transverse field (`images/Fig5.pdf`)
 
 Transverse-field Ising model
 `H = J_z Σ_i σᶻ_i σᶻ_{i+1} − h_x Σ_i σˣ_i`, `J_z = −1`, periodic chain of `N = 100`
@@ -30,7 +30,7 @@ Root attributes: `hamiltonian`, `tau_convention`, `error_convention`, `layout`, 
 `J_z`. Every dataset carries a `description` attribute. 2-D arrays are
 `(n_hx = 11, n_tau)`.
 
-`/diagonal` — panel (a) and the red squares; 131072 walkers, 2·10⁵ steps per run.
+`/diagonal`: panel (a) and the red squares; 131072 walkers, 2·10⁵ steps per run.
 
 | dataset | shape | meaning |
 |---|---|---|
@@ -42,14 +42,14 @@ Root attributes: `hamiltonian`, `tau_convention`, `error_convention`, `layout`, 
 | `zz`, `zz_err` | (11, 30) | bond-averaged `(1/N) Σ⟨σᶻ_i σᶻ_{i+1}⟩` and SEM |
 | `n_runs` | (11,) | independent runs (5) |
 
-`/offdiagonal` — panel (b); 32768 walkers. Same layout with `tau` (10,) = 1…10 and
+`/offdiagonal`: panel (b); 32768 walkers. Same layout with `tau` (10,) = 1…10 and
 
 | dataset | shape | meaning |
 |---|---|---|
 | `sx_total`, `sx_total_err` | (11, 10) | **extensive** `Σ_i ⟨σˣ_i⟩` and SEM (plot divides by N) |
 | `energy`, `energy_err` | (11, 10) | total energy of the same runs (not plotted) |
 
-`/exact` — free-fermion (Jordan–Wigner) solution of the periodic N = 100 chain:
+`/exact`: free-fermion (Jordan–Wigner) solution of the periodic N = 100 chain:
 `hx`, `energy` (total), `zz` (bond average), `sx_total` (extensive), all (11,).
 
 ## Provenance

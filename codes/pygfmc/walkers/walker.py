@@ -70,10 +70,10 @@ class Walker(NamedTuple):
         Walker arrays (``config``, ``log_weight``, ``e_loc``) are stored as
         HDF5 datasets; the JAX PRNG key (if any) is also a dataset.  ``config``
         is stored in the smallest lossless dtype (``int8`` for ±1 / small-integer
-        configs, ~4x smaller than float32; original dtype otherwise) — see
+        configs, ~4x smaller than float32; original dtype otherwise); see
         :func:`_compact_config`.  ``load`` casts it back to the compute dtype.
-        Any additional keyword arguments — typically ``avg_log_weight=...``,
-        but anything scalar — are stored as group attributes (same convention
+        Any additional keyword arguments (typically ``avg_log_weight=...``,
+        but anything scalar) are stored as group attributes (same convention
         as :meth:`JastrowSpinHalf.save`).
 
         Args:

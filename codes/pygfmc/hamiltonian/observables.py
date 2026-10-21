@@ -11,7 +11,7 @@ import jax
 import jax.numpy as jnp
 
 
-def is_valid_k(k_vectors, lattice_vectors, atol=1e-8):
+def is_valid_k(k_vectors, lattice_vectors, atol=1e-5):
     r"""Whether each wavevector lies in the reciprocal lattice of the system.
 
     A wavevector is valid when ``k . L_j = 2 pi x integer`` for every periodic
@@ -33,7 +33,9 @@ def is_valid_k(k_vectors, lattice_vectors, atol=1e-8):
                          They are the vectors the boundary identifies, not the
                          primitive vectors of the unit cell.
         atol:            Absolute tolerance on ``k . L_j / (2 pi)`` being an
-                         integer.
+                         integer.  The default 1e-5 accepts wavevectors built
+                         in float32 (e.g. with ``jax.numpy``), whose rounding
+                         error is about 1e-6.
 
     Returns:
         ``bool`` for a single ``(d,)`` wavevector, a boolean ``(n_k,)`` array

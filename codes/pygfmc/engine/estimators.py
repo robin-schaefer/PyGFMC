@@ -422,7 +422,7 @@ def _estimate_observables(p_array, log_weights, E, cutoff=None,
     ``log G_aux^{+m}(k)`` (``off_diag_norm_np``) come from
     :func:`pygfmc.engine.evolution.forward_walk_operator`: the operator is applied at
     step k and the ket half is supplied by a shadow chain propagated m steps
-    from the operator-applied ensemble.  G_aux does NOT cancel — its ratio to
+    from the operator-applied ensemble.  G_aux does NOT cancel; its ratio to
     G_main^{+m} is what converts mixed → pure.  k runs over the measured
     steps with p ≤ k < n_steps − m (plus the common trim described below),
     and both sums use the same set of k.
@@ -729,9 +729,9 @@ def estimate_average_log_branch_weight(walkers: Walker, hamiltonian: Operator,
     Used as the starting value of ``avg_log_weight`` before the warm-up ramp.
 
     For the discrete methods (``single_step``, ``multi_step``; ``lam`` required):
-        returns  mean( log(lam - sum(rates)) )  — the average log branch weight per step.
+        returns  mean( log(lam - sum(rates)) ), the average log branch weight per step.
     For ``cont_time`` (the default; ``lam`` unused):
-        returns  mean( -sum(rates) )  — the average negative local energy per unit
+        returns  mean( -sum(rates) ), the average negative local energy per unit
         imaginary time, which is the correct per-unit-time normalisation for the
         continuous-time propagator (``avg_log_weight * beta`` is subtracted from each
         walker's accumulated log-weight).  Using the discrete formula here would give
@@ -1159,7 +1159,7 @@ def statistics(walkers: Walker, hamiltonian: Operator, step_size: Union[int, flo
        walker's step-0 ancestor label is carried through the resampling
        indices; at every m in m_array the fraction of distinct surviving
        ancestors and the Kish effective sample size N^2 / sum_i c_i^2 (c_i =
-       number of descendants of ancestor i) are recorded — the quantity that
+       number of descendants of ancestor i) are recorded, the quantity that
        bounds the pure estimator's effective sample size at projection depth
        m = p/2.  The same ancestry gives the lineage correlation of the
        local energy: the correlation between a walker's e_L at depth m and

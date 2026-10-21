@@ -24,7 +24,7 @@ Installation from source
 
 
 To modify the code or run the tests, install from source.
-The source is on GitHub at https://github.com/robin-schaefer/PyGFMC.
+You can find it on GitHub at https://github.com/robin-schaefer/PyGFMC.
 
 .. code-block:: console
 
@@ -32,9 +32,6 @@ The source is on GitHub at https://github.com/robin-schaefer/PyGFMC.
     cd PyGFMC
     pip install -e "./codes"             # GFMC only
     pip install -e "./codes[netket]"     # + training guides with NetKet
-
-
-For GPU runs, install the appropriate CUDA build of JAX first: `JAX installation guide <https://docs.jax.dev/en/latest/installation.html>`_.
 
 The editable install :code:`-e` makes changes to the source code take effect without reinstalling.
 Alternatively, without installing, :code:`codes/` can be added to your :code:`PYTHONPATH`.
@@ -54,7 +51,7 @@ To run the tests, install the :code:`test` extra (pytest) and run pytest from th
 
     pip install -e "./codes[test]"
     cd tests
-    pytest core -q                       # core suite (about 50 minutes on one CPU)
+    pytest core -q                       # core suite (about 30 minutes on one CPU)
     RUN_GFMC_BENCH=1 pytest benchmark -q # benchmarks (about 140 minutes)
 
 One section in the appendix of the :ref:`Paper <Paper>` is dedicated to the tests.
@@ -62,7 +59,7 @@ One section in the appendix of the :ref:`Paper <Paper>` is dedicated to the test
 
 Package setup
 =============
-PyGFMC has four subpackages:
+PyGFMC has four main subpackages:
 
 * :code:`pygfmc.walkers`: the walker population, its initializers and reconfiguration,
 * :code:`pygfmc.engine`: the GFMC engine (propagation, estimators, HDF5 storage).
@@ -84,13 +81,13 @@ The module :code:`pygfmc.protocols` defines the interfaces for a Hamiltonian, an
 Dependencies
 ============
 
-The core dependencies are installed automatically:
+The core dependencies are:
 
 * `JAX <https://jax.readthedocs.io>`_ (with the matching CUDA build for GPU runs)
 * `NumPy <https://numpy.org>`_ and `SciPy <https://scipy.org>`_
 * `h5py <https://www.h5py.org>`_ for walker checkpoints and results
 
-:code:`pygfmc[netket]` requires additional dependencies (`NetKet <https://www.netket.org>`_, `optax <https://optax.readthedocs.io>`_ and `Flax <https://flax.readthedocs.io>`_), which are needed only to **train** guides with NetKet within PyGFMC.
+:code:`pygfmc[netket]` requires additional dependencies (`NetKet <https://www.netket.org>`_, `optax <https://optax.readthedocs.io>`_ and `Flax <https://flax.readthedocs.io>`_), which are needed only to **train** guides using NetKet within PyGFMC.
 
 
 Contact

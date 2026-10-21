@@ -1,4 +1,4 @@
-"""write_to_HDF5 / run_from_HDF5 / evaluate_observables — the per-run storage format.
+"""write_to_HDF5 / run_from_HDF5 / evaluate_observables: the per-run storage format.
 
 Per-run grouping, the walker ensemble and PRNG stream, must-match validation
 (including operator identity by content hash), bit-identical continuation,

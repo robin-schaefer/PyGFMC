@@ -38,7 +38,7 @@ The better the ansatz, the more effective the method becomes.
 
 .. admonition:: Training guides with NetKet
 
-    PyGFMC is built on `JAX <https://jax.readthedocs.io>`__ and connects naturally to `NetKet <https://netket.readthedocs.io>`__, which we use to optimize arbitrary guides, including large **neural networks**.
+    PyGFMC is built on `JAX <https://jax.readthedocs.io>`__ and connects naturally to `NetKet <https://netket.readthedocs.io>`__, which we use to optimize arbitrary guides, including large **neural quantum states**.
 
 
 
@@ -52,7 +52,7 @@ The `JAX <https://jax.readthedocs.io>`_ implementation provides GPU speedups of 
    :align: center
    :alt: GFMC throughput versus number of walkers on CPU, A100 and H200
 
-   Throughput (iterations per second) versus the number of walkers on CPU cores and on A100 and H200 GPUs (Fig. 3 of the :ref:`paper <Paper>`).
+   Throughput (iterations per second) versus the number of walkers on CPU cores and on A100 and H200 GPUs (Fig. 3 of the :ref:`Paper <Paper>`).
    The number of walkers sets the size of the simulation.
 
 This speedup makes it possible to tackle problems that are extremely difficult to equilibrate!
@@ -65,7 +65,7 @@ The figure below resolves the transition between the ferromagnet and **quantum s
    :align: center
    :alt: Transverse structure factor of the pyrochlore XXZ model versus J_xy/J_z for system sizes N = 128 to 1024
 
-   Transverse structure factor :math:`S^{\pm}(\mathbf{q}=0)` of the nearest-neighbor pyrochlore XXZ model versus :math:`J_{xy}/J_z` for system sizes up to :math:`N=1024` (Fig. 6 of the :ref:`paper <Paper>`).
+   Transverse structure factor :math:`S^{\pm}(\mathbf{q}=0)` of the nearest-neighbor pyrochlore XXZ model versus :math:`J_{xy}/J_z` for system sizes up to :math:`N=1024` (Fig. 6 of the :ref:`Paper <Paper>`).
    The transition sits at :math:`J_{xy}/J_z=-31/300\pm 1/1200`.
 
 
@@ -147,6 +147,6 @@ Content
     paper.rst
     installation.rst
     usage.rst
-    good_simulation.rst
+    good_usage.rst
     examples.rst
     api.rst

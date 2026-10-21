@@ -135,7 +135,7 @@ def reconfiguration_global(walkers: Walker, rng_key: jax.Array,
         N_total, dtype=walkers.log_weight.dtype))
     branch_weight = log_avg_weight
 
-    # Systematic resampling — same on all devices because rng_key is replicated
+    # Systematic resampling: same on all devices because rng_key is replicated
     psi = jax.random.uniform(rng_key)
     indices = systematic_parents(w, psi)
 
@@ -553,12 +553,12 @@ def run_gfmc_pmap(walkers: Walker, n_steps: int, hamiltonian: Operator,
     returned ``avg_log_weight``) continues the chain bit-identically on the
     same device count.  The
     chain is NOT the single-device chain at equal seed: the evolve key carries a ``fold_in(device_id)`` and reconfiguration
-    is global over all shards, so sharding changes the trajectory — as a
+    is global over all shards, so sharding changes the trajectory, as a
     different seed would, not as a bias.
 
     ``stats`` carries the same :func:`pygfmc.engine.estimators.statistics` fields as
-    ``run_gfmc`` — sampler health, the offspring distribution and ancestor
-    survival / ``effective_sample_size`` — so a consumer of :func:`run` sees
+    ``run_gfmc`` (sampler health, the offspring distribution and ancestor
+    survival / ``effective_sample_size``), so a consumer of :func:`run` sees
     one contract whatever the device count.  That pass runs on the
     UNSHARDED ensemble and therefore on a single device: a population that
     only fits when sharded can OOM there, after production has finished.
@@ -806,7 +806,7 @@ def _warmup_pmap(walkers_sharded, carried_sharded, hamiltonian, guide, method,
             avg_log_weight = measured_alw
         emit(f"[gfmc-pmap] - [warmup {stage_idx + 1}/{len(ramp)}] - "
              f"step={step_stage}, {n_warmup} steps @ "
-             f"{n_warmup / elapsed:.1f} it/s — "
+             f"{n_warmup / elapsed:.1f} it/s, "
              f"avg_log_weight = {float(avg_log_weight):.6f}"
              + (f" (pinned; this stage measured "
                 f"{float(measured_alw):.6f})" if alw_pinned else ""),
@@ -826,7 +826,7 @@ def run(walkers: Walker, n_steps: int, hamiltonian: Operator,
     """Auto-dispatch GFMC: run_gfmc_pmap on >1 devices, run_gfmc otherwise.
 
     The recommended entry point.  Drop-in replacement for
-    :func:`pygfmc.engine.driver.run_gfmc` — same positional arguments and keyword
+    :func:`pygfmc.engine.driver.run_gfmc`: same positional arguments and keyword
     arguments (plus ``n_devices``, default ``jax.device_count()``), same
     return tuple.  ``lam`` is needed only by the discrete methods.  When more
     than one device is used it dispatches to :func:`run_gfmc_pmap`, which

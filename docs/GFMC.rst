@@ -37,4 +37,4 @@ The core idea is the following:
 * **Estimators:** Besides the energy, which is available through the reconfiguration, the walker ensemble also gives access to observables.
   While diagonal observables are accessible with minimal additional cost, off-diagonal observables require launching auxiliary Markov chains, which increases the computational cost significantly.
 
-A detailed description of the algorithm can be found in the :ref:`paper <Paper>`.
+A detailed description of the algorithm can be found in the :ref:`Paper <Paper>`.

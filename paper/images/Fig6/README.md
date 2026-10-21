@@ -1,4 +1,4 @@
-# Fig. 6 — transverse structure factor S^±(q=0) of the pyrochlore XXZ model
+# Fig. 6: transverse structure factor S^±(q=0) of the pyrochlore XXZ model
 
 `\includegraphics{images/Fig6.pdf}` (label `fig:pyro_Spm`).
 

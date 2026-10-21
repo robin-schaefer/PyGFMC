@@ -35,6 +35,8 @@ Spin-1/2 XXZ chain
 
 :download:`xxz_chain.ipynb <../notebooks/xxz_chain.ipynb>`
 
+This is discussed in the :ref:`Paper <Paper>`.
+
 * **Model:** :class:`~pygfmc.hamiltonian.SpinHalf` XXZ chain
 * **Guide:** :class:`~pygfmc.wavefunction.JastrowSpinHalf`
 * **Observables:** :math:`S^z_\mathrm{tot}`, :math:`S^z_0`, :math:`S^x_\mathrm{tot}`, :math:`S^x_0`, the structure factors :math:`S^{zz}(k)` at all allowed :math:`k` and :math:`S^\pm` at :math:`k=\pi`
@@ -45,8 +47,10 @@ n-body model: custom classes
 
 :download:`n_body_model.ipynb <../notebooks/n_body_model.ipynb>`
 
-* **Model:** user-defined :math:`n`-body Hamiltonian from the :ref:`paper <Paper>`, on a 12-site chain with four-site clusters
-* **Guide:** user-defined guide from the :ref:`paper <Paper>`, trained with NetKet; the GFMC run uses no guide
+This is discussed in the appendix of the :ref:`Paper <Paper>`.
+
+* **Model:** user-defined :math:`n`-body Hamiltonian 
+* **Guide:** user-defined guide trained with NetKet
 * **Observables:** none
 
 

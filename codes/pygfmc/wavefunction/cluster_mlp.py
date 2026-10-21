@@ -271,7 +271,7 @@ class ClusterMLP:
         ``config`` may be a single ``(N,)`` config or a batch
         ``(n_configs, N)``; the return is a scalar or ``(n_configs,)``
         accordingly (same convention as :meth:`ClusterCPS.log_psi`).
-        ``cache`` is accepted for protocol parity but unused — the
+        ``cache`` is accepted for protocol parity but unused: the
         cluster cache only accelerates :meth:`log_diff_from_operator`."""
         if config.ndim == 2:
             return jax.vmap(lambda c: self.log_psi(c))(config)
@@ -354,7 +354,7 @@ class ClusterMLP:
             edge_i = jnp.asarray(op.edge_i, dtype=jnp.int32)
             edge_j = jnp.asarray(op.edge_j, dtype=jnp.int32)
             def edge_delta(e):
-                # Avoid creating a full (N,) σ_new — flip only within cluster arrays.
+                # Avoid creating a full (N,) σ_new; flip only within cluster arrays.
                 i = edge_i[e]
                 j = edge_j[e]
                 total = jnp.array(0.0, dtype=self.dtype)
@@ -381,10 +381,10 @@ class ClusterMLP:
         """Build a ``ClusterMLPCache`` for fast ``log_diff_from_operator(op)``.
 
         For each group g, computes:
-          - ``site_to_clusters[g]`` of shape ``(N, max_aff_g)`` — for each
+          - ``site_to_clusters[g]`` of shape ``(N, max_aff_g)``: for each
             site, the cluster indices of group g containing that site
             (padded with -1 to a uniform max length).
-          - ``pair_to_clusters[g]`` of shape ``(n_jpm, max_aff_pair_g)`` —
+          - ``pair_to_clusters[g]`` of shape ``(n_jpm, max_aff_pair_g)``:
             for each op-edge ``(edge_i[e], edge_j[e])``, the union of
             cluster indices containing either endpoint.
 
@@ -485,7 +485,7 @@ class ClusterMLP:
 # ── pytree registration ──────────────────────────────────────────────────────
 
 def _flatten(obj):
-    # Children: the true storage — per-group [(W, b), …] layer lists (nested
+    # Children: the true storage: per-group [(W, b), …] layer lists (nested
     # pytree, so any depth flattens correctly) and the cluster index arrays.
     children = (obj.weights_g, obj.clusters)
     aux = (obj.dtype, obj.N, obj.n_groups, obj.k_g, obj.n_c_g, obj.hidden_g,

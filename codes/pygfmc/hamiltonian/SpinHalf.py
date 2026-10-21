@@ -109,7 +109,7 @@ class SpinHalf(NamedTuple):
     # the NEGATED public arguments: h_z = −(h_z arg), h_x_half = −(h_x arg)/2.
     h_z: object      # jnp array, −h_z, shape (1,) uniform or (N,) per-site; or None
     h_x_half: object # jnp array, −h_x/2, shape (1,) uniform or (N,) per-site; or None
-    # Static structure flags — hashable Python primitives, safe as pytree aux
+    # Static structure flags: hashable Python primitives, safe as pytree aux
     n_hx_static: int = 0
     n_jpm_static: int = 0
     has_jz: bool = False
@@ -292,7 +292,7 @@ class SpinHalf(NamedTuple):
         """Return just the diagonal transition weight (scalar).
 
         Equivalent to ``get_rates(config)[0][0]`` but skips the
-        (M_total,) rates allocation and the off-diagonal branches — useful
+        (M_total,) rates allocation and the off-diagonal branches, useful
         for diagonal-operator measurement in hot loops.
         """
         if self.has_jz:
@@ -324,7 +324,7 @@ class SpinHalf(NamedTuple):
         Returns:
             ``(rates, new_configs)``:
 
-            * ``rates``: shape (M_total,) — rates[0] = diagonal, rates[1:] =
+            * ``rates``: shape (M_total,); rates[0] = diagonal, rates[1:] =
               off-diagonal.
             * ``new_configs``: shape (M_total, N) when ``return_configs=True``
               (new_configs[0] = config unchanged, new_configs[1:] = connected
@@ -511,14 +511,14 @@ def StructureFactor(positions, k, channel="SpSm", dtype=jnp.float32):
         channel: one of the four below; case- and space-insensitive.
         dtype:  JAX dtype of the couplings.
 
-    ==================  ==============================
-    channel             per-pair operator
-    ==================  ==============================
-    ``"SpSm"``          ``S+S- + S-S+`` = ``2(S^xS^x + S^yS^y)`` (transverse)
-    ``"SpSp"``          ``S+S+ + S-S-``
-    ``"SpSm+SpSp"``     ``4 S^xS^x``
-    ``"SzSz"``          ``2 S^zS^z`` (diagonal, warns)
-    ==================  ==============================
+    ===============  =======================  =====================================================
+    channel          A, B                     per-pair operator A_iB_j + h.c.
+    ===============  =======================  =====================================================
+    ``"SpSm"``       ``A = S+, B = S-``       ``S+S- + S-S+`` = ``2(S^xS^x + S^yS^y)`` (transverse)
+    ``"SpSp"``       ``A = B = S+``           ``S+S+ + S-S-``
+    ``"SpSm+SpSp"``  ``A = B = sqrt(2) S^x``  ``4 S^xS^x`` = the sum of the two above
+    ``"SzSz"``       ``A = B = S^z``          ``2 S^zS^z`` (diagonal, warns)
+    ===============  =======================  =====================================================
 
     **Why these off-diagonal three.**  `get_rates` emits one off-diagonal slot per edge,
     ``where(anti_parallel, J_pm, J_pmpm)``, so per edge only

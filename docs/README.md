@@ -28,7 +28,7 @@ must be; installing `./codes` as above provides them. `nbsphinx` also needs
 | `paper.rst` | The paper, embedded as PDF with a download link |
 | `installation.rst` | Installation and dependencies |
 | `usage.rst` | Running a simulation: the spin-1 transverse-field Ising chain step by step (Hamiltonian, walkers, guide, observables, run, error bars, storing and resuming) |
-| `good_simulation.rst` | Running a good simulation: choosing the step size, walkers and projection depth |
+| `good_usage.rst` | Running a good simulation: choosing the step size, walkers and projection depth |
 | `api.rst` | API reference, generated from the docstrings (`autodoc`, `autosummary`, `napoleon`) |
 | `examples.rst` | Overview of the example notebooks in `../notebooks/`: model, guide and observables of each |
 | `_static/` | `custom.css`: table layout, `.. container:: center`, and the review markup (`:red:`, `:del:`, `.. container:: red`) |

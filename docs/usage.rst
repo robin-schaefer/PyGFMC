@@ -75,12 +75,13 @@ As an example, we simulate the spin-1 transverse-field Ising chain at its critic
     H = -J \sum_{i} S^z_i S^z_{i+1} - h \sum_i S^x_i\,,
     \qquad J = 1\,,\quad h = h_c = 1.326\,,
 
-with the critical field of `C. West et al., Phys. Rev. B 92, 115103 (2015) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.115103>`_.
+see `C. West et al., Phys. Rev. B 92, 115103 (2015) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.115103>`_.
 :class:`~pygfmc.hamiltonian.Spin` writes the transverse field as :math:`-h_\pm \sum_i (S^+_i + S^-_i) = -2 h_\pm \sum_i S^x_i`, so the couplings are :code:`J_z=-1` and :code:`h_pm=h/2`:
 
 .. code-block:: python
 
     import jax
+    import jax.numpy as jnp
     from pygfmc.hamiltonian import Spin, chain, exact_diagonalization
 
     L = 12
@@ -154,8 +155,6 @@ Walkers can be created using :code:`pygfmc.walkers`:
 * :code:`prepare_walkers_from_configs`: walkers at given configurations.
 
 
-More details can be found :ref:`here <api-walkers>`.
-
 .. important::
 
     Each walker configuration must have overlap with the ground state of interest.
@@ -168,7 +167,7 @@ Guiding wavefunction (optional)
 ===============================
 
 A guiding wavefunction :math:`\psi_T` biases the moves toward an ansatz wavefunction.
-A good approximation to the ground state leads to smaller statistical errors and faster equilibration.
+A good approximation to the ground state leads to smaller statistical errors and faster convergence.
 
 Here is an example of a simple Jastrow wavefunction for spin-:math:`S` configurations:
 
@@ -202,7 +201,7 @@ We do not pass :math:`h`, so the guide has no field term.
 
 :class:`~pygfmc.wavefunction.JastrowSpinHalf`, :class:`~pygfmc.wavefunction.ClusterCPS` and :class:`~pygfmc.wavefunction.ClusterMLP` are for :class:`~pygfmc.hamiltonian.SpinHalf` Hamiltonians, :class:`~pygfmc.wavefunction.JastrowSpin` is for :class:`~pygfmc.hamiltonian.Spin`, and :class:`~pygfmc.wavefunction.JastrowBoseHubbard` is for :class:`~pygfmc.hamiltonian.BoseHubbard`.
 All of them can be saved with :code:`guide.save(path)` and loaded with :code:`Class.load(path)`.
-PyGFMC allows for user-defined guides as discussed in the :ref:`paper <Paper>`.
+PyGFMC allows for user-defined guides as discussed in the :ref:`Paper <Paper>`.
 
 The guides can be trained by variational Monte Carlo with `NetKet <https://www.netket.org>`__ :
 
@@ -257,7 +256,7 @@ PyGFMC provides structure factors for the :code:`SpinHalf` class.
 
       S^{zz}(\mathbf{k}) = \sum_{i<j} 2\cos(\mathbf{k}\cdot\mathbf{r}_{ij})\, S^z_iS^z_j
 
-* :func:`~pygfmc.hamiltonian.StructureFactor` :code:`(positions, k, channel="SpSm")` returns an off-diagonal :code:`SpinHalf` operator for a single :math:`k` vector and allows different channels :code:`"SpSm"` (:math:`A=S^+, B=S^-`), :code:`"SpSp"` (:math:`A=B=S^+`) or :code:`"SpSm+SpSp"`:
+* :func:`~pygfmc.hamiltonian.StructureFactor` :code:`(positions, k, channel="SpSm")` returns an off-diagonal :code:`SpinHalf` operator for a single :math:`k` vector and allows different channels :code:`"SpSm"` (:math:`A=S^+, B=S^-`), :code:`"SpSp"` (:math:`A=B=S^+`) or :code:`"SpSm+SpSp"` (:math:`A=B=\sqrt{2}S^x`):
 
   .. math::
 
@@ -267,7 +266,7 @@ PyGFMC provides structure factors for the :code:`SpinHalf` class.
   This is necessary to keep the transition rates positive.
 
 
-You may check if a wave vector is valid using :func:`~pygfmc.hamiltonian.is_valid_k`. See the :ref:`paper <Paper>` for more details.
+You may check if a wave vector is valid using :func:`~pygfmc.hamiltonian.is_valid_k`. See the :ref:`Paper <Paper>` for more details.
 
 Pass :code:`diag_operators=None` and :code:`off_diag_operators=None` to measure only the energy.
 
@@ -298,13 +297,11 @@ The most important arguments are:
 
 * :code:`n_steps`: number of production steps.
 * :code:`method`: the propagation scheme, :code:`"cont_time"` (default), :code:`"multi_step"` or :code:`"single_step"`.
-* :code:`step_size`: the projection between two branching steps (also referred to as :math:`\beta`). For :code:`"cont_time"` it is a finite positive real number; for the discrete methods it is a positive integer counting powers of :math:`\lambda-H`.
+* :code:`step_size`: the projection between two branching steps (also referred to as :math:`\beta`). For :code:`"cont_time"` it is a finite positive real number; for the discrete methods it is a positive integer.
 * :code:`lam`: the diagonal shift :math:`\lambda` (only used by the discrete methods).
 * :code:`p_array`: the number of branching steps :math:`p` defining the projection depth.
-  Each side of an estimate is projected by :math:`\tau = (p/2)\,\beta`.
-  How to choose :code:`p_array` and :code:`step_size` is described in :ref:`Running a good simulation <GoodSimulation>`.
-* :code:`warmup_steps`: warm-up steps before production; by default 1000 when no :code:`avg_log_weight` is given (the warm-up measures it), otherwise none.
-* :code:`rng_key`: a JAX random key.
+* :code:`warmup_steps`: warm-up steps before production (Default 1000 when no :code:`avg_log_weight` is given, 0 otherwise).
+* :code:`rng_key`: a JAX random key (Default: :code:`jax.random.PRNGKey(secrets.randbits(32))`).
 * :code:`diag_operators`, :code:`off_diag_operators`, :code:`off_diag_stride`: the :ref:`observables <usage-observables>`
 * :code:`verbosity`: 0 (silent) to 10 (all observables at every progress line).
 
@@ -334,10 +331,12 @@ Passing :code:`n_blocks` additionally returns error bars from a blocked jackknif
 The :code:`run` function uses multiple GPU devices when detected.
 It falls back to a single device when diagonal operators are requested.
 
-.. rubric:: Storing and resuming a calculation
-    :class: section-heading
+.. _usage-storing:
 
-PyGFMC stores simulation results on disk using HDF5 and can relaunch a simulation from there.
+Storing and resuming a calculation
+==================================
+
+PyGFMC can store results on disk using HDF5 and can relaunch a simulation from there.
 A large computation can have multiple such breakpoints in case anything fails:
 
 .. code-block:: python
@@ -362,5 +361,5 @@ A large computation can have multiple such breakpoints in case anything fails:
     E, O, E_err, O_err = evaluate_observables(load_raw_from_HDF5("tfim_spin1.h5"), n_blocks=20)
 
 Appending to the data file is rejected if the Hamiltonian, the guide or the operators differ from those already in the file.
-Details can be found in the :ref:`paper <Paper>`.
+Details can be found in the :ref:`Paper <Paper>`.
 

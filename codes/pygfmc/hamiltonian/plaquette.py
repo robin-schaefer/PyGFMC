@@ -20,7 +20,7 @@ class PlaquetteModel(NamedTuple):
     Each plaquette contributes
 
       - one off-diagonal element (the flip S⁺S⁻S⁺S⁻ … around the loop), active
-        only when the plaquette is *flippable* — i.e. its spins strictly
+        only when the plaquette is *flippable*, i.e. its spins strictly
         alternate as (+,−,+,−,…) or (−,+,−,+,…) in the order supplied to
         :meth:`create`.
       - one diagonal element (the RK counting potential μ_p) added when the
@@ -36,13 +36,13 @@ class PlaquetteModel(NamedTuple):
     way round, so its "flip" would change ``Sz_tot`` and is no ring exchange.
 
     Fields:
-        plaquettes       int array (N_plaquette, plaquette_size) — site indices
+        plaquettes       int array (N_plaquette, plaquette_size), site indices
                          per plaquette, listed consecutively around the loop.
         g                flip coupling, shape (1,) uniform or (N_plaquette,).
                          Must be ≥ 0 (sign-problem-free convention): the
                          off-diagonal matrix element is −g ≤ 0.  The check can
                          be disabled with ``sign_check=False`` when
-                         constructing measurement operators — note that an
+                         constructing measurement operators; note that an
                          off-diagonal *measurement* operator needs rates ≥ 0,
                          i.e. g ≤ 0, the opposite restriction.
         mu               RK counting coupling (diagonal, any sign), shape
@@ -146,7 +146,7 @@ class PlaquetteModel(NamedTuple):
         idx_dtype = jnp.int16 if N <= 32767 else jnp.int32
         plaquettes_jax = jnp.array(plaq_arr, dtype=idx_dtype)
 
-        # g — off-diagonal flip coupling
+        # g: off-diagonal flip coupling
         if g is None:
             g_arr, has_g, uniform_g = jnp.zeros(1, dtype=dtype), False, True
         elif np.ndim(g) > 0:
@@ -166,7 +166,7 @@ class PlaquetteModel(NamedTuple):
             has_g = bool(g != 0)
             uniform_g = True
 
-        # mu — diagonal counting coupling (no sign restriction)
+        # mu: diagonal counting coupling (no sign restriction)
         if mu is None:
             mu_arr, has_mu, uniform_mu = jnp.zeros(1, dtype=dtype), False, True
         elif np.ndim(mu) > 0:
@@ -200,7 +200,7 @@ class PlaquetteModel(NamedTuple):
         )
 
     def _flippable_mask(self, config):
-        """Bool array (N_plaquette,) — True where the plaquette spins alternate ±1."""
+        """Bool array (N_plaquette,): True where the plaquette spins alternate ±1."""
         plaq_spins = config[self.plaquettes]                    # (N_plaquette, plaquette_size)
         alt_sum = jnp.sum(self.signs * plaq_spins, axis=-1)     # (N_plaquette,)
         return jnp.abs(alt_sum) > (self.plaquette_size - 0.5)

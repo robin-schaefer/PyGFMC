@@ -5,7 +5,7 @@ that every Hamiltonian's rate tensor reproduces the true matrix, that the
 estimators, the forward-walking bookkeeping and the HDF5 storage are exact,
 that the three propagators agree, and that the guides, the multi-device path
 and user-defined operators and guides work end to end. It has 587 tests, runs in
-about 50 minutes on one CPU and should be run after every change.
+about 30 minutes on one CPU and should be run after every change.
 
 ```bash
 cd tests
@@ -140,7 +140,7 @@ Golden-output regression: every propagator, for every Hamiltonian class and ever
 
 | Test | Cases | What it checks |
 |---|---|---|
-| `test_golden_output_is_reproduced_bit_for_bit` | 47 | Configurations, weights, energies, observables, raw series and stats of a short run match `reference_data/golden_cpu.npz` exactly: `cont_time`/`multi_step`/`single_step` for SpinHalf with no guide, JastrowSpinHalf, ClusterCPS, ClusterMLP and ExactGroundState (15), Spin-1 and BoseHubbard with no guide, their Jastrow and ExactGroundState (9 each), ToricCode and PlaquetteModel with no guide and ExactGroundState (6 each), each run measuring the class's diagonal and off-diagonal operators (the structure factors included); plus the gated path (`return_raw=False`, a stride and a batch size) and `statistics()`. |
+| `test_golden_output_is_reproduced` | 47 | Configurations, weights, energies, observables, raw series and stats of a short run match `reference_data/golden_cpu.npz` exactly: `cont_time`/`multi_step`/`single_step` for SpinHalf with no guide, JastrowSpinHalf, ClusterCPS, ClusterMLP and ExactGroundState (15), Spin-1 and BoseHubbard with no guide, their Jastrow and ExactGroundState (9 each), ToricCode and PlaquetteModel with no guide and ExactGroundState (6 each), each run measuring the class's diagonal and off-diagonal operators (the structure factors included); plus the gated path (`return_raw=False`, a stride and a batch size) and `statistics()`. |
 
 ### `test_guided_methods.py` (11 cases)
 
@@ -187,9 +187,9 @@ Identity-operator checks of the forward-walking pure estimator; the forward walk
 | `test_identity_shared_keys_is_exactly_one` | 1 | Shared shadow keys: <identity>_p == 1 to 1e-9 (float64) for every p and stride. |
 | `test_identity_run_gfmc_correlated_multistep` | 1 | Through the full run_gfmc path, <identity>_p == 1 to 1e-9 at ss=8 multi_step and ss=1. |
 
-### `test_io_hdf5.py` (44 cases, 1 marked `slow`)
+### `test_io_hdf5.py` (40 cases, 1 marked `slow`)
 
-write_to_HDF5 / run_from_HDF5 / evaluate_observables — the per-run storage format.
+write_to_HDF5 / run_from_HDF5 / evaluate_observables: the per-run storage format.
 
 | Test | Cases | What it checks |
 |---|---|---|

@@ -1,4 +1,4 @@
-# Fig. 9 — τ convergence of S^±(q=0) at N = 1024 (pyrochlore XXZ)
+# Fig. 9: τ convergence of S^±(q=0) at N = 1024 (pyrochlore XXZ)
 
 `\includegraphics{images/Fig9.pdf}` (label `fig:pyro_tau`, appendix `app:pyro_tau`).
 

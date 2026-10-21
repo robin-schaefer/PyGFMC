@@ -4,9 +4,6 @@
 API reference
 #############
 
-Every public function and class in the four subpackages and the pygfmc.protocols module, with its docstring.
-The entries are generated from the source code, so they always match the installed version.
-
 .. contents:: Contents
     :local:
     :depth: 1

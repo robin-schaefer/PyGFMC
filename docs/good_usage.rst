@@ -19,8 +19,8 @@ It is therefore important to identify the problems in order to mitigate them.
       :math:`\beta` is an integer for the discrete methods and a floating-point number for the continuous-time method.
       The :math:`\tau` values from the two methods should not be compared directly.
 
-    * It further exhibits **statistical errors** coming from two origins.
-      First, a finite number of measurements leads to statistical noise, which becomes problematic when the measurements are strongly autocorrelated.
+    * There are **statistical errors** coming from two origins.
+      First, a finite number of measurements leads to statistical noise, which becomes problematic when the measurements are strongly correlated.
       Second, the effective walker population collapses at large projection depth.
       After :math:`p` branching steps, the entire population traces back to only a few ancestor configurations, or to a single one.
 
@@ -29,7 +29,7 @@ In a healthy simulation, every run converges to the same plateau, signaling that
 If :math:`p` is increased further, the plateau eventually deteriorates.
 There the algorithm fails because the population has collapsed to too few ancestors.
 
-We illustrate the convergence for the critical spin-1/2 TFIM with :math:`N = 100` sites (data of Fig. 4 of the :ref:`paper <Paper>`).
+We illustrate the convergence for the critical spin-1/2 TFIM (data of Fig. 4 of the :ref:`Paper <Paper>`).
 Each panel shows the difference to the exact value per site: energy (a), nearest-neighbor correlator (b), and transverse magnetization (c).
 Panel (c) is not measured separately: the energy is a linear combination of the correlator and the transverse magnetization, so (c) follows from (a) and (b).
 
@@ -44,7 +44,7 @@ The figure shows data for three different step sizes, :math:`\beta = 0.25` (red)
 :math:`\beta = 0.25` is clearly superior, leading to a stable plateau for the entire projection depth of :math:`\tau=100`.
 The step size can be used to improve the convergence at larger projection depth.
 This is discussed in :ref:`Tuning the step size <tuning-step-size>`.
-We find that the energy converges faster than the correlator and is more stable.
+We find that the energy converges better.
 
 
 
@@ -58,13 +58,14 @@ Check each observable separately, as the energy usually converges at much smalle
 A better guiding wavefunction reduces the projection depth needed.
 
 In the :ref:`convergence figure <fig-convergence>` above, the plateau is reached only for :math:`\tau \gtrsim 25` for the observables.
+The largest step size :math:`\beta=1.5` (green) is not capable of resolving the plateau.
 
 Statistical errors
 ==================
 
 The most important error source is the collapse of the effective sample size, caused by the branching of walkers.
 A few lineages of ancestors (or a single one) dominate the reconfiguration and reduce the effective sample size.
-This collapse is why the plateau in the :ref:`convergence figure <fig-convergence>` deteriorates at large :math:`\tau`.
+This collapse is why the plateau deteriorates at large :math:`\tau` in the :ref:`figure above <fig-convergence>`.
 
 We define the effective sample size after :math:`m` branching steps as
 
@@ -166,8 +167,9 @@ The optimal :math:`\beta` gives the largest :math:`n_\mathrm{eff}` at the target
    :align: center
    :alt: Effective sample size versus projection depth for ten step sizes
 
-Step sizes from :math:`\beta = 0.25` to :math:`2` give nearly the same :math:`n_\mathrm{eff}` up to :math:`\tau \approx 60`; at the largest depths :math:`\beta = 0.25` and :math:`0.5` keep slightly more.
-If multiple values lead to similarly good results, use the largest one for a shorter runtime.
+Step sizes from :math:`\beta = 0.25` to :math:`2` give nearly the same :math:`n_\mathrm{eff}` up to :math:`\tau \approx 60`.
+At the largest depths :math:`\beta = 0.25` and :math:`0.5` perform slightly better.
+If multiple values lead to similarly good results, use the largest one as it brings a speedup.
 
 
 Further tips
@@ -179,7 +181,7 @@ Further tips
 * **Use many walkers.** The more walkers, the better.
 * **Off-diagonal observables.** Use :code:`off_diag_stride` to reduce the autocorrelation time between measurements.
 * **Discrete methods.** If no diagonal element is present (e.g., pure hopping), we recommend working with the discrete method using :code:`method="single_step"`.
-* Check if a GPU is used:
+* **Check if a GPU is used**:
 
   .. container:: center
 

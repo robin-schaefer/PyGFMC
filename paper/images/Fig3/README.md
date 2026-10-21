@@ -1,4 +1,4 @@
-# Fig. 3 — GFMC throughput vs walker population
+# Fig. 3: GFMC throughput vs walker population
 
 **Figure:** `images/Fig3.pdf` (`\label{fig:throughput}`).
 

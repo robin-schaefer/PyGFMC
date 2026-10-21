@@ -6,7 +6,7 @@ protocol, and ``idx`` is the positional basis index built from
 ``local_hilbert_space``.
 
 When ψ_T = ψ_0, the GFMC local energy collapses to a constant (the ground
-state energy) and the Monte Carlo variance vanishes — this guide is the
+state energy) and the Monte Carlo variance vanishes; this guide is the
 controlled limit for diagnostics, not a production guide: the stored
 amplitude vector has size ``d^N``, so it is only practical for systems
 that fit in exact diagonalisation.
@@ -152,7 +152,7 @@ class ExactGroundState:
 
         When ``new_configs`` is given (rows = successor configs of some
         operator, as produced by ``op.get_rates(config, return_configs=True)``),
-        the ratios follow that operator's transition layout — this is the path
+        the ratios follow that operator's transition layout; this is the path
         GFMC takes (``pygfmc.engine.evolution.transition_rates`` always passes the
         successors for this guide).  When ``new_configs`` is ``None`` the
         successors are generated from the bound Hamiltonian:

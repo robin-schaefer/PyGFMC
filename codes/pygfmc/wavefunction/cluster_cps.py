@@ -52,7 +52,7 @@ def _compute_orbit_mapping(m, automorphisms, use_parity=False):
     """Reduce the ``2^m`` patch patterns by a closed permutation group.
 
     ``automorphisms`` is a ``(N_auto, m)`` int array; row ``i`` is a permutation
-    of the patch slots — applying it sends bit pattern ``b`` to ``b[autos[i]]``.
+    of the patch slots; applying it sends bit pattern ``b`` to ``b[autos[i]]``.
 
     Assumes the rows form a closed group under composition; the identity is
     auto-prepended if not already present.
@@ -67,15 +67,15 @@ def _compute_orbit_mapping(m, automorphisms, use_parity=False):
 
     If ``use_parity=True``, also apply the global spin flip x → −x to the
     permuted-bits array (equivalently ``bits → 1 − bits``), compute its
-    minimum the same way, and take the overall minimum of the two — i.e.,
+    minimum the same way, and take the overall minimum of the two, i.e.,
     enlarge the equivalence to ``automorphisms ∪ (automorphisms · parity)``,
     a group of size ``2 · N_auto``.
 
     Returns:
-        idx_to_param: ``(2^m,)`` int32 — orbit id of each pattern.
-        param_to_rep: ``(M,)``   int32 — the canonical (smallest) pattern in
+        idx_to_param: ``(2^m,)`` int32: orbit id of each pattern.
+        param_to_rep: ``(M,)``   int32: the canonical (smallest) pattern in
                       each orbit, in orbit-id order.
-        M: int — number of distinct orbits / variational parameters per type.
+        M: int, the number of distinct orbits / variational parameters per type.
     """
     autos = np.asarray(automorphisms, dtype=np.int64)
     if autos.ndim != 2 or autos.shape[1] != m:
@@ -95,7 +95,7 @@ def _compute_orbit_mapping(m, automorphisms, use_parity=False):
     # int32 holds indices up to 2^31 − 1; safe for m ≤ 30. Promote to int64
     # if a user ever asks for a huge patch.
     idx_dt = np.int32 if m <= 30 else np.int64
-    # bits are 0/1 — int8 is enough (and shrinks the (2^m, m) buffer ~8×).
+    # bits are 0/1; int8 is enough (and shrinks the (2^m, m) buffer ~8×).
     bits   = ((np.arange(size, dtype=idx_dt)[:, None]
                >> np.arange(m,   dtype=idx_dt)[None, :]) & 1).astype(np.int8)
     powers = (1 << np.arange(m, dtype=idx_dt))                         # (m,)
@@ -105,7 +105,7 @@ def _compute_orbit_mapping(m, automorphisms, use_parity=False):
     #     indices_perm[p, i] = Σ_j bits[p, autos[i, j]] · powers[j]
     #                        = Σ_k bits[p, k]            · Pinv[i, k]
     # with   Pinv[i, k] = powers[argsort(autos[i])][k]
-    # — i.e. Pinv[i] is the auto-permuted powers vector. That gives
+    # (i.e. Pinv[i] is the auto-permuted powers vector). That gives
     # `indices_perm` directly as a 2D matmul, and chunking over the auto
     # axis keeps even this 2D buffer bounded.
     #

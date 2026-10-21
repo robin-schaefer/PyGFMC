@@ -6,7 +6,7 @@ one stores a run, the other continues a stored chain;
 stored per-step series.  A file holds **one continuous Markov chain**: each
 call appends a group ``/run_<n>`` (``n`` 0-based) carrying that call's
 windowed energies, observable estimates, statistics and per-run parameters,
-and — when ``raw`` is passed — appends the per-step series to the shared
+and (when ``raw`` is passed) appends the per-step series to the shared
 top-level ``/raw`` group.  Because the raw series are stored, the energy can
 be re-windowed for *any* projection length after the fact
 (``evaluate_observables(load_raw_from_HDF5(path), p_array=...)``); the windowed values
@@ -15,7 +15,7 @@ in the group are a convenience, not the only record.
 Continuing a chain needs two things that live outside the estimator output:
 the **walker ensemble** and the **RNG stream**.  Both are stored.  The
 ensemble is a single top-level ``/current_walkers`` group, overwritten by each
-call — the name says which ensemble it is, since it tracks the newest run and
+call; the name says which ensemble it is, since it tracks the newest run and
 not any particular one,
 because only the newest one can be continued from and a production ensemble
 is large enough (~100 MB and up) that keeping one per run would dominate the
@@ -74,7 +74,7 @@ FORMAT_VERSION = 2
 #: Parameters that must be identical across every run in one file.  A file is
 #: one continuous chain through one physical system measured one way, so a
 #: change in any of these means the runs cannot be concatenated, re-windowed
-#: together, or averaged — which is a mistake worth stopping the job for
+#: together, or averaged, which is a mistake worth stopping the job for
 #: rather than discovering in the analysis.  Grouped by why they matter:
 #:
 #: * the propagated distribution (``n_walkers`` sets the branching statistics,
@@ -123,7 +123,7 @@ def pytree_fingerprint(obj):
     """Content hash of a Hamiltonian, operator or guide.
 
     Class names and operator names identify these objects by *label*, and
-    every label can stay fixed while the thing behind it changes — a guide
+    every label can stay fixed while the thing behind it changes: a guide
     retrained into the same file, a coupling edited between two runs of a
     campaign, an operator rebuilt on a different bond under the same name.
     All would pass a name check and produce a chain that is not
@@ -135,7 +135,7 @@ def pytree_fingerprint(obj):
     bytes, with no serialisation format to maintain.  Reconstructing these
     objects from a file is deliberately NOT attempted: no Hamiltonian class
     has a ``load``, ``generate_state`` is code rather than data, and
-    user-defined operators may hold anything at all — a reconstruction path
+    user-defined operators may hold anything at all; a reconstruction path
     that worked only for the built-in classes would be worse than none.
 
     Two limitations worth knowing.  The hash is only as complete as the pytree
@@ -217,9 +217,9 @@ def _split_stats(stats):
     """Route ``stats`` into (parameters, statistics).
 
     ``run_gfmc`` puts its own inputs under the ``parameters/`` prefix inside
-    ``stats``; everything else — the sampler-health series, the offspring and
+    ``stats``; everything else (the sampler-health series, the offspring and
     ancestor diagnostics, ``autocorrelation/*``, ``it_per_sec``, ``runtime``,
-    ``total_wall_time``, ``avg_log_weight`` — is a measured quantity.  They go
+    ``total_wall_time``, ``avg_log_weight``) is a measured quantity.  They go
     to sibling groups so validation reads one of them and never has to filter
     the other.  Nothing is dropped.
     """
@@ -317,7 +317,7 @@ def _check_parameters(f, params, source):
     ]
     if mismatches:
         raise ValueError(
-            f"[{source}] parameter mismatch — a file holds one continuous "
+            f"[{source}] parameter mismatch: a file holds one continuous "
             f"chain through one system measured one way, so these runs cannot "
             f"share it:\n  " + "\n  ".join(mismatches) +
             "\nWrite a new file, or see pygfmc.engine.io.MAY_DIFFER for what is allowed "
@@ -390,7 +390,7 @@ def write_to_HDF5(filename: str, stats: Mapping[str, Any],
                          ``parameters/`` entries carry everything that
                          identifies the run, so without them a file has
                          nothing to validate an append against and nothing to
-                         rebuild a continuation from — the two things the
+                         rebuild a continuation from, the two things the
                          format exists for.  The fixed ones go to
                          ``/parameters``, the per-run ones to
                          ``run_<n>/parameters``, and everything measured
@@ -400,7 +400,7 @@ def write_to_HDF5(filename: str, stats: Mapping[str, Any],
                          ``run_<n>/statistics``.
         walkers:         Final :class:`Walker` batch.  Stored as the top-level
                          ``/current_walkers`` checkpoint, overwriting the
-                         previous one — only the newest ensemble can continue
+                         previous one; only the newest ensemble can continue
                          the chain.
         energy:          ``dict`` p → energy, as returned by ``run_gfmc``.
         obs:             ``dict`` name → ``dict`` p → value.
@@ -435,7 +435,7 @@ def write_to_HDF5(filename: str, stats: Mapping[str, Any],
     if not params:
         raise ValueError(
             "write_to_HDF5 got a stats dict with no 'parameters/' entries. "
-            "Pass the dict returned by run/run_gfmc unmodified — run_gfmc "
+            "Pass the dict returned by run/run_gfmc unmodified; run_gfmc "
             "records its own inputs there.")
     p_array = None
     if "p_array" in params:
@@ -723,7 +723,7 @@ def _read_from_HDF5(filename, run=-1):
         A dict with keys ``index``, ``energy``, ``p_array``, ``observables``,
         ``parameters`` (the file's fixed set merged with this run's own, also
         available separately as ``fixed_parameters``/``run_parameters``) and
-        ``statistics`` — or a list of such dicts when ``run`` is ``None``.
+        ``statistics``, or a list of such dicts when ``run`` is ``None``.
         The raw series are not per run; read them with
         :func:`load_raw_from_HDF5`.
     """
@@ -1182,7 +1182,7 @@ def resume_from_HDF5(filename: str, hamiltonian: Optional[Operator] = None,
 
     The returned ``rng_key`` is the stored production-final key, so the step
     keys continue past everything already walked, and ``warmup_steps=0`` because the
-    stored ensemble is already equilibrated — re-warming it would discard that
+    stored ensemble is already equilibrated; re-warming it would discard that
     equilibration and put a discontinuity in the middle of the chain, which is
     exactly what a single-chain-per-file layout is meant to prevent.  The
     stored ``avg_log_weight`` is passed along for the same reason.
@@ -1195,7 +1195,7 @@ def resume_from_HDF5(filename: str, hamiltonian: Optional[Operator] = None,
 
     This is the natural place for that check.  ``write_to_HDF5`` performs it as
     well, but only once the run has finished.  Omitting the objects leaves the
-    contents unverified and warns as much — the file records what the earlier
+    contents unverified and warns as much: the file records what the earlier
     runs used, and only the caller holds what this one is about to use.
 
     Args:
@@ -1307,7 +1307,7 @@ def run_from_HDF5(filename: str, hamiltonian: Operator, guide: Optional[Guide] =
                   walker_filename: Optional[str] = None, **run_kwargs) -> tuple:
     """Continue a stored chain in one call, and return what ``run_gfmc`` returns.
 
-    Everything the continuation needs already sits in the file — the fixed
+    Everything the continuation needs already sits in the file: the fixed
     parameters in ``/parameters``, the ensemble in ``/current_walkers``, the
     stream in the newest run's ``rng_key_next``.  This
     reads all of it, verifies the objects handed in against the stored
@@ -1326,12 +1326,12 @@ def run_from_HDF5(filename: str, hamiltonian: Operator, guide: Optional[Guide] =
     ``p/2`` rows would otherwise be zeros; the previous run recorded exactly
     those values by walking ``m_max`` steps further while it still had the
     history, and they are substituted here.  The off-diagonal observables need
-    no such repair — their shadow chains only look forward.
+    no such repair; their shadow chains only look forward.
 
     ``lam``, ``step_size``, ``p_array``, ``method`` and ``off_diag_stride``
     come from the file rather than from arguments, which is what makes the
     continuation *the same calculation* instead of a similar one.  Anything in :data:`MAY_DIFFER` may still be
-    passed through ``run_kwargs`` — ``verbosity`` and ``number_of_outputs``
+    passed through ``run_kwargs``; ``verbosity`` and ``number_of_outputs``
     typically are.
 
     Args:
@@ -1353,7 +1353,7 @@ def run_from_HDF5(filename: str, hamiltonian: Operator, guide: Optional[Guide] =
                             what the file is there to prevent.
 
     Returns:
-        ``(walkers, energy, obs, stats, raw)`` — exactly ``run``'s tuple
+        ``(walkers, energy, obs, stats, raw)``, exactly ``run``'s tuple
         (a 4-tuple without ``raw`` if ``return_raw=False`` is passed).
 
     Raises:
@@ -1370,7 +1370,7 @@ def run_from_HDF5(filename: str, hamiltonian: Operator, guide: Optional[Guide] =
                      ({"lam"} if "lam" in run_kwargs else set()))
     if blocked:
         raise ValueError(
-            f"[run_from_HDF5] {blocked} cannot be overridden — they are read "
+            f"[run_from_HDF5] {blocked} cannot be overridden; they are read "
             "from the file so that the continuation is the same calculation. "
             "Start a new file to change any of them.")
 
@@ -1476,7 +1476,7 @@ def check_run_compatible(filename: str, stats: Optional[Mapping[str, Any]] = Non
     """Validate a planned run against a stored file *before* walking.
 
     ``write_to_HDF5`` performs the same check, but only once the run has
-    finished — by which point a mismatch has already cost the wall-clock.
+    finished, by which point a mismatch has already cost the wall-clock.
     Call this first with the parameters you are about to use and the job stops
     immediately instead::
 
@@ -1489,9 +1489,9 @@ def check_run_compatible(filename: str, stats: Optional[Mapping[str, Any]] = Non
     ``hamiltonian``, ``guide`` and the two operator dicts may be passed as the
     objects themselves, in which case their class names, operator names and
     content fingerprints (see :func:`pytree_fingerprint`) are all derived and
-    compared — so a retrained guide or an edited coupling is caught even
+    compared, so a retrained guide or an edited coupling is caught even
     though every name still agrees.  Names are
-    checked, not only counts — two runs measuring the same *number* of
+    checked, not only counts: two runs measuring the same *number* of
     different operators produce datasets of identical shape whose rows mean
     different things, which no later shape check can catch.
 

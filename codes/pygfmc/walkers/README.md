@@ -1,4 +1,4 @@
-# `pygfmc.walkers` — walkers, initializers and reconfiguration
+# `pygfmc.walkers`: walkers, initializers and reconfiguration
 
 A GFMC simulation is a population of **walkers**: each is a basis
 configuration with a log weight, and together they represent the projected
@@ -12,7 +12,7 @@ import the engine.
 from pygfmc.walkers import Walker, prepare_walkers_sz, reconfiguration
 ```
 
-## `walker.py` — the `Walker` pytree and the initializers
+## `walker.py`: the `Walker` pytree and the initializers
 
 - **`Walker(config, log_weight, e_loc)`**: `NamedTuple` pytree holding a
   batch (or a single walker): configurations `(N_walkers, N_sites)`, log
@@ -35,14 +35,14 @@ from pygfmc.walkers import Walker, prepare_walkers_sz, reconfiguration
     configurations, an `(N_walkers, N_sites)` array (e.g. all walkers in a
     fixed topological sector of the toric code, `jnp.ones((N_walkers, N_sites))`).
 
-## `reconfiguration.py` — systematic resampling
+## `reconfiguration.py`: systematic resampling
 
-- **`reconfiguration(walkers, rng_key)`**
-  — systematic resampling. Returns `(walkers, log_G_n, E_n, indices)`
+- **`reconfiguration(walkers, rng_key)`**:
+  systematic resampling. Returns `(walkers, log_G_n, E_n, indices)`
   with `log_G_n` the log of the mean weight, `E_n` the weighted local energy
   and `indices[i]` the parent of new walker `i`; the new walkers have zero
   log weights.
-- `systematic_parents(w, psi)` — the parent lookup of systematic resampling
+- `systematic_parents(w, psi)`: the parent lookup of systematic resampling
   for normalised weights `w` and offset `psi`, shared with the multi-device
   variant: parent `k` for `cdf[k-1] <= u < cdf[k]`, capped at the last
   walker of positive weight, so a zero-weight walker is never selected
@@ -51,7 +51,7 @@ from pygfmc.walkers import Walker, prepare_walkers_sz, reconfiguration
 The multi-device variant (`reconfiguration_global`, which resamples across all
 devices) is part of the engine's multi-GPU driver, `pygfmc/engine/multi_gpu.py`.
 
-## `_h5io.py` — internal helper
+## `_h5io.py`: internal helper
 
 `write_attrs(group, attrs)` writes scalar metadata as HDF5 group attributes
 (`None` values skipped, float scalars stored as Python `float`). It serves

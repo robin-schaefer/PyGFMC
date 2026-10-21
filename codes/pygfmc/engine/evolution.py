@@ -458,7 +458,7 @@ def evolve_walker_multi_step(walker, hamiltonian, n_bra, guide, rng_key,
     # the diagonal holds.  A fori_loop would always run n_bra iterations
     # and compute get_rates every time, discarding the speedup.
     # iter_count tracks while_loop iterations; bounded by n_bra (steps_used += k ≥ 1)
-    # so fold_in(rng_key, 2*iter) uses at most 2*n_bra distinct indices — no rng in carry
+    # so fold_in(rng_key, 2*iter) uses at most 2*n_bra distinct indices; no rng in carry
     def cond(carry):
         config, log_weight, steps_used, iter_count, state_ = carry
         return steps_used < n_bra
@@ -854,7 +854,7 @@ def apply_operator_one(config, key, op, guide, cache_op):
     diagonal operator (``M_total == 1``) keeps the configuration and returns
     its diagonal element.  Shared by :func:`forward_walk_operator` and
     :func:`pygfmc.engine.multi_gpu.forward_walk_operator_global`."""
-    M_total = op.M_total   # static Python int — total rates (diagonal + off-diagonal elements)
+    M_total = op.M_total   # static Python int: total rates (diagonal + off-diagonal elements)
     rates, new_configs = transition_rates(
         config, op, guide,
         return_configs=False,
@@ -866,16 +866,16 @@ def apply_operator_one(config, key, op, guide, cache_op):
     cdf = jnp.cumsum(rates)
     total_weight = cdf[-1]
     # total_weight == 0 means no transition (diagonal or off-diagonal) has
-    # any weight for this config under this operator — e.g. a single-bond
+    # any weight for this config under this operator, e.g. a single-bond
     # measurement operator whose bond sites are both empty or both at
     # max occupation, so neither hop direction is allowed. searchsorted
     # on an all-zero cdf for u=0 returns len(cdf) (one past the last
-    # valid index), and indexing new_configs there does not safely clip —
+    # valid index), and indexing new_configs there does not safely clip:
     # it returns a corrupted config (observed: a site occupation of -1),
     # which then poisons the shadow chain with NaN. Guard explicitly:
     # stay at the current (diagonal) config with zero weight, mirroring
     # the M_total==1 branch's "no off-diagonal channel" semantics. Adds
-    # one scalar compare + jnp.where — no extra rate/Hamiltonian work.
+    # one scalar compare + jnp.where; no extra rate/Hamiltonian work.
     is_zero = total_weight <= 0
     state_idx = jnp.where(is_zero, 0, sample_index(cdf, rates, key))
     if new_configs is None:
@@ -900,8 +900,8 @@ def forward_walk_operator(walkers: Walker, op: Operator, h_main: Operator,
 
     ``op`` may be any object implementing the operator protocol
     (:class:`pygfmc.Operator`: ``M_total``, ``get_rates``, and
-    ``generate_state`` when ``M_total > 1``) — e.g. SpinHalf,
-    PlaquetteModel, or ToricCode instances used as observables — whose
+    ``generate_state`` when ``M_total > 1``), e.g. SpinHalf,
+    PlaquetteModel, or ToricCode instances used as observables, whose
     guide-transformed rates are all non-negative.  ``run_gfmc`` calls it at
     every measured production step (every ``off_diag_stride``-th step), after
     reconfiguration.  The drivers require even ``p`` (``m = p // 2`` shadow
@@ -956,7 +956,7 @@ def forward_walk_operator(walkers: Walker, op: Operator, h_main: Operator,
                       walker batch into chunks of that size via
                       ``jax.lax.map``, cutting the peak (N_walkers, n_off,
                       max_aff) guide intermediate by op_batch_size/N_walkers.
-                      **Bit-identical** — the per-walker work and its PRNG key
+                      **Bit-identical**: the per-walker work and its PRNG key
                       are unchanged, so no float reassociation is introduced.
                       Must divide N_walkers.  Use it when a wide operator
                       (e.g. a site sum with many terms) would otherwise not
@@ -966,7 +966,7 @@ def forward_walk_operator(walkers: Walker, op: Operator, h_main: Operator,
         (val, log_norm) : pair of jnp.ndarray, each shape (len(m_array),),
         ordered by sorted m.
 
-            val[j]      = mean(vals after m_array[j] shadow steps) — the
+            val[j]      = mean(vals after m_array[j] shadow steps), the
                           operator measurement alone, linear and SIGNED.
             log_norm[j] = log of the shadow chain's accumulated weight
                           product after m_array[j] steps.  It drifts roughly
@@ -986,7 +986,7 @@ def forward_walk_operator(walkers: Walker, op: Operator, h_main: Operator,
         i.e. ``log_norm`` = log G_aux^{+m} is a numerator FACTOR: the ket
         half of the window is supplied by the shadow chain because that half
         carries the operator, while the denominator is main chain only.
-        G_aux does not cancel — its ratio to G_main^{+m} is what converts the
+        G_aux does not cancel; its ratio to G_main^{+m} is what converts the
         mixed estimator into the pure one.
     """
     N_walkers = walkers.config.shape[0]

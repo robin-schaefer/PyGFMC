@@ -1,6 +1,6 @@
 # PyGFMC
 
-PyGFMC is a Green's Function Monte Carlo (GFMC) code for quantum lattice models, written in [JAX](https://github.com/jax-ml/jax) so it runs on CPUs and GPUs (including several GPUs at once). It projects the ground state out of a trial state by imaginary-time evolution, with importance sampling by a guiding wavefunction. It covers:
+PyGFMC is a Green's Function Monte Carlo (GFMC) code for quantum lattice models, written in [JAX](https://github.com/jax-ml/jax) so it runs on CPUs and GPUs (including several GPUs at once). It projects the ground state out of a trial state. It covers:
 
 - three propagators: `single_step`, `multi_step` and continuous-time `cont_time` (the default);
 - mixed estimators for the energy, and pure (forward-walking) estimators for diagonal and off-diagonal observables;
@@ -95,7 +95,7 @@ H = SpinHalf.create(lat.edges, J_x=-1.0, J_y=-1.0, J_z=1.0)
 guide = JastrowSpinHalf(H.N, H.edges, beta=0.3)
 walkers = prepare_walkers_sz(512, H.N, jax.random.PRNGKey(0), sz=0)
 
-# fresh, unequilibrated walkers: ask for a warm-up explicitly (default is none)
+# fresh, unequilibrated walkers: a warm-up (1000 steps by default without avg_log_weight; here 500)
 walkers, energy, obs, stats, raw = run(
     walkers, 2000, H, step_size=0.2, guide=guide,
     p_array=[2, 4, 8, 16], method="cont_time",
@@ -144,7 +144,7 @@ examples, stored with the outputs of a full run:
 - `method` is one of `"single_step"`, `"multi_step"` or `"cont_time"` (the default). With `cont_time`, `step_size` is the imaginary time per branching step (any positive float) and no shift is needed. With the discrete methods, `step_size` is an integer number of sub-steps of `(lam - H)`, and the keyword `lam` (the shift, `lam >= max_x H_xx`) is required.
 - `run` / `run_gfmc` return `(walkers, energy, obs, stats, raw)`. Access energy as `energy[p]` and observables as `obs[name][p]`. For even windows, the projection depth on each side of the estimator is `tau = (p/2) * step_size`.
 - `rng_key` is the position of the chain. Passing `stats["parameters/rng_key_next"]` back continues the run exactly. Repeated `run_gfmc` calls reuse the compiled scans, so a continuation does not recompile.
-- `warmup_steps` defaults to 0 (no warm-up); pass e.g. `warmup_steps=10000` for a fresh start.
+- `warmup_steps` defaults to `None`: 1000 warm-up steps when no `avg_log_weight` is given, none when one is (a continuation). Large systems may need more, e.g. `warmup_steps=10000`; an explicit `warmup_steps=0` without `avg_log_weight` raises `ValueError`.
 - `verbosity=0` prints nothing; the default progress line reports the energy per `p`, and operator estimates are printed only at `verbosity >= 8`.
 - Off-diagonal measurement operators must have non-negative rates, and all `p` must be even when one of them has an off-diagonal transition (`M_total > 1`).
 

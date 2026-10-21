@@ -57,7 +57,7 @@ class JastrowSpinHalf:
                internally).
         beta:  required; a scalar (one tied coupling for every pair) or an
                array of length ``n_pairs`` (one coupling per pair).
-        h:     one-body fields — a scalar (one tied field on every site), an
+        h:     one-body fields; a scalar (one tied field on every site), an
                (N,) float array (one per site), or None (no field).
         dtype: JAX dtype for amplitudes.
 
@@ -401,7 +401,7 @@ class JastrowSpinHalf:
         """Build and return the external-partner cache for ``op``'s edges.
 
         Returns a ``JastrowOpCache`` pytree of shape-``(n_edges_op, 2, max_deg)``
-        ``(edge_other, edge_J)`` arrays — the result of
+        ``(edge_other, edge_J)`` arrays, the result of
         joining ``self.site_other`` / ``self.site_J`` with ``op.edge_i`` /
         ``op.edge_j`` and masking out the i↔j bond endpoints themselves.
         Pass the returned cache to ``log_diff_from_operator(..., cache=...)``.

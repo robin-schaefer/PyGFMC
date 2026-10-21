@@ -132,7 +132,7 @@ On GPUs it reaches nearly three orders of magnitude higher throughput than on CP
 %
 This enables ensembles of up to $10^7$ walkers and expressive guiding wavefunctions, including high-dimensional neural quantum states.
 %
-As a result, \PyGFMC{} can access ground states of systems in which other quantum Monte Carlo methods struggle to equilibrate.
+\PyGFMC{} can access ground states of systems in which other quantum Monte Carlo methods struggle to equilibrate.
 %
 We demonstrate its capabilities on the notoriously difficult problem of quantum spin ice.
 %
@@ -998,7 +998,7 @@ However, the transverse magnetization obtained from the diagonal run at $\tau=12
 		%
 		The shaded band marks the transition at $J_{xy}/J_z=-\frac{31}{300}\pm\frac{1}{1200}$, where the curves for different $N$ cross.
 		%
-		GFMC parameters: $2^{14}$ walkers ($2^{15}$ for $N=1024$ near the transition), $2000$ measurements with an off-diagonal stride of $\tau\approx 3$ to $\tau\approx 20$, and $2$ independent samples per point.
+		GFMC parameters: $2^{14}$ walkers ($2^{15}$ for $N=1024$ near the transition), $2000$ measurements with an off-diagonal stride of $\tau\approx 3$ to $\tau\approx 15$, and $2$ independent samples per point.
 		%
 		We used projection depths from $\tau=14$ to $\tau=60$ depending on $N$ and $J_{xy}$.
 		%
@@ -1134,7 +1134,7 @@ Operators like $S^x$ therefore must be split into separate operators, such as $S
 
 As a minimal example, consider a nearest-neighbor Hamiltonian for spin-$1/2$ on a one-dimensional chain with periodic boundary conditions, non-uniform coupling amplitudes $c_j^{z/\pm}$, and local $z$-fields $m_j$:
 \begin{align}
-	H \;=\; \underbrace{\sum_{j=0}^{L-1} m_j\, S_j^z + \sum_{j=0}^{L-1}c_j^z
+	H \;=\; \underbrace{-\sum_{j=0}^{L-1} m_j\, S_j^z + \sum_{j=0}^{L-1}c_j^z
 	S^z_{j}\, S^z_{(j+1) \bmod L}}_{\equiv\, D}
 	\;-\; \sum_{j=0}^{L-1} c_j^\pm \left(
 		S^+_{j}\, S^-_{(j+1) \bmod L} + \text{h.c.}\right).
@@ -1256,7 +1256,7 @@ m     = np.linspace(-0.3, 0.3, L)                      # local z-fields m_j
 H = SpinHalf.create(edges,
                     J_x=J_xy, J_y=J_xy,    # random per-edge XY
                     J_z=1.0,               # uniform Ising coupling
-                    h_z=-m)                # SpinHalf has -h_z S^z, so h_z = -m
+                    h_z=m)                 # linear ramp
 \end{lstlisting}
 
 \paragraph{Exact diagonalization.} \PyGFMC{} provides an option to compute the ground state (and excited states) using exact diagonalization:
@@ -1446,7 +1446,7 @@ The $\mathbf{k}$ vectors must be compatible with the periodic boundary condition
 	={AB}(0)+{AB}(\mathbf{k}),\\
 	\mathrm{with }\qquad{AB}(\mathbf{k})=&\sum_{i<j}\cos\!\big(\mathbf{k}\cdot\left(\mathbf{r}_{i}-\mathbf{r}_{j}\right)\big)\Big(A_iB_j+\mathrm{h.c.}\Big)\,.
 \end{align}
-There are different options for the channel: \pyinline{'SpSm'}: $A=S^+$ and $B=S^-$; \pyinline{'SpSp'}: $A=S^+$ and $B=S^+$; \pyinline{'SpSm+SpSp'}: the sum of the two, $S^+_iS^-_j+S^+_iS^+_j+\mathrm{h.c.}=4S^x_iS^x_j$.
+There are different options for the channel: \pyinline{'SpSm'}: $A=S^+$ and $B=S^-$; \pyinline{'SpSp'}: $A=S^+$ and $B=S^+$; \pyinline{'SpSm+SpSp'}: $A=B=\sqrt{2} S^x$, which results in $A_iB_j+\mathrm{h.c}=S^+_iS^-_j+S^+_iS^+_j+\mathrm{h.c.}=4S^x_iS^x_j$.
 %
 The channel \pyinline{'SzSz'} ($A=B=S^z$) yields the diagonal operator $S^{zz}(0)+S^{zz}(\mathbf{k})$ of \autoref{eq:szsz_structure_factor}.
 %
@@ -1631,15 +1631,15 @@ We complete our example with:
 from pygfmc import run, write_to_HDF5, run_from_HDF5
 
 walkers, energy, obs, stats, raw = run(
-    walkers, n_steps=5000, hamiltonian=H, step_size=0.5,
-    guide=guide, p_array=[4, 8, 16, 32], warmup_steps=500,
+    walkers, n_steps=2000, hamiltonian=H, step_size=0.5,
+    guide=guide, p_array=[4, 8, 16, 32, 48], warmup_steps=500,
     method='cont_time', rng_key=rng,
     diag_operators=diag_operators,
     off_diag_operators=off_diag_operators,
 )
 write_to_HDF5('run.h5', stats, walkers, energy, obs, raw)
 
-# continue the same chain for another 5000 steps
+# continue the same chain for another 2000 steps
 walkers, energy, obs, stats, raw = run_from_HDF5(
     'run.h5', H, guide, diag_operators, off_diag_operators,
 )
@@ -1738,7 +1738,7 @@ The first suite, \texttt{core}, checks individual parts of the code.
 %
 The second suite, \texttt{benchmark}, performs end-to-end benchmarks of various models against \texttt{QuSpin}~\cite{weinberg_quspin_2017,weinberg_quspin_2019}, \texttt{DanceQ}~\cite{schaefer_danceQ_2025,DanceQ_code}, and \texttt{TeNPy}~\cite{tenpy2024}.
 %
-The suites take about $50$ and $140$ minutes to run on a single CPU, respectively.
+The suites take about $30$ and $140$ minutes to run on a single CPU, respectively.
 
 \subsection{Core tests}
 The core suite contains over $500$ tests.

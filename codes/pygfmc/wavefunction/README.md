@@ -1,4 +1,4 @@
-# `pygfmc.wavefunction` — guiding wavefunctions for PyGFMC
+# `pygfmc.wavefunction`: guiding wavefunctions for PyGFMC
 
 This subpackage provides the guiding (trial) wavefunctions ψ_T used by the GFMC
 engine ([`pygfmc.engine`](../engine/README.md)), plus optional NetKet-based
@@ -19,10 +19,10 @@ needed to *train* a guide (see [Training with NetKet](#training-with-netket)).
 - [Writing a custom guide](#writing-a-custom-guide)
 - [Usage example](#usage-example)
 - [Module reference](#module-reference)
-  - [`jastrow_spin_half.py` — `JastrowSpinHalf`](#jastrow_spin_halfpy--jastrowspinhalf)
-  - [`jastrow_spin.py` — `JastrowSpin`](#jastrow_spinpy--jastrowspin)
-  - [`jastrow_bose_hubbard.py` — `JastrowBoseHubbard`](#jastrow_bose_hubbardpy--jastrowbosehubbard)
-  - [`cluster_cps.py` — `ClusterCPS`](#cluster_cpspy--clustercps)
+  - [`jastrow_spin_half.py`: `JastrowSpinHalf`](#jastrow_spin_halfpy-jastrowspinhalf)
+  - [`jastrow_spin.py`: `JastrowSpin`](#jastrow_spinpy-jastrowspin)
+  - [`jastrow_bose_hubbard.py`: `JastrowBoseHubbard`](#jastrow_bose_hubbardpy-jastrowbosehubbard)
+  - [`cluster_cps.py`: `ClusterCPS`](#cluster_cpspy-clustercps)
   - [`cluster_mlp.py`](#cluster_mlppy)
   - [`exact_ground_state.py`](#exact_ground_statepy)
   - [`generic_netket_training.py`](#generic_netket_trainingpy)
@@ -44,7 +44,7 @@ fluctuate wildly.
     H_{x'x} · ψ_T(x') / ψ_T(x),
 
 so the engine needs only *ratios* of guide amplitudes between a configuration
-and its successors — never the normalisation of ψ_T. The per-walker weight
+and its successors, never the normalisation of ψ_T. The per-walker weight
 update is governed by the **local energy**
 
     e_L(x) = Σ_{x'} H_{x'x} ψ_T(x') / ψ_T(x).
@@ -110,11 +110,11 @@ pairs. A run in this mode is not bit-identical to the same run without it.
 Further conventions:
 
 - **Configurations** are float arrays of per-site values from the
-  Hamiltonian's `local_hilbert_space` — for spin-1/2 that is `±1`, not `0/1`.
+  Hamiltonian's `local_hilbert_space`; for spin-1/2 that is `±1`, not `0/1`.
 - **Pytrees.** A guide must be a registered JAX pytree
   (`jax.tree_util.register_pytree_node`) so it can be passed into jitted code.
   Arrays (in particular trainable parameters) go into the *children*; the
-  *aux data* must be hashable and comparable — Python ints, floats, tuples,
+  *aux data* must be hashable and comparable: Python ints, floats, tuples,
   dtypes, never raw arrays.
 - **HDF5.** The shipped guides round-trip through `guide.save(path, **attrs)`
   and `Class.load(path, ...)`; extra keyword arguments to `save` are stored as
@@ -233,7 +233,7 @@ tuples, NetKet helpers) are imported from their module, e.g.
 
 In the signatures below `dtype` defaults to `jnp.float32` unless stated.
 
-### `jastrow_spin_half.py` — `JastrowSpinHalf`
+### `jastrow_spin_half.py`: `JastrowSpinHalf`
 
 Two-body Jastrow guide for spin-1/2 (`SpinHalf`, configurations `x_i = ±1`):
 
@@ -242,7 +242,7 @@ Two-body Jastrow guide for spin-1/2 (`SpinHalf`, configurations `x_i = ±1`):
 stored internally as `J = −β`. Transition ratios are computed from per-site
 partner tables in O(degree) per transition.
 
-- **`JastrowSpinHalf(N, pairs, beta, h=None, dtype=jnp.float32)`** — `pairs` is an
+- **`JastrowSpinHalf(N, pairs, beta, h=None, dtype=jnp.float32)`**: `pairs` is an
   `(n_pairs, 2)` site list (order within a pair irrelevant); `beta` (required)
   is a scalar (one tied coupling) or a length-`n_pairs` array, and `.beta`
   returns it in the order of `pairs`, also after `save`/`load`; `h` a
@@ -252,26 +252,26 @@ partner tables in O(degree) per transition.
   trains exactly those: a scalar `beta` stays one tied coupling, `h=None`
   stays without a field, a scalar `h` stays one field. `save`/`load`
   preserve the form.
-  - `log_psi(config, cache=None)` — `log ψ_T` for `(N,)` or `(n, N)` input.
-  - `log_diff_from_operator(config, op, cache=None)` — ratios in a `SpinHalf`
+  - `log_psi(config, cache=None)`: `log ψ_T` for `(N,)` or `(n, N)` input.
+  - `log_diff_from_operator(config, op, cache=None)`: ratios in a `SpinHalf`
     layout; `cache` from `build_cache(op)` selects the table-lookup path.
-  - `log_diff_from_configs(config, new_configs, cache=None)` — generic path
+  - `log_diff_from_configs(config, new_configs, cache=None)`: generic path
     via `log_psi`.
-  - `build_cache(op)` — returns a `JastrowOpCache` of per-edge partner tables
+  - `build_cache(op)`: returns a `JastrowOpCache` of per-edge partner tables
     (memoised per operator edge layout).
   - `save(path, group='jastrow_spin_half', **attrs)` / `load(path, hamiltonian=None,
-    group='jastrow_spin_half', dtype=...)` — HDF5 round trip; with `hamiltonian` given,
+    group='jastrow_spin_half', dtype=...)`: HDF5 round trip; with `hamiltonian` given,
     `load` zero-pads `h` onto a larger system.
   - `from_jax(dtype, N, site_other, site_J, site_valid_mask, h, pair_site,
-    pair_slot, site_pair)` (classmethod) — rebuild from internal arrays,
+    pair_slot, site_pair)` (classmethod): rebuild from internal arrays,
     bypassing `__init__` (used by pytree unflatten); `pair_site`/`pair_slot`
     locate each constructor pair in the per-site tables and `site_pair` maps
     each table entry back to its pair, so both endpoints read one coupling.
-- **`JastrowOpCache(edge_other, edge_J)`** — named tuple returned by
+- **`JastrowOpCache(edge_other, edge_J)`**: named tuple returned by
   `JastrowSpinHalf.build_cache`, both `(n_edges_op, 2, max_deg)`; padded partner
   slots carry `J = 0`, so no validity mask is needed.
 
-### `jastrow_spin.py` — `JastrowSpin`
+### `jastrow_spin.py`: `JastrowSpin`
 
 Jastrow guide for spin-S models (`Spin`, configurations `x_i ∈ {−S, …, S}`):
 
@@ -281,14 +281,14 @@ The single-ion term `d` weights `|x_i|` against each other (`d > 0` favours
 small `|x_i|`); for spin 1/2 it is a constant.
 
 - **`JastrowSpin(N, pairs, beta, h=None, d=None, dtype=jnp.float32,
-  incremental=False)`** —
+  incremental=False)`**:
   `beta` a scalar (tied) or a length-`n_pairs` array; `h` and `d` each a
   scalar (tied), an `(N,)` array or `None` (absent). Parameters keep the form
   they were given, through training and `save`/`load`. Properties `beta`
   `(n_pairs,)`, `h` and `d` `(N,)` (zeros when absent). `incremental=True`
   switches on the incremental mode (see the protocol section).
-  - `log_psi(config, cache=None)` — `(N,)` or `(n, N)` input.
-  - `log_diff_from_operator(config, op, cache=None, state=None)` — fast path
+  - `log_psi(config, cache=None)`: `(N,)` or `(n, N)` input.
+  - `log_diff_from_operator(config, op, cache=None, state=None)`: fast path
     for `Spin` operators (`S⁺S⁻`, `S⁺S⁺` and single-site `S^±` blocks), O(1)
     per transition from the weighted neighbour sums (`state`, when the engine
     carries them; rebuilt otherwise), without building successor
@@ -296,7 +296,7 @@ small `|x_i|`); for spin 1/2 it is a constant.
   - `save(path, group='jastrow_spin', **attrs)` / `load(path,
     group='jastrow_spin', dtype=...)`.
 
-### `jastrow_bose_hubbard.py` — `JastrowBoseHubbard`
+### `jastrow_bose_hubbard.py`: `JastrowBoseHubbard`
 
 Jastrow guide for bosons (`BoseHubbard`, occupations `x_i`), in the same
 convention as `JastrowSpin`:
@@ -309,20 +309,20 @@ particle number is not conserved (e.g. with a pair term `eta`); at fixed
 particle number it is a constant and can be left out.
 
 - **`JastrowBoseHubbard(N, pairs, beta, h=None, d=None, dtype=jnp.float32,
-  incremental=False)`** —
+  incremental=False)`**:
   same arguments and properties as `JastrowSpin`: `beta` a scalar (tied) or a
   length-`n_pairs` array; `h` and `d` each a scalar (tied), an `(N,)` array or
   `None` (absent). Parameters keep the form they were given, through training
   and `save`/`load`. `incremental=True` switches on the incremental mode.
-  - `log_psi(config, cache=None)` — `(N,)` or `(n, N)` input.
-  - `log_diff_from_operator(config, op, cache=None, state=None)` — fast path
+  - `log_psi(config, cache=None)`: `(N,)` or `(n, N)` input.
+  - `log_diff_from_operator(config, op, cache=None, state=None)`: fast path
     for `BoseHubbard` operators (hopping, pair term, single-site `b^†`/`b`),
     from the carried neighbour sums `state` when given; other operators fall
     back to `get_rates` configs.
   - `save(path, group='jastrow_bose_hubbard', **attrs)` / `load(path,
     group='jastrow_bose_hubbard', dtype=...)`.
 
-### `cluster_cps.py` — `ClusterCPS`
+### `cluster_cps.py`: `ClusterCPS`
 
 General cluster **Correlator Product State**: a lookup table per cluster
 pattern, summed over clusters and over cluster groups,
@@ -337,7 +337,7 @@ indices by arithmetic (`idx ± 2^slot`) without building any successor
 configuration.
 
 - **`ClusterCPS(groups, amplitudes=None, init='zero', seed=None,
-  dtype=jnp.float32)`** — `groups` (required) is a list of group specs, each
+  dtype=jnp.float32)`**: `groups` (required) is a list of group specs, each
   either the list `[clusters, symmetries, parity]` (all three required;
   `symmetries` may be `None`) or a dict
 
@@ -363,16 +363,16 @@ configuration.
   ClusterCPS(groups=[dict(clusters=c, symmetries=autos)], amplitudes=[table])
   ```
 
-  - `log_psi(configs, cache=None)` — `(N,)` or `(..., N)` input.
-  - `log_diff_from_operator(config, op, cache=None)` — SpinHalf layout;
+  - `log_psi(configs, cache=None)`: `(N,)` or `(..., N)` input.
+  - `log_diff_from_operator(config, op, cache=None)`: SpinHalf layout;
     index arithmetic with a cache, successor materialisation without.
   - `log_diff_from_configs(config, new_configs, cache=None)`.
-  - `build_cache(op)` — `ClusterCPSCache` (one `ClusterCPSGroupCache` per
+  - `build_cache(op)`: `ClusterCPSCache` (one `ClusterCPSGroupCache` per
     group). It bakes in the current amplitudes; rebuild after changing them.
   - `save(path, group='cps', **attrs)` / `load(path, group='cps',
-    dtype=...)` — nested per-group HDF5 layout (one `group_<i>` subgroup per
+    dtype=...)`: nested per-group HDF5 layout (one `group_<i>` subgroup per
     cluster group); `load` reads exactly what `save` writes.
-- **`ClusterCPSGroup`**, **`ClusterCPSGroupCache`**, **`ClusterCPSCache`** — named tuples holding one
+- **`ClusterCPSGroup`**, **`ClusterCPSGroupCache`**, **`ClusterCPSCache`**: named tuples holding one
   group's arrays, one group's cache, and the full cache.
 
 ### `cluster_mlp.py`
@@ -386,7 +386,7 @@ group. `log_diff_from_operator` re-evaluates only the clusters touched by each
 transition.
 
 - **`ClusterMLP(groups, params=None, seed=None, dtype=...,
-  N=None)`** — `groups = [[clusters, hidden], ...]`, `clusters` an
+  N=None)`**: `groups = [[clusters, hidden], ...]`, `clusters` an
   `(n_clusters_g, k_g)` array and `hidden` a list of hidden widths (`[]` or
   `None` for a linear model; a bare int is rejected). `groups` is the only way
   to specify the architecture. `params` is one list of `(W_i, b_i)` layer
@@ -396,19 +396,19 @@ transition.
   index + 1 (pass it if trailing sites belong to no cluster).
   - `log_psi(config, cache=None)`, `log_diff_from_configs(...)`,
     `log_diff_from_operator(config, op, cache=None)`.
-  - `build_cache(op)` — `ClusterMLPCache` of site→cluster and edge→cluster
+  - `build_cache(op)`: `ClusterMLPCache` of site→cluster and edge→cluster
     tables (memoised).
   - `save(path, group='cluster_mlp', **attrs)` / `load(path,
-    group='cluster_mlp', dtype=...)` — one `group_<g>` subgroup per
+    group='cluster_mlp', dtype=...)`: one `group_<g>` subgroup per
     group holding its clusters and `W<i>`/`b<i>` layer datasets; `load`
     rebuilds each group's hidden widths from the stored layer shapes.
   - property `n_params`.
-- **`ClusterMLPCache(site_to_clusters, pair_to_clusters)`** — named tuple.
+- **`ClusterMLPCache(site_to_clusters, pair_to_clusters)`**: named tuple.
 
 ### `exact_ground_state.py`
 
 - **`ExactGroundState(hamiltonian, log_amp=None, dtype=...,
-  local_hilbert_space=None, N=None)`** — ψ_T(x) = |ψ_0(x)| from exact
+  local_hilbert_space=None, N=None)`**: ψ_T(x) = |ψ_0(x)| from exact
   diagonalisation (`pygfmc.hamiltonian.exact.exact_diagonalization`), for any
   Hamiltonian implementing the protocol. The guide stores a `d^N` vector, so it
   is a diagnostic for small systems: with ψ_T = ψ_0 the local energy is the
@@ -420,14 +420,14 @@ transition.
   `ToricCode`) that is an arbitrary vector of the degenerate subspace, which
   can vanish on part of the basis; no degeneracy check is made. For a run in
   one sector, supply that sector's ground state via `log_amp=`.
-  - `log_diff_from_configs(config, new_configs=None, cache=None)` — the **only**
+  - `log_diff_from_configs(config, new_configs=None, cache=None)`: the **only**
     ratio routine (no `log_diff_from_operator`, no `build_cache`).
-  - `basis_index(config)` — index into the amplitude vector (site 0 most
+  - `basis_index(config)`: index into the amplitude vector (site 0 most
     significant).
   - An externally computed ψ_0 is passed as `log_amp = log|ψ_0|` (length
     `d^N`, basis order of `basis_index`); `E0` is then NaN.
   - `save(path, group='exact_ground_state', **attrs)` /
-    `load(path, hamiltonian, group='exact_ground_state', dtype=...)` —
+    `load(path, hamiltonian, group='exact_ground_state', dtype=...)`:
     **`load` requires the Hamiltonian** and the `family`, `N` and `E0`
     attributes that `save` writes (a file without them raises `ValueError`); it
     checks the class name and `N` against the Hamiltonian (`ValueError` on a
@@ -443,7 +443,7 @@ Hamiltonian exposing `get_rates` (needs the `netket` extra).
   sampler=None, initial_states=None, n_iter=100, learning_rate=0.02,
   n_samples=1024, n_chains=16, n_discard_per_chain=8, sr=False,
   diag_shift=1e-3, qgt=None, seed=0, show_progress=False,
-  return_history=False)`** — returns a new guide of the same class (and the
+  return_history=False)`**: returns a new guide of the same class (and the
   per-iteration energies with `return_history=True`). Every floating-point
   pytree leaf of the guide is trained, starting from its current value;
   integer/boolean leaves stay fixed. See
@@ -453,32 +453,32 @@ It also exports one helper, `make_hilbert(local_hilbert_space, N, total=None)`:
 a NetKet Hilbert space whose local states are exactly the given (evenly spaced)
 values; `total` restricts it to configurations whose values sum to `total`. Use
 it to build a sampler on PyGFMC's own encoding, e.g.
-`nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, N))` — NetKet's
+`nk.sampler.MetropolisLocal(make_hilbert(H.local_hilbert_space, N))`; NetKet's
 own spin-1 space stores `2m`, not `m`.
 
 The other helpers are module-level functions, not exported by `pygfmc.wavefunction`:
 
-- `make_netket_operator(hamiltonian, hilbert, is_hermitian=True)` — wrap a
+- `make_netket_operator(hamiltonian, hilbert, is_hermitian=True)`: wrap a
   `get_rates` Hamiltonian as a NetKet `DiscreteJaxOperator`.
-- `make_guide_model(guide, param_dtype=jnp.float32)` — `flax.linen` module around
+- `make_guide_model(guide, param_dtype=jnp.float32)`: `flax.linen` module around
   `guide.log_psi`; returns `(model, treedef, leaves, trainable)`.
-- `rebuild_guide(treedef, leaves, trainable, params)` — put trained
+- `rebuild_guide(treedef, leaves, trainable, params)`: put trained
   parameters back into a guide.
 
 ### `_optional.py`, `_seed.py`, `_tied_params.py`, `_layout.py`
 
-- `_layout.require_spin_half_layout(op, guide_name)` — raises `TypeError`
+- `_layout.require_spin_half_layout(op, guide_name)`: raises `TypeError`
   unless `op` exposes `n_hx_static`, `n_jpm_static`, `edge_i` and `edge_j`
   (the `SpinHalf` transition layout); called by `log_diff_from_operator` and
   `build_cache` of `JastrowSpinHalf`, `ClusterCPS` and `ClusterMLP`.
-- `_tied_params.write_tied_params(grp, params)` / `read_tied_params(grp, names)`
-  — the HDF5 form of the optional scalar-or-array guide parameters (`beta`,
+- `_tied_params.write_tied_params(grp, params)` / `read_tied_params(grp, names)`:
+  the HDF5 form of the optional scalar-or-array guide parameters (`beta`,
   `h`, `d`: absent, tied, or per element), shared by `JastrowSpin` and
   `JastrowBoseHubbard`.
-- `_optional.import_netket()` — returns the `netket` module or raises
+- `_optional.import_netket()`: returns the `netket` module or raises
   `ImportError` naming the fix (`pip install "pygfmc[netket]"`). Every
   NetKet import in the package goes through it.
-- `_seed.resolve_seed(seed, *, announce=False, context='guide')` — returns
+- `_seed.resolve_seed(seed, *, announce=False, context='guide')`: returns
   `int(seed)`, or draws a fresh seed from `os.urandom` when `seed is None`
   (printed only with `announce=True`); used by the random initialisers of
   `ClusterCPS` and `ClusterMLP`, which keep the drawn seed as `guide.seed`.

@@ -1,4 +1,4 @@
-"""PyGFMC — Green's Function Monte Carlo in JAX.
+"""PyGFMC: Green's Function Monte Carlo in JAX.
 
 Subpackages: :mod:`pygfmc.walkers` (walker population, initializers,
 reconfiguration), :mod:`pygfmc.engine` (propagation, estimators, I/O),

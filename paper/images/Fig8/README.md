@@ -1,4 +1,4 @@
-# Fig. 8 — geometries of the validation lattices
+# Fig. 8: geometries of the validation lattices
 
 **Figure:** `images/Fig8.pdf` (`\label{fig:test-lattices}`, appendix).
 
@@ -15,7 +15,7 @@ Sites are 0-based integers; each edge `(i, j)` with `i < j` is one bond.
 | dataset | shape | meaning |
 |---|---|---|
 | `R4/edges`, `R9/edges`, `R13/edges` | `(n_edges, 2)` int64 | bond list of the random graph (6, 14, 20 bonds) |
-| `R4/positions`, … | `(N, 2)` float64 | 2D drawing coordinates, row `k` = site `k`: Kamada–Kawai layout (networkx), centred and rescaled into `[-1, 1]^2`. Only for drawing — the graphs have no physical embedding. |
+| `R4/positions`, … | `(N, 2)` float64 | 2D drawing coordinates, row `k` = site `k`: Kamada–Kawai layout (networkx), centred and rescaled into `[-1, 1]^2`. Only for drawing; the graphs have no physical embedding. |
 | `L100/edges` | `(148, 2)` int64 | full ladder bond list: legs `(i, i+1)` and `(L+i, L+i+1)` for `i < L−1`, rungs `(i, L+i)`, with `L = 50` |
 
 Attributes: `R<N>` groups carry `N`, `n_edges`, `seed` and `generator`;

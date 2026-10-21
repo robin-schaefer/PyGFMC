@@ -1,4 +1,4 @@
-# Fig. 7 — flux-sector energy cost in the pyrochlore ring-exchange model
+# Fig. 7: flux-sector energy cost in the pyrochlore ring-exchange model
 
 `\includegraphics{images/ring_energy}` (label `fig:ring_energy`).
 

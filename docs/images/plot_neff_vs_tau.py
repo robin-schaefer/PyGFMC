@@ -1,7 +1,7 @@
 """Effective sample size versus projection depth for several step sizes (docs figure).
 
 The step-size scan of the "Tuning the step size" section of
-good_simulation.rst: the spin-1 transverse-field Ising chain of "Running a
+good_usage.rst: the spin-1 transverse-field Ising chain of "Running a
 simulation" and of notebooks/transverse_field_ising_chain.ipynb (12 sites,
 J = 1, h = h_c = 1.326, JastrowSpin guide trained with NetKet), equilibrated
 with one run, then statistics() at each step size beta, recording the

@@ -56,7 +56,7 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers",
         "slow: takes more than a minute on a CPU; `-m 'not slow'` runs the "
-        "quicker subset of the suite (what CI runs).",
+        "quicker subset of the suite (CI's tests.yml runs the full core suite).",
     )
 
 
@@ -126,7 +126,7 @@ def reset_jax_mesh_state():
         import jax._src.mesh as jm
         from jax._src import config as jconfig
         # Snapshot the thread-local mesh sentinels before the test runs.
-        # These are plain object() instances — the "not set locally" state.
+        # These are plain object() instances: the "not set locally" state.
         _saved_abstract = jconfig.abstract_mesh_context_manager.get_local()
         _saved_device   = jconfig.device_context.get_local()
     except Exception:

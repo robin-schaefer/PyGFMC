@@ -1,4 +1,4 @@
-# `pygfmc.hamiltonian` — models, lattices, observables and exact diagonalization
+# `pygfmc.hamiltonian`: models, lattices, observables and exact diagonalization
 
 This subpackage provides everything the GFMC engine
 ([`pygfmc.engine`](../engine/README.md)) needs to know about
@@ -124,7 +124,7 @@ print(E[0], off["Sx"][0])     # -4.2545411175...  3.7344172909...
 | `Spin` (any S) | `Σ_<ij> [J_z SᶻSᶻ + J_pm (S⁺S⁻+S⁻S⁺) + J_pmpm (S⁺S⁺+S⁻S⁻)] − Σ_i [h_z Sᶻ + h_pm (S⁺+S⁻)]` | `edges, S, J_z, J_pm, J_pmpm, h_z, h_pm, N` | `J_pm ≤ 0`, `J_pmpm ≤ 0`, `h_pm ≥ 0` | `1 + 2n_edges·[J_pm≠0] + 2n_edges·[J_pmpm≠0] + 2N·[h_pm≠0]` |
 | `BoseHubbard` | `−t Σ (b†b + h.c.) − η Σ (b†b† + bb) + U/2 Σ n(n−1) − μ Σ n − h_pm Σ (b† + b)` | `edges, t, eta, U, mu, h_pm, N, n_max` | `t ≥ 0`, `η ≥ 0`, `h_pm ≥ 0` | `1 + 2n_edges·[t≠0] + 2n_edges·[η≠0] + 2N·[h_pm≠0]` |
 | `PlaquetteModel` | `−g Σ_p flip_p + mu Σ_p \|flippable_p⟩⟨flippable_p\|` | `plaquettes, g, mu` | `g ≥ 0` (a measurement operator needs `g ≤ 0`) | `1 + N_plaquette` |
-| `ToricCode` | `−A_s Σ_v Π σˣ − B_p Σ_p Π σᶻ − h_z Σ σᶻ − h_x Σ σˣ` | `Lx, Ly, A_s, B_p, h_z, h_x` | `A_s ≥ 0`, `h_x ≥ 0` (elementwise) | `1 + Lx·Ly·[A_s≠0] + N·[h_x≠0]` |
+| `ToricCode` | `−A_s Σ_v Π σˣ − B_p Σ_p Π σᶻ − h_z Σ σᶻ − h_x Σ σˣ` | `Lx, Ly, A_s, B_p, h_x, h_z` | `A_s ≥ 0`, `h_x ≥ 0` (elementwise) | `1 + Lx·Ly·[A_s≠0] + N·[h_x≠0]` |
 
 The same spin-1/2 Hamiltonian is a `SpinHalf` or a `Spin(S=0.5)` built from `Spin.create(..., J_z=J_z, J_pm=(J_x+J_y)/4, J_pmpm=(J_x−J_y)/4, h_z=h_z, h_pm=h_x/2)` (all fields enter with a minus sign, and `h_pm (S⁺+S⁻) = 2 h_pm Sˣ`); configurations are `σ = ±1` for `SpinHalf` and `m = σ/2` for `Spin`. The rate layouts differ: `Spin` has two edge slots per edge (`S⁺S⁻` and `S⁻S⁺`, likewise for `J_pmpm`) and two site slots per site where `SpinHalf` has one, so `M_total` differs, while the diagonal and the per-edge / per-site sums of the off-diagonal rates agree.
 
@@ -142,7 +142,7 @@ visited; the module docstrings give sufficient bounds per class.
 
 ## `SpinHalf.py`
 
-**`class SpinHalf`** — spin-1/2 XYZ model in fields. The fields
+**`class SpinHalf`**: spin-1/2 XYZ model in fields. The fields
 enter with a minus sign, `−Σ_i (h_z Sᶻ_i + h_x Sˣ_i)` (as in `ToricCode`), so
 `h_x ≥ 0` is sign-problem free. Stores `J_pm = (J_x+J_y)/4`,
 `J_pmpm = (J_x−J_y)/4`, `J_z`, `−h_z` (attribute `h_z`) and `−h_x/2` (attribute
@@ -150,14 +150,14 @@ enter with a minus sign, `−Σ_i (h_z Sᶻ_i + h_x Sˣ_i)` (as in `ToricCode`),
 `rates[0]` diagonal, then `N` single-site flips (`−h_x/2` each), then one slot per edge (`J_pm` if the two
 spins are anti-parallel, `J_pmpm` if parallel).
 
-- `SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None, N=None, dtype=jnp.float32, sign_check=True)` — build the model. `J_pmpm > 0` raises (it is never fixed by silently swapping `J_x ↔ J_y`, which is not a symmetry when `h_x ≠ 0`); `h_x < 0` raises; `J_pm > 0` raises (all three only with `sign_check=True`). `N` is inferred from the edges and per-site arrays unless given (give it for field-only operators with `edges=[]`). A measurement operator for `+Σ_i Sˣ_i` needs non-negative rates, i.e. `create([], N=N, h_x=-1.0, sign_check=False)`.
-- `diagonal_weight(config)` — the scalar `rates[0]` without building the full rate vector.
-- `get_rates(config, return_configs=False)`, `generate_state(config, idx)` — protocol.
-- `edges`, `n_hx`, `n_jpm`, `n_off`, `M_total` — derived sizes (static Python ints; `edges` is an `(n_edges, 2)` numpy array).
-- `local_hilbert_space` — `(1.0, -1.0)`, so `σ = +1` is basis digit 0.
+- `SpinHalf.create(edges, J_x=0, J_y=0, J_z=0, h_z=None, h_x=None, N=None, dtype=jnp.float32, sign_check=True)`: build the model. `J_pmpm > 0` raises (it is never fixed by silently swapping `J_x ↔ J_y`, which is not a symmetry when `h_x ≠ 0`); `h_x < 0` raises; `J_pm > 0` raises (all three only with `sign_check=True`). `N` is inferred from the edges and per-site arrays unless given (give it for field-only operators with `edges=[]`). A measurement operator for `+Σ_i Sˣ_i` needs non-negative rates, i.e. `create([], N=N, h_x=-1.0, sign_check=False)`.
+- `diagonal_weight(config)`: the scalar `rates[0]` without building the full rate vector.
+- `get_rates(config, return_configs=False)`, `generate_state(config, idx)`: protocol.
+- `edges`, `n_hx`, `n_jpm`, `n_off`, `M_total`: derived sizes (static Python ints; `edges` is an `(n_edges, 2)` numpy array).
+- `local_hilbert_space`: `(1.0, -1.0)`, so `σ = +1` is basis digit 0.
 
-**`StructureFactor(positions, k, channel="SpSm", dtype=jnp.float32)`**
-— returns a `SpinHalf` measurement operator
+**`StructureFactor(positions, k, channel="SpSm", dtype=jnp.float32)`**:
+returns a `SpinHalf` measurement operator
 `O = Σ_{i<j} [1 + cos(k·(r_i − r_j))] (A_i B_j + h.c.) = AB(0) + AB(k)`,
 off-diagonal only. It takes the geometry the way `SzSzStructureFactor` does:
 `positions` is `(N, d)` (so `N` is the number of rows) and `k` one `(d,)`
@@ -166,8 +166,9 @@ wavevector; the sum runs over every pair `i < j`. The displacement is
 reciprocal lattice of the system (check with `is_valid_k`) every periodic image
 gives the same `cos`, so the image the positions encode does not matter.
 `channel` must be exactly one of the off-diagonal `"SpSm"`
-(`S⁺S⁻ + S⁻S⁺ = 2(SˣSˣ + SʸSʸ)`), `"SpSp"` (`S⁺S⁺ + S⁻S⁻`) and
-`"SpSm+SpSp"` (`4SˣSˣ`), or the diagonal `"SzSz"` (`2SᶻSᶻ`); there are no
+(`A = S⁺, B = S⁻`: `S⁺S⁻ + S⁻S⁺ = 2(SˣSˣ + SʸSʸ)`), `"SpSp"` (`A = B = S⁺`:
+`S⁺S⁺ + S⁻S⁻`) and `"SpSm+SpSp"` (`A = B = √2 Sˣ`: `4SˣSˣ`, the sum of the two),
+or the diagonal `"SzSz"` (`A = B = Sᶻ`: `2SᶻSᶻ`); there are no
 aliases. `"SzSz"` returns an operator with `M_total = 1` for `diag_operators`
 and warns: it equals `SzSzStructureFactor(positions, [0, k])` summed over its
 two wavevectors (same `AB(0) + AB(k)` structure), which `SzSzStructureFactor`
@@ -211,66 +212,66 @@ of the unrotated chain.)
 
 ## `spin.py`
 
-**`class Spin`** — general spin-S model (`2S` a non-negative integer). Rate
+**`class Spin`**: general spin-S model (`2S` a non-negative integer). Rate
 layout (blocks present only when their coupling is nonzero): `J_pm` forward
 `S⁺_i S⁻_j` and backward `S⁻_i S⁺_j` (n_edges each), `J_pmpm` forward
 `S⁺_i S⁺_j` and backward `S⁻_i S⁻_j`, then `h_pm·S⁺_i` and `h_pm·S⁻_i` (N each).
 Forbidden moves at `m = ±S` carry zero rate; their successor configurations lie
 outside the physical basis and are never sampled.
 
-- `Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, dtype=jnp.float32, sign_check=True)` — build the model. The fields enter as `−h_z Σ Sᶻ − h_pm Σ (S⁺+S⁻)`, as in `SpinHalf`; `create` stores their negatives (attributes `h_z`, `h_pm`). `h_pm` is one amplitude multiplying both `S⁺` and `S⁻` (keeps H Hermitian).
-- `diagonal_weight`, `get_rates`, `generate_state` — protocol.
-- `edges`, `n_edges`, `n_off`, `M_total`, `d` (= 2S+1) — derived sizes.
-- `local_hilbert_space` — `(−S, ..., S)`.
+- `Spin.create(edges, S=0.5, J_z=0.0, J_pm=0.0, J_pmpm=0.0, h_z=None, h_pm=None, N=None, dtype=jnp.float32, sign_check=True)`: build the model. The fields enter as `−h_z Σ Sᶻ − h_pm Σ (S⁺+S⁻)`, as in `SpinHalf`; `create` stores their negatives (attributes `h_z`, `h_pm`). `h_pm` is one amplitude multiplying both `S⁺` and `S⁻` (keeps H Hermitian).
+- `diagonal_weight`, `get_rates`, `generate_state`: protocol.
+- `edges`, `n_edges`, `n_off`, `M_total`, `d` (= 2S+1): derived sizes.
+- `local_hilbert_space`: `(−S, ..., S)`.
 
 Sufficient shift: `lam ≥ |J_z|·n_edges·S² + |h_z|·N·S`.
 
 ## `bose_hubbard.py`
 
-**`class BoseHubbard`** — Bose-Hubbard model with hard occupation cutoff
+**`class BoseHubbard`**: Bose-Hubbard model with hard occupation cutoff
 `n_max`. Rate layout: forward hop `i→j` and backward hop `j→i` (n_edges each,
 rate `−t√(n_i(n_j+1))` etc.), pair creation / annihilation (n_edges each), then
 `b†_i` and `b_i` (N each, amplitude `h_pm`). Moves beyond `n_max` or below 0
 have rate 0.
 
-- `BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, dtype=jnp.float32, sign_check=True)` — build the model. The field enters as `−h_pm Σ (b† + b)` and is stored negated (attribute `h_pm`). A nonzero `h_pm` always contributes both the `b†` and the `b` block.
-- `diagonal_weight` (`U/2 Σ n(n−1) − μ Σ n`), `get_rates`, `generate_state` — protocol.
-- `edges`, `n_edges`, `n_off`, `M_total` — derived sizes.
-- `local_hilbert_space` — `(0, ..., n_max)`.
+- `BoseHubbard.create(edges, t=0.0, eta=0.0, U=0.0, mu=0.0, h_pm=None, N=None, n_max=4, dtype=jnp.float32, sign_check=True)`: build the model. The field enters as `−h_pm Σ (b† + b)` and is stored negated (attribute `h_pm`). A nonzero `h_pm` always contributes both the `b†` and the `b` block.
+- `diagonal_weight` (`U/2 Σ n(n−1) − μ Σ n`), `get_rates`, `generate_state`: protocol.
+- `edges`, `n_edges`, `n_off`, `M_total`: derived sizes.
+- `local_hilbert_space`: `(0, ..., n_max)`.
 
 Sufficient shift: `lam ≥ N · max_{0≤n≤n_max} [U/2·n(n−1) − μ·n]` (the maximum over the occupation covers repulsive and attractive `U` alike).
 
 ## `plaquette.py`
 
-**`class PlaquetteModel`** — ring exchange / Rokhsar–Kivelson model on
+**`class PlaquetteModel`**: ring exchange / Rokhsar–Kivelson model on
 arbitrary plaquettes, `H = −g Σ_p flip_p + mu Σ_p |flippable_p⟩⟨flippable_p|`.
 A plaquette is flippable when its spins alternate around the loop in the order
 given; the flip reverses every spin of the plaquette. `rates[0] = Σ_p mu_p·[flippable_p]`,
 `rates[p+1] = −g_p` if plaquette `p` is flippable, else 0.
 
-- `PlaquetteModel.create(plaquettes, g=None, mu=None, dtype=jnp.float32, sign_check=True)` — `plaquettes` is `(N_plaquette, plaquette_size)`. There is no `N` argument: the site count is `max index + 1`, and every site from 0 to `N−1` must appear in some plaquette (a gap raises). Plaquettes must have even length: an odd loop cannot alternate around its closure, so its "flip" would change `Sz_tot` and is no ring exchange, and `create` raises on it whatever `sign_check`.
-- `diagonal_weight`, `get_rates`, `generate_state` — protocol; `n_off`, `M_total`.
-- `local_hilbert_space` — `(1.0, -1.0)`; `exact_diagonalization` needs nothing else.
+- `PlaquetteModel.create(plaquettes, g=None, mu=None, dtype=jnp.float32, sign_check=True)`: `plaquettes` is `(N_plaquette, plaquette_size)`. There is no `N` argument: the site count is `max index + 1`, and every site from 0 to `N−1` must appear in some plaquette (a gap raises). Plaquettes must have even length: an odd loop cannot alternate around its closure, so its "flip" would change `Sz_tot` and is no ring exchange, and `create` raises on it whatever `sign_check`.
+- `diagonal_weight`, `get_rates`, `generate_state`: protocol; `n_off`, `M_total`.
+- `local_hilbert_space`: `(1.0, -1.0)`; `exact_diagonalization` needs nothing else.
 
 ## `toric.py`
 
-**`class ToricCode`** — Kitaev toric code in fields on an `Lx × Ly` torus. Sites
+**`class ToricCode`**: Kitaev toric code in fields on an `Lx × Ly` torus. Sites
 are the `2·Lx·Ly` lattice edges: horizontal edge `h(x,y)` at index
 `x + Lx·y`, vertical edge `v(x,y)` at `Lx·Ly + x + Lx·y`. Rates: diagonal, then
 one star move per vertex (`−A_s`), then single-site `σˣ` flips (`−h_x`); the
 off-diagonal rates are configuration-independent. Star moves conserve every
 `B_p`, so start walkers in the intended plaquette sector (e.g. all `+1`).
 
-- `ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_x=0.0, h_z=0.0, dtype=jnp.float32, sign_check=True)` — `A_s`, `B_p` scalar or `(Lx·Ly,)`; `h_z`, `h_x` scalar or `(N,)`.
-- `diagonal_weight`, `get_rates`, `generate_state` — protocol; `n_off`, `M_total`.
-- `local_hilbert_space` — `(1.0, -1.0)`, as `SpinHalf`.
+- `ToricCode.create(Lx, Ly, A_s=1.0, B_p=1.0, h_x=0.0, h_z=0.0, dtype=jnp.float32, sign_check=True)`: `A_s`, `B_p` scalar or `(Lx·Ly,)`; `h_z`, `h_x` scalar or `(N,)`.
+- `diagonal_weight`, `get_rates`, `generate_state`: protocol; `n_off`, `M_total`.
+- `local_hilbert_space`: `(1.0, -1.0)`, as `SpinHalf`.
 
 Shift: worst case `lam ≥ |B_p|·Lx·Ly + |h_z|·N`; for equilibrated walkers a
 smaller value (e.g. `Lx·Ly`) is often enough, but check the diagonal statistics.
 
 ## `lattice.py`
 
-**`class Lattice(name, N, edges, J_x=None, J_y=None, J_z=None, extras={})`** —
+**`class Lattice(name, N, edges, J_x=None, J_y=None, J_z=None, extras={})`**:
 frozen dataclass. `J_x/J_y/J_z` are optional suggested couplings (only
 `chain` sets them). `pyrochlore` fills `extras` with `hexagons`,
 `type_per_hexagon`, `positions`, `supercell_dims`, `primitive_vectors`,
@@ -281,9 +282,9 @@ directly.
 
 Factories:
 
-- `chain(n_sites, periodic=True)` — nearest-neighbour chain (suggested `J_x = J_y = −1`, `J_z = 1`); the closing bond is added only for `n_sites > 2`.
-- `pyrochlore(nx, ny, nz, periodic=True)` — pyrochlore with the 4-site fcc primitive cell, `N = 4·nx·ny·nz`, `3N` edges (periodic needs all dims ≥ 2). With open boundaries only the hexagons fully inside the lattice are listed.
-- `kagome(Lx, Ly, periodic=True)` — kagome lattice of `Lx × Ly` cells of a triangular Bravais lattice (`a1 = (2, 0)`, `a2 = (1, √3)`, nearest-neighbour distance 1), three sites per cell, `N = 3·Lx·Ly`, `2N` edges (periodic needs `Lx, Ly ≥ 2`). Site index `3·(x + Lx·y) + b`. One hexagon per cell in `extras['hexagons']`, counter-clockwise from angle 0; with open boundaries only the hexagons fully inside the lattice.
+- `chain(n_sites, periodic=True)`: nearest-neighbour chain (suggested `J_x = J_y = −1`, `J_z = 1`); the closing bond is added only for `n_sites > 2`.
+- `pyrochlore(nx, ny, nz, periodic=True)`: pyrochlore with the 4-site fcc primitive cell, `N = 4·nx·ny·nz`, `3N` edges (periodic needs all dims ≥ 2). With open boundaries only the hexagons fully inside the lattice are listed.
+- `kagome(Lx, Ly, periodic=True)`: kagome lattice of `Lx × Ly` cells of a triangular Bravais lattice (`a1 = (2, 0)`, `a2 = (1, √3)`, nearest-neighbour distance 1), three sites per cell, `N = 3·Lx·Ly`, `2N` edges (periodic needs `Lx, Ly ≥ 2`). Site index `3·(x + Lx·y) + b`. One hexagon per cell in `extras['hexagons']`, counter-clockwise from angle 0; with open boundaries only the hexagons fully inside the lattice.
 
 Every factory takes `periodic` (default `True`); `periodic=False` gives open boundaries.
 
@@ -292,7 +293,7 @@ built from your own edge list; the models only need the edges.
 
 ## `observables.py`
 
-**`class SzSzStructureFactor(positions, k_vectors, dtype=jnp.float32)`** — a
+**`class SzSzStructureFactor(positions, k_vectors, dtype=jnp.float32)`**: a
 diagonal observable (only `diagonal_weight`) returning one value per
 wavevector: `S^zz(k) = Σ_{i<j} 2cos(k·dr_ij) S^z_i S^z_j`, computed as
 `(|Σ_i e^{ik·r_i} σ_i|² − N)/4` in `O(N·n_k)`. The `i = j` terms are dropped.
@@ -303,7 +304,7 @@ for labelling only. `diagonal_weight` returns `(n_k,)` for one configuration
 and `(n, n_k)` for a batch; in a GFMC run `obs[name][p]` is an `(n_k,)`
 array.
 
-**`is_valid_k(k_vectors, lattice_vectors, atol=1e-8)`** — whether
+**`is_valid_k(k_vectors, lattice_vectors, atol=1e-5)`**: whether
 `k·L_j / 2π` is an integer (within `atol`) for every row `L_j` of the `(d, d)`
 `lattice_vectors`, the periodic vectors of the whole system (e.g.
 `supercell_dims[:, None] * primitive_vectors`, or kagome's `extras['torus']`),
@@ -314,8 +315,8 @@ encode.
 
 ## `exact.py`
 
-**`exact_diagonalization(hamiltonian, local_hilbert_space=None, N=None, diag_operators=None, off_diag_operators=None, number_of_states=1, return_states=False)`**
-— builds the full sparse matrix from `get_rates` alone (so it works for any
+**`exact_diagonalization(hamiltonian, local_hilbert_space=None, N=None, diag_operators=None, off_diag_operators=None, number_of_states=1, return_states=False)`**:
+builds the full sparse matrix from `get_rates` alone (so it works for any
 protocol object, including `PlaquetteModel` and user classes; rates and the
 successor-to-basis-index mapping are computed on the device in batched
 chunks, and only integer indices come back to the host), solves for the

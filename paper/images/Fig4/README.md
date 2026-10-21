@@ -1,4 +1,4 @@
-# Fig. 4 — TFIM at the critical point (`images/Fig4.pdf`)
+# Fig. 4: TFIM at the critical point (`images/Fig4.pdf`)
 
 Transverse-field Ising model
 `H = J_z Σ_i σᶻ_i σᶻ_{i+1} − h_x Σ_i σˣ_i`, `J_z = −1`, `h_x = 1` (critical point),
@@ -36,7 +36,7 @@ The dashed black line in (b)–(d) is the exact free-fermion result.
 Root attributes: `hamiltonian`, `tau_convention`, `error_convention`, `N`, `J_z`, `h_x`.
 Every dataset carries a `description` attribute.
 
-`/neff` — panel (a); 131072 walkers; long layout, one row per measured `(β, m)` cell
+`/neff`: panel (a); 131072 walkers; long layout, one row per measured `(β, m)` cell
 (75 β values 0.02…1.50 in steps of 0.02 × every integer m with τ ≤ 100; 24478 rows).
 
 | dataset | meaning |
@@ -47,7 +47,7 @@ Every dataset carries a `description` attribute.
 | `n_eff_median` | median n_eff over the runs (count) |
 | `n_runs` | runs in the median (16) |
 
-`/diagonal` — panels (b), (c) and the red curve of (d); 131072 walkers, 2·10⁵ steps
+`/diagonal`: panels (b), (c) and the red curve of (d); 131072 walkers, 2·10⁵ steps
 per run, 5 runs per β, β ∈ {0.25, 0.5, 0.75, 1.0, 1.25, 1.5}, τ ≤ 100. Long layout,
 one row per `(β, τ)`; each β has its own τ grid.
 
@@ -58,7 +58,7 @@ one row per `(β, τ)`; each β has its own τ grid.
 | `zz`, `zz_err` | bond-averaged `(1/N) Σ⟨σᶻ_i σᶻ_{i+1}⟩` and SEM |
 | `n_runs` | independent runs (5) |
 
-`/offdiagonal` — panel (d); 32768 walkers, 6.4·10⁵ steps per run, off-diagonal
+`/offdiagonal`: panel (d); 32768 walkers, 6.4·10⁵ steps per run, off-diagonal
 stride 64 (10⁴ measurements), 5 runs per β, same six β, τ ≤ 25. Same layout, with
 
 | dataset | meaning |
@@ -66,7 +66,7 @@ stride 64 (10⁴ measurements), 5 runs per β, same six β, τ ≤ 25. Same layo
 | `sx_total`, `sx_total_err` | **extensive** `Σ_i ⟨σˣ_i⟩` and SEM (the plot divides by N) |
 | `energy`, `energy_err` | total energy of the same runs (not plotted) |
 
-`/exact` (attributes) — free-fermion (Jordan–Wigner) solution of the periodic N = 100
+`/exact` (attributes): free-fermion (Jordan–Wigner) solution of the periodic N = 100
 chain at h_x = 1: `energy` (total), `zz` (bond average), `sx_total` (extensive).
 
 ## Provenance

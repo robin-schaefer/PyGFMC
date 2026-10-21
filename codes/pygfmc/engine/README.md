@@ -1,4 +1,4 @@
-# `pygfmc.engine` — the GFMC engine
+# `pygfmc.engine`: the GFMC engine
 
 `pygfmc.engine` is the core of PyGFMC. It implements Green's Function Monte
 Carlo for any Hamiltonian that follows the rate protocol of the
@@ -90,12 +90,12 @@ consecutive step weights, and analogous centred windows for the operators.
   the stream advances `key_{t+1} = split(key_t)` once per step. A run returns
   its end position as `stats['parameters/rng_key_next']`; passing it back as
   `rng_key` (with the returned walkers and `stats['avg_log_weight']`, and
-  no warm-up — the default) continues the chain bit-identically. `Walker.save(path,
+  no warm-up; the default) continues the chain bit-identically. `Walker.save(path,
   rng_key=...)` / `Walker.load` checkpoint it, and `write_to_HDF5` /
   `run_from_HDF5` do the whole thing for you. Re-passing an old key replays
   the same random numbers, which silently correlates the new data with the
   old.
-- **Warm-up — automatic without `avg_log_weight`.** `warmup_steps` defaults
+- **Warm-up: automatic without `avg_log_weight`.** `warmup_steps` defaults
   to `None` for `run`, `run_gfmc` and `run_gfmc_pmap`: 1000 steps
   (`DEFAULT_WARMUP_STEPS`) when no `avg_log_weight` is given, and none when
   one is, which is right when continuing from an equilibrated ensemble with
@@ -178,7 +178,7 @@ H = SpinHalf.create(lat.edges, J_x=-1.0, J_y=-1.0, J_z=1.0)
 guide = JastrowSpinHalf(H.N, H.edges, beta=0.3)
 walkers = prepare_walkers_sz(512, H.N, jax.random.PRNGKey(0), sz=0)
 
-# fresh walkers: pass a warm-up explicitly (the default is none)
+# fresh walkers: a warm-up (1000 steps by default without avg_log_weight; here 500)
 walkers, energy, obs, stats, raw = run(
     walkers, 2000, H, step_size=0.2, guide=guide,
     p_array=[2, 4, 8, 16], method="cont_time",
@@ -208,43 +208,43 @@ top-level `pygfmc/__init__.py`, which also re-exports these same names): `statis
 `run_gfmc` (`driver.py`); `write_to_HDF5`, `run_from_HDF5`,
 `evaluate_observables`, `load_raw_from_HDF5`, `check_run_compatible` and
 `resume_from_HDF5` (`io.py`); `run`
-(`multi_gpu.py`). Everything else listed below — including
+(`multi_gpu.py`). Everything else listed below (including
 `evolve_walkers`, `forward_walk_operator`,
-`estimate_average_log_branch_weight` and `run_gfmc_pmap` — is a module-level
+`estimate_average_log_branch_weight` and `run_gfmc_pmap`) is a module-level
 function, imported from its module (e.g.
 `from pygfmc.engine.evolution import evolve_walkers`).
 
-### `evolution.py` — propagators and forward walking
+### `evolution.py`: propagators and forward walking
 
-- `require_operator_protocol(op, role="hamiltonian")` — raise `TypeError`
+- `require_operator_protocol(op, role="hamiltonian")`: raise `TypeError`
   unless `op` has `M_total`, `get_rates` and (if `M_total > 1`)
   `generate_state` (`pygfmc.Operator`).
-- `require_guide_protocol(guide)` — raise `TypeError` unless `guide` is None
+- `require_guide_protocol(guide)`: raise `TypeError` unless `guide` is None
   or has one of `log_diff_from_operator`, `log_diff_from_configs`, `log_psi`
   (`pygfmc.Guide`). Both drivers call the two checks before any step.
-- `sample_index(cdf, weights, key)` — draw a transition slot from
+- `sample_index(cdf, weights, key)`: draw a transition slot from
   `cdf = cumsum(weights)`, returning only slots with `weights > 0`. Every
   propagator and the operator application sample through it: a plain
   `searchsorted(cdf, uniform·cdf[-1])` can land on a zero-weight slot,
   because XLA's parallel `cumsum` can rise by an ulp across one and
   `uniform·total` can round up to `total` (seen as NaN energies with
   `BoseHubbard`, whose forbidden moves carry zero rate).
-- `guide_cache(guide, op)` — the guide's `build_cache(op)`, or `None` if it
+- `guide_cache(guide, op)`: the guide's `build_cache(op)`, or `None` if it
   has none.
-- `transition_rates(config, op, guide, return_configs=False, cache=None, state=None)`
-  — `(rates, new_configs)` with the guide ratio folded in; `rates[0]` is
+- `transition_rates(config, op, guide, return_configs=False, cache=None, state=None)`:
+  `(rates, new_configs)` with the guide ratio folded in; `rates[0]` is
   `H_xx`, `sum(rates)` is the local energy. Dispatches to the guide's
   `log_diff_from_operator`, `log_diff_from_configs` or `log_psi`; `state`
   (the walker's guide state of the incremental mode) is passed on as
   `state=` to `log_diff_from_operator` when given.
-- `require_lam(method, lam)` — the shift validated for `method`: a float for
+- `require_lam(method, lam)` returns the shift validated for `method`: a float for
   the discrete methods (`ValueError` when missing), `None` for `cont_time`.
-- `evolve_walker_single_step(walker, hamiltonian, n_bra, guide, rng_key, avg_log_weight, lam, cache=None, rates=None, state=None, return_rates=False)`
-  — one walker, `n_bra` sub-steps of `(lam - H)`, one draw per sub-step.
-- `evolve_walker_multi_step(walker, hamiltonian, n_bra, guide, rng_key, avg_log_weight, lam, cache=None, rates=None, state=None, return_rates=False)`
-  — same distribution, diagonal holds batched into geometric draws.
-- `evolve_walker_cont_time(walker, hamiltonian, beta, guide, rng_key, avg_log_weight, lam=None, cache=None, rates=None, state=None, return_rates=False)`
-  — continuous imaginary time `beta`: exponential hold times, weight
+- `evolve_walker_single_step(walker, hamiltonian, n_bra, guide, rng_key, avg_log_weight, lam, cache=None, rates=None, state=None, return_rates=False)`:
+  one walker, `n_bra` sub-steps of `(lam - H)`, one draw per sub-step.
+- `evolve_walker_multi_step(walker, hamiltonian, n_bra, guide, rng_key, avg_log_weight, lam, cache=None, rates=None, state=None, return_rates=False)`:
+  same distribution, diagonal holds batched into geometric draws.
+- `evolve_walker_cont_time(walker, hamiltonian, beta, guide, rng_key, avg_log_weight, lam=None, cache=None, rates=None, state=None, return_rates=False)`:
+  continuous imaginary time `beta`: exponential hold times, weight
   `exp(-e_L tau)`; `lam` is unused. The loop carries the rates of the
   current configuration and only ends on a truncated hold, so the local
   energy of the final configuration comes out of the loop without a further
@@ -275,25 +275,25 @@ function, imported from its module (e.g.
   wavefunction README): `initial_carried` builds both, `refresh_carried_at`
   rebuilds the pair every `_STATE_REFRESH_STEPS` (100) chain steps, `require_incremental_support`
   checks that the guide and the Hamiltonian provide what the mode needs.
-- **`evolve_walkers(walkers, hamiltonian, step_size, guide, method, rng_key, avg_log_weight, lam=None, cache=None, rates=None, state=None, return_rates=False)`**
-  — validate `step_size` and `lam` for `method` and evolve the whole batch
+- **`evolve_walkers(walkers, hamiltonian, step_size, guide, method, rng_key, avg_log_weight, lam=None, cache=None, rates=None, state=None, return_rates=False)`**:
+  validate `step_size` and `lam` for `method` and evolve the whole batch
   (jitted, vmapped). Returns the updated `Walker` batch, or the tuple
   `(walkers, rates, state)` with `return_rates=True`.
-- `apply_operator_one(config, key, op, guide, cache_op)` — the operator
+- `apply_operator_one(config, key, op, guide, cache_op)`: the operator
   application of one walker, `(new_config, total_weight)`; shared by the
   single- and the multi-device forward walk.
-- **`forward_walk_operator(walkers, op, h_main, step_size, guide, method, rng_key, avg_log_weight, m_array, lam=None, cache_h=None, cache_op=None, shadow_key=None, op_batch_size=None)`**
-  — apply an operator to the ensemble and propagate a shadow chain for
+- **`forward_walk_operator(walkers, op, h_main, step_size, guide, method, rng_key, avg_log_weight, m_array, lam=None, cache_h=None, cache_op=None, shadow_key=None, op_batch_size=None)`**:
+  apply an operator to the ensemble and propagate a shadow chain for
   `max(m_array)` steps. Returns `(val, log_norm)`, each `(len(m_array),)`:
   the mean operator weight traced through the shadow parent maps, and the log
   of the shadow chain's accumulated weight (`m = 0` is the un-propagated
   mean with `log_norm = 0`). `op_batch_size` chunks the operator application
   over walkers (bit-identical, saves memory).
 
-### `estimators.py` — estimators and diagnostics
+### `estimators.py`: estimators and diagnostics
 
-- **`statistics(walkers, hamiltonian, step_size, guide, method, rng_key, avg_log_weight=None, lam=None, M=10, quiet=False, m_array=None, cache=None)`**
-  — run `max(M, max(m_array))` branching steps and return `(walkers, stats)`
+- **`statistics(walkers, hamiltonian, step_size, guide, method, rng_key, avg_log_weight=None, lam=None, M=10, quiet=False, m_array=None, cache=None)`**:
+  run `max(M, max(m_array))` branching steps and return `(walkers, stats)`
   (`avg_log_weight=None` estimates the shift from the walkers; the
   diagnostics are invariant to it up to rounding):
   sampler health over the first `M` steps (unique configs, diagonal extremes,
@@ -308,28 +308,28 @@ function, imported from its module (e.g.
   Raises if the discrete propagator loses positivity (`lam` too small). The
   pass runs on the whole population on one device; hand it a slice of a very
   large ensemble.
-- `estimate_average_log_branch_weight(walkers, hamiltonian, guide, method="cont_time", lam=None, cache=None)`
-  — initial `avg_log_weight`: `mean(-e_L)` (`cont_time`) or
+- `estimate_average_log_branch_weight(walkers, hamiltonian, guide, method="cont_time", lam=None, cache=None)`:
+  initial `avg_log_weight`: `mean(-e_L)` (`cont_time`) or
   `mean(log(lam - e_L))` (discrete, `lam` required).
-- `count_unique_configs(walkers)` — number of distinct configurations.
-- `check_off_diag_operator_positivity(walkers, off_diag_operators, guide, caches=None, verbose=True)`
-  — raise `ValueError` if any operator rate is negative on the first 100
+- `count_unique_configs(walkers)`: number of distinct configurations.
+- `check_off_diag_operator_positivity(walkers, off_diag_operators, guide, caches=None, verbose=True)`:
+  raise `ValueError` if any operator rate is negative on the first 100
   configurations.
-- `autocorrelation(series, c=5.0)` — integrated autocorrelation time with
+- `autocorrelation(series, c=5.0)`: integrated autocorrelation time with
   a self-consistent window based on the absolute correlation envelope;
   the returned `(tau_int, window)` uses the signed sum, including anticorrelation.
-- `autocorrelation_stats(E_np, log_weights_np, diag_np=None, diag_names=None, off_diag_np=None, off_diag_names=None, off_diag_stride=1)`
-  — the `autocorrelation/*` entries of `stats` (in branching steps):
+- `autocorrelation_stats(E_np, log_weights_np, diag_np=None, diag_names=None, off_diag_np=None, off_diag_names=None, off_diag_stride=1)`:
+  the `autocorrelation/*` entries of `stats` (in branching steps):
   `autocorrelation/energy_estimator`, `autocorrelation/log_weights`,
   `autocorrelation/diag/<name>` and `autocorrelation/off_diag/<name>`.
   Both drivers record them.
-- `dense_and_names(series, names=None, what="off_diag_np")` — convert a
+- `dense_and_names(series, names=None, what="off_diag_np")`: convert a
   `{name: array}` mapping to `(dense, names)` with a positional operator axis.
 
-### `driver.py` — single-device driver
+### `driver.py`: single-device driver
 
-- **`run_gfmc(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, return_raw=True, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, off_diag_stride=1, off_diag_batch_size=None)`**
-  — optional warm-up (none by default), production scan, windowed estimation
+- **`run_gfmc(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, return_raw=True, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, off_diag_stride=1, off_diag_batch_size=None)`**:
+  warm-up (1000 steps by default without `avg_log_weight`, none with it), production scan, windowed estimation
   and end-of-run `statistics`. Returns `(walkers, energy, obs, stats, raw)` (4-tuple without
   `raw` when `return_raw=False`). Without `rng_key` a fresh key is drawn from `secrets.randbits(32)` (printed at `verbosity >= 1`, stored in `stats['parameters/rng_key']`).
   With `return_raw=False` the off-diagonal measurements are restricted to the
@@ -342,7 +342,7 @@ function, imported from its module (e.g.
   stride step (`ValueError` otherwise); `off_diag_batch_size` must be an
   integer `>= 1` dividing the walker count (the per-device shard in
   `run_gfmc_pmap`).
-- `LINEAGE_COST_WARN_FRAC` — warn when the end-of-run lineage pass adds more
+- `LINEAGE_COST_WARN_FRAC`: warn when the end-of-run lineage pass adds more
   than this fraction of `n_steps`.
 - The driver is a short orchestration of module-level stages shared with
   `run_gfmc_pmap`: `_measurement_plan` (window grid, measurement gating),
@@ -352,17 +352,17 @@ function, imported from its module (e.g.
   `_production_pmap` loop over the pmapped step chunk. Every message is
   printed through `pygfmc._output.emit`, gated on `verbosity`.
 
-### `multi_gpu.py` — multi-device driver and dispatcher
+### `multi_gpu.py`: multi-device driver and dispatcher
 
-- **`run(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, **kwargs)`**
-  — the recommended entry point. Same arguments and return value as
+- **`run(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, **kwargs)`**:
+  the recommended entry point. Same arguments and return value as
   `run_gfmc` (plus `n_devices`, default `jax.device_count()`); uses
   `run_gfmc_pmap` when more than one device is used, unless the run has
-  `diag_operators` — those fall back to `run_gfmc`. Off-diagonal
+  `diag_operators`; those fall back to `run_gfmc`. Off-diagonal
   measurement gating (`off_diag_stride > 1`, `return_raw=False`) works on
   both backends and measures the same steps.
-- `run_gfmc_pmap(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, n_devices=None, return_raw=True, off_diag_stride=1, off_diag_batch_size=None)`
-  — walkers sharded over devices, global reconfiguration. Energy and
+- `run_gfmc_pmap(walkers, n_steps, hamiltonian, step_size, guide, p_array, method="cont_time", rng_key=None, lam=None, diag_operators=None, off_diag_operators=None, avg_log_weight=None, warmup_steps=None, verbosity=7, number_of_outputs=100, n_devices=None, return_raw=True, off_diag_stride=1, off_diag_batch_size=None)`:
+  walkers sharded over devices, global reconfiguration. Energy and
   off-diagonal operators only: `diag_operators` raise `NotImplementedError`.
   Off-diagonal measurement gating (`off_diag_stride`, the equal windows of
   `return_raw=False`) measures the same steps as `run_gfmc`, and
@@ -371,14 +371,14 @@ function, imported from its module (e.g.
   and continuation follow `run_gfmc`, but the chain differs from the
   single-device chain at equal seed (per-device key folding, global
   resampling).
-- `shard_walkers(walkers, n_devices=None)` / `unshard_walkers(walkers)` —
+- `shard_walkers(walkers, n_devices=None)` / `unshard_walkers(walkers)`:
   add/remove the leading device axis (walker count must divide evenly).
-- `reconfiguration_global(walkers, rng_key, axis_name="devices", aux=None)`
-  — systematic resampling across all devices (inside `pmap`), returning
+- `reconfiguration_global(walkers, rng_key, axis_name="devices", aux=None)`:
+  systematic resampling across all devices (inside `pmap`), returning
   `(walkers, log_G_n, E_n[, aux])`; optionally carries per-walker `aux` data
   through the resampling.
-- `forward_walk_operator_global(walkers, op, h_main, step_size, guide, method, rng_key, avg_log_weight, m_array, lam=None, axis_name="devices", cache_h=None, cache_op=None, op_batch_size=None, shadow_key=None)`
-  — multi-device `forward_walk_operator` (inside `pmap`).
+- `forward_walk_operator_global(walkers, op, h_main, step_size, guide, method, rng_key, avg_log_weight, m_array, lam=None, axis_name="devices", cache_h=None, cache_op=None, op_batch_size=None, shadow_key=None)`:
+  multi-device `forward_walk_operator` (inside `pmap`).
 
 ### Reproducibility: what is guaranteed
 
@@ -412,7 +412,7 @@ function, imported from its module (e.g.
 - **Population extinction.** A step on which every walker's weight is zero
   raises a `ValueError` naming the step instead of propagating NaN.
 
-### `io.py` — HDF5 storage, continuation and re-estimation
+### `io.py`: HDF5 storage, continuation and re-estimation
 
 A file holds one continuous Markov chain: fixed parameters in `/parameters`,
 the newest walker ensemble (with its RNG key) in `/current_walkers`, one
@@ -431,29 +431,29 @@ chunks of whole steps (~1 MiB each). This is lossless and readable by any HDF5
 tool; appending to an existing file keeps that file's
 existing dataset settings.
 
-- **`write_to_HDF5(filename, stats, walkers=None, energy=None, obs=None, raw=None, walker_filename=None, verbose=True)`**
-  — append one run. Validates the `MUST_MATCH` parameters and content hashes
+- **`write_to_HDF5(filename, stats, walkers=None, energy=None, obs=None, raw=None, walker_filename=None, verbose=True)`**:
+  append one run. Validates the `MUST_MATCH` parameters and content hashes
   (Hamiltonian, guide, operators) and the RNG stream (a replayed key raises)
   before writing. Returns the run index; prints one line unless
   `verbose=False`.
-- **`check_run_compatible(filename, stats=None, **parameters)`** — the same
+- **`check_run_compatible(filename, stats=None, **parameters)`**: the same
   validation *before* a run: pass the objects you are about to use
   (`hamiltonian=`, `guide=`, `diag_operators=`, `off_diag_operators=`) and
   the plain parameters (`n_walkers=`, `step_size=`, ...) and a mismatch
   raises immediately instead of after the walk. A missing file passes.
-- **`resume_from_HDF5(filename, hamiltonian=None, guide=None, diag_operators=None, off_diag_operators=None, walker_filename=None, dtype=None, config_dtype=None)`**
-  — the pieces of a continuation as `run_gfmc` keyword arguments
+- **`resume_from_HDF5(filename, hamiltonian=None, guide=None, diag_operators=None, off_diag_operators=None, walker_filename=None, dtype=None, config_dtype=None)`**:
+  the pieces of a continuation as `run_gfmc` keyword arguments
   (`walkers`, `rng_key`, `avg_log_weight`, `warmup_steps=0`), verified
   against the file when the objects are given. `run_from_HDF5` builds on it.
-- **`run_from_HDF5(filename, hamiltonian, guide=None, diag_operators=None, off_diag_operators=None, n_steps=None, walker_filename=None, **run_kwargs)`**
-  — continue a stored chain in one call (no warm-up, stored key and
+- **`run_from_HDF5(filename, hamiltonian, guide=None, diag_operators=None, off_diag_operators=None, n_steps=None, walker_filename=None, **run_kwargs)`**:
+  continue a stored chain in one call (no warm-up, stored key and
   `avg_log_weight`, same `lam`/`step_size`/`p_array`/`method`); returns what
   `run` returns, with the diagonal lead-in spliced in so the result matches an
   uninterrupted run.
-- **`load_raw_from_HDF5(filename)`** — the whole stored chain's raw series in
+- **`load_raw_from_HDF5(filename)`**: the whole stored chain's raw series in
   `run`'s `raw` layout, with `p_array`, `m_array` and operator names.
-- **`evaluate_observables(raw, p_array=None, n_blocks=None)`**
-  — re-estimate from a `raw` dict (in memory or loaded). The energy can be
+- **`evaluate_observables(raw, p_array=None, n_blocks=None)`**:
+  re-estimate from a `raw` dict (in memory or loaded). The energy can be
   re-windowed at any `p_array`; operators only at the stored grid. With
   `n_blocks`, returns `(energy, obs, energy_err, obs_err)` from a blocked
   jackknife (use blocks longer than both `2 tau_int` and `p`, and about 20 or
@@ -466,11 +466,11 @@ existing dataset settings.
   `raw['p_array']` entry naming the grid its operator arrays sit on), and its
   off-diagonal rows are placed by `raw['off_diag_steps']`, which must be
   present whenever `raw['off_diag']` is.
-- `pytree_fingerprint(obj)` — content hash of a pytree (Hamiltonian, guide,
+- `pytree_fingerprint(obj)`: content hash of a pytree (Hamiltonian, guide,
   operator); used to detect changed objects behind unchanged names.
-- `diag_mapping_to_dense(diag)` — `{name: array}` to a dense array, or `None`
+- `diag_mapping_to_dense(diag)`: `{name: array}` to a dense array, or `None`
   if the widths differ.
-- `MUST_MATCH`, `MAY_DIFFER` — which parameters must agree across the runs of
+- `MUST_MATCH`, `MAY_DIFFER`: which parameters must agree across the runs of
   one file, and which may vary.
-- `FORMAT`, `FORMAT_VERSION` — the `format`/`format_version` file attributes
+- `FORMAT`, `FORMAT_VERSION`: the `format`/`format_version` file attributes
   (`"pygfmc"`, `2`) that `write_to_HDF5` stamps on a new file.

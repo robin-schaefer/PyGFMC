@@ -767,11 +767,11 @@ def _warmup(walkers, carried, hamiltonian, guide, method, step_f, lam, cache_h,
         label = f"{i + 1}/{len(stages)}"
         if method == "cont_time":
             emit(f"[gfmc] - [run_warmup {label}] - step={step_}, {n_warmup} "
-                 f"steps @ {n_warmup / elapsed:.1f} it/s — avg_log_weight = "
+                 f"steps @ {n_warmup / elapsed:.1f} it/s, avg_log_weight = "
                  f"{float(measured_alw):.6f}", verbosity, 8)
         else:
             emit(f"[gfmc] - [run_warmup {label}] - step={step_}, {n_warmup} "
-                 f"steps @ {n_warmup / elapsed:.1f} it/s — average_b_x = "
+                 f"steps @ {n_warmup / elapsed:.1f} it/s, average_b_x = "
                  f"{float(jnp.exp(measured_alw)):.6f}", verbosity, 8)
         if alw_pinned:
             # keep the caller's value; report the drift the ramp measured,
@@ -1064,7 +1064,7 @@ def _production(*, walkers, carried, step_offset, rng_key, prod_objs, n_steps,
             diag_chunks.append(tuple(np.asarray(a) for a in scan_out[out_idx]))
             out_idx += 1
         if n_off_ops > 0:
-            # keep only the measured rows — the scan emits one slot per step
+            # keep only the measured rows: the scan emits one slot per step
             # (lax.cond branches share a fixed shape), filler rows are dropped
             # here so raw['off_diag'] is compact: one row per measurement.
             gate = plan.gate_off_diag
@@ -1174,8 +1174,8 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
         walkers:            Initial Walker batch.
         n_steps:            Number of production branching steps.
         hamiltonian:        Any object implementing the Hamiltonian protocol
-                            (``M_total``, ``get_rates``, ``generate_state``)
-                            — e.g. SpinHalf, Spin,
+                            (``M_total``, ``get_rates``, ``generate_state``),
+                            e.g. SpinHalf, Spin,
                             BoseHubbard, ToricCode, or PlaquetteModel.
         step_size:          Per-Markov-step size.  For the discrete methods
                             this is the integer count of imaginary-time
@@ -1270,14 +1270,14 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                             raises ValueError.
         verbosity:          Integer 0–10 controlling printed output:
 
-                            * 0 — silent
-                            * 1 — step/it/N_config progress (no energy)
-                            * 3 — progress + Energy[p]
-                            * 8 — progress + Energy[p] + first diag/off-diag
+                            * 0: silent
+                            * 1: step/it/N_config progress (no energy)
+                            * 3: progress + Energy[p]
+                            * 8: progress + Energy[p] + first diag/off-diag
                               observable (re-estimated over the whole
                               series at every progress line, so it costs
                               host time) + warmup lines
-                            * 10 — full output (all observables)
+                            * 10: full output (all observables)
 
                             The end-of-run statistics report prints for any
                             verbosity >= 1.  Default 7.
@@ -1288,7 +1288,7 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                             = every step).  Each off-diagonal measurement
                             launches a fresh shadow Markov chain m_max =
                             max(p)/2 steps deep, so it dominates the per-step
-                            cost by ~m_max× — but consecutive main-chain steps
+                            cost by ~m_max×, but consecutive main-chain steps
                             are strongly correlated, so per-step measurement
                             mostly averages redundant values.  A stride ≈ the
                             observable's autocorrelation time keeps nearly
@@ -1296,7 +1296,7 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
                             the cost.  Only the measured steps are stored
                             (``raw['off_diag']`` has one row per measurement,
                             ``raw['off_diag_steps']`` gives each row's step).
-                            Energy and diagonal observables are unaffected —
+                            Energy and diagonal observables are unaffected;
                             they are cheap and stay per-step.
 
                             The stride counts BRANCHING STEPS, so choose it
@@ -1343,7 +1343,7 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
           or an ``(n_vals,)`` array for a vector-valued diagonal operator);
           empty when no operators are provided.
 
-        ``stats`` is a dict of run diagnostics — the end-of-run
+        ``stats`` is a dict of run diagnostics: the end-of-run
         statistics() dict (health stats, offspring_k*, ancestor_m,
         ancestor_fraction, effective_sample_size) plus:
 
@@ -1361,7 +1361,7 @@ def run_gfmc(walkers: Walker, n_steps: int, hamiltonian: Operator,
           step_size, lam, method, p_array, m_array, off_diag_stride, operator
           names and content hashes, dtypes, ...) and the RNG stream:
           ``parameters/rng_key`` (where production started) and
-          ``parameters/rng_key_next`` (where it ended — pass it as
+          ``parameters/rng_key_next`` (where it ended; pass it as
           ``rng_key`` to continue).
 
         ``raw`` holds the per-step GFMC values and the metadata needed to

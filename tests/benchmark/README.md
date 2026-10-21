@@ -139,72 +139,72 @@ were calibrated with this `lam`.
 
 | # | Test function | Parametrized id | Reference | N | Asserted observables | Unavailable reference | Energy tol. |
 |---|---|---|---|---|---|---|---|
-| 1 | `test_pyrochlore_reference_data_is_ice` | — | stored lattice file | 128 | ice rule, zero flux, 6-cycles | — | — |
-| 2 | `test_gfmc_matches_pyrochlore_reference` | `pyrochlore_N128_ring_exchange` | constrained Lanczos | 128 | — | `flippable_frac` | 5e-3 / site |
-| 3 | `test_gfmc_matches_pyrochlore_reference` | `pyrochlore_N128_rk_point` | RK analytics | 128 | `flippable_frac`, `ring_flip_tot` | — | \|E\| < 1e-6 |
-| 4 | `test_gfmc_matches_quspin` | `spin_graphN4_fm_sign_isotropic-multi_step` | QuSpin ED | 4 | `pm_bond`, `pm_tot`, `z_tot` | — | 0.05 / site |
-| 5 | `test_gfmc_matches_quspin` | `spin_graphN4_field_polarized-multi_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 6 | `test_gfmc_matches_quspin` | `spin_graphN4_transverse_coverage-multi_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 7 | `test_gfmc_matches_quspin` | `spin_graphN9_fm_sign_isotropic-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 8 | `test_gfmc_matches_quspin` | `spin_graphN9_field_polarized-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 9 | `test_gfmc_matches_quspin` | `spin_graphN9_transverse_coverage-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 10 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-single_step` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | — | 0.05 / site |
-| 11 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-multi_step` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | — | 0.05 / site |
-| 12 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-cont_time` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | — | 0.05 / site |
-| 13 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-single_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 14 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-multi_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 15 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-cont_time` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 16 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-single_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 17 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-multi_step` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 18 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-cont_time` | QuSpin ED | 4 | `z_tot` | — | 0.05 / site |
-| 19 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-single_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 20 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 21 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-cont_time` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 22 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-single_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 23 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 24 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-cont_time` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 25 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-single_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 26 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-multi_step` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 27 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-cont_time` | QuSpin ED | 9 | `z_tot` | — | 0.05 / site |
-| 28 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-single_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 29 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-multi_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 30 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-cont_time` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 31 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-single_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 32 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-multi_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 33 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-cont_time` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 34 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-single_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 35 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-multi_step` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 36 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-cont_time` | QuSpin ED | 13 | `z_tot` | — | 0.05 / site |
-| 37 | `test_gfmc_matches_quspin` | `bosehubbard_graphN4_superfluid-multi_step` | QuSpin ED | 4 | `hop_bond`, `n2_tot`, `n_tot`, `pair_bond` | — | 0.05 / site |
-| 38 | `test_gfmc_matches_quspin` | `bosehubbard_graphN4_eta_coverage-multi_step` | QuSpin ED | 4 | `n2_tot`, `n_tot` | — | 0.05 / site |
-| 39 | `test_gfmc_matches_quspin` | `bosehubbard_graphN9_superfluid-multi_step` | QuSpin ED | 9 | `n2_tot`, `n_tot` | — | 0.05 / site |
-| 40 | `test_gfmc_matches_quspin` | `bosehubbard_graphN9_eta_coverage-multi_step` | QuSpin ED | 9 | `n2_tot`, `n_tot` | — | 0.05 / site |
-| 41 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_pure_topological-multi_step` | QuSpin ED | 8 | `As_avg`, `Bp_avg`, `x_tot` | — | 0.05 / site |
-| 42 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_weak_field_topological-multi_step` | QuSpin ED | 8 | `Bp_avg` | — | 0.05 / site |
-| 43 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_repo_anchored_field-multi_step` | QuSpin ED | 8 | `Bp_avg` | — | 0.05 / site |
-| 44 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_deep_polarized-multi_step` | QuSpin ED | 8 | `Bp_avg` | — | 0.05 / site |
-| 45 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_pure_topological-multi_step` | QuSpin ED | 12 | `Bp_avg` | — | 0.05 / site |
-| 46 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_weak_field_topological-multi_step` | QuSpin ED | 12 | `Bp_avg` | — | 0.05 / site |
-| 47 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_repo_anchored_field-multi_step` | QuSpin ED | 12 | `Bp_avg` | — | 0.05 / site |
-| 48 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_deep_polarized-multi_step` | QuSpin ED | 12 | `Bp_avg` | — | 0.05 / site |
-| 49 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_pure_topological-multi_step` | QuSpin ED | 16 | `Bp_avg` | — | 0.05 / site |
-| 50 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_weak_field_topological-multi_step` | QuSpin ED | 16 | `Bp_avg` | — | 0.05 / site |
-| 51 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_repo_anchored_field-multi_step` | QuSpin ED | 16 | `Bp_avg` | — | 0.05 / site |
-| 52 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_deep_polarized-multi_step` | QuSpin ED | 16 | `Bp_avg` | — | 0.05 / site |
-| 53 | `test_gfmc_matches_tenpy` | `spin_ladderL50_fm_sign_isotropic-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 54 | `test_gfmc_matches_tenpy` | `spin_ladderL50_field_polarized-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 55 | `test_gfmc_matches_tenpy` | `spin_ladderL50_transverse_coverage-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 56 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-single_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 57 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 58 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-cont_time` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 59 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-single_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 60 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 61 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-cont_time` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 62 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-single_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 63 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-multi_step` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 64 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-cont_time` | TeNPy DMRG | 100 | `z_tot` | — | 0.05 / site |
-| 65 | `test_gfmc_matches_tenpy` | `bosehubbard_ladderL50_superfluid-multi_step` | TeNPy DMRG | 100 | `n_tot`, `n2_tot` | — | 0.05 / site |
-| 66 | `test_gfmc_matches_tenpy` | `bosehubbard_ladderL50_eta_coverage-multi_step` | TeNPy DMRG | 100 | `n_tot`, `n2_tot` | — | 0.05 / site |
+| 1 | `test_pyrochlore_reference_data_is_ice` | - | stored lattice file | 128 | ice rule, zero flux, 6-cycles | - | - |
+| 2 | `test_gfmc_matches_pyrochlore_reference` | `pyrochlore_N128_ring_exchange` | constrained Lanczos | 128 | - | `flippable_frac` | 5e-3 / site |
+| 3 | `test_gfmc_matches_pyrochlore_reference` | `pyrochlore_N128_rk_point` | RK analytics | 128 | `flippable_frac`, `ring_flip_tot` | - | \|E\| < 1e-6 |
+| 4 | `test_gfmc_matches_quspin` | `spin_graphN4_fm_sign_isotropic-multi_step` | QuSpin ED | 4 | `pm_bond`, `pm_tot`, `z_tot` | - | 0.05 / site |
+| 5 | `test_gfmc_matches_quspin` | `spin_graphN4_field_polarized-multi_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 6 | `test_gfmc_matches_quspin` | `spin_graphN4_transverse_coverage-multi_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 7 | `test_gfmc_matches_quspin` | `spin_graphN9_fm_sign_isotropic-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 8 | `test_gfmc_matches_quspin` | `spin_graphN9_field_polarized-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 9 | `test_gfmc_matches_quspin` | `spin_graphN9_transverse_coverage-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 10 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-single_step` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | - | 0.05 / site |
+| 11 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-multi_step` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | - | 0.05 / site |
+| 12 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_tfim_disordered-cont_time` | QuSpin ED | 4 | `pm_bond`, `x_tot`, `z_tot` | - | 0.05 / site |
+| 13 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-single_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 14 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-multi_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 15 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_field_polarized-cont_time` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 16 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-single_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 17 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-multi_step` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 18 | `test_gfmc_matches_quspin` | `spinhalf_graphN4_fm_sign_isotropic-cont_time` | QuSpin ED | 4 | `z_tot` | - | 0.05 / site |
+| 19 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-single_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 20 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 21 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_tfim_disordered-cont_time` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 22 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-single_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 23 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 24 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_field_polarized-cont_time` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 25 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-single_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 26 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-multi_step` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 27 | `test_gfmc_matches_quspin` | `spinhalf_graphN9_fm_sign_isotropic-cont_time` | QuSpin ED | 9 | `z_tot` | - | 0.05 / site |
+| 28 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-single_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 29 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-multi_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 30 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_tfim_disordered-cont_time` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 31 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-single_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 32 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-multi_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 33 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_field_polarized-cont_time` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 34 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-single_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 35 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-multi_step` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 36 | `test_gfmc_matches_quspin` | `spinhalf_graphN13_fm_sign_isotropic-cont_time` | QuSpin ED | 13 | `z_tot` | - | 0.05 / site |
+| 37 | `test_gfmc_matches_quspin` | `bosehubbard_graphN4_superfluid-multi_step` | QuSpin ED | 4 | `hop_bond`, `n2_tot`, `n_tot`, `pair_bond` | - | 0.05 / site |
+| 38 | `test_gfmc_matches_quspin` | `bosehubbard_graphN4_eta_coverage-multi_step` | QuSpin ED | 4 | `n2_tot`, `n_tot` | - | 0.05 / site |
+| 39 | `test_gfmc_matches_quspin` | `bosehubbard_graphN9_superfluid-multi_step` | QuSpin ED | 9 | `n2_tot`, `n_tot` | - | 0.05 / site |
+| 40 | `test_gfmc_matches_quspin` | `bosehubbard_graphN9_eta_coverage-multi_step` | QuSpin ED | 9 | `n2_tot`, `n_tot` | - | 0.05 / site |
+| 41 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_pure_topological-multi_step` | QuSpin ED | 8 | `As_avg`, `Bp_avg`, `x_tot` | - | 0.05 / site |
+| 42 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_weak_field_topological-multi_step` | QuSpin ED | 8 | `Bp_avg` | - | 0.05 / site |
+| 43 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_repo_anchored_field-multi_step` | QuSpin ED | 8 | `Bp_avg` | - | 0.05 / site |
+| 44 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly2_deep_polarized-multi_step` | QuSpin ED | 8 | `Bp_avg` | - | 0.05 / site |
+| 45 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_pure_topological-multi_step` | QuSpin ED | 12 | `Bp_avg` | - | 0.05 / site |
+| 46 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_weak_field_topological-multi_step` | QuSpin ED | 12 | `Bp_avg` | - | 0.05 / site |
+| 47 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_repo_anchored_field-multi_step` | QuSpin ED | 12 | `Bp_avg` | - | 0.05 / site |
+| 48 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly3_deep_polarized-multi_step` | QuSpin ED | 12 | `Bp_avg` | - | 0.05 / site |
+| 49 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_pure_topological-multi_step` | QuSpin ED | 16 | `Bp_avg` | - | 0.05 / site |
+| 50 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_weak_field_topological-multi_step` | QuSpin ED | 16 | `Bp_avg` | - | 0.05 / site |
+| 51 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_repo_anchored_field-multi_step` | QuSpin ED | 16 | `Bp_avg` | - | 0.05 / site |
+| 52 | `test_gfmc_matches_quspin` | `toriccode_Lx2Ly4_deep_polarized-multi_step` | QuSpin ED | 16 | `Bp_avg` | - | 0.05 / site |
+| 53 | `test_gfmc_matches_tenpy` | `spin_ladderL50_fm_sign_isotropic-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 54 | `test_gfmc_matches_tenpy` | `spin_ladderL50_field_polarized-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 55 | `test_gfmc_matches_tenpy` | `spin_ladderL50_transverse_coverage-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 56 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-single_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 57 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 58 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_tfim_disordered-cont_time` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 59 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-single_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 60 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 61 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_field_polarized-cont_time` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 62 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-single_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 63 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-multi_step` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 64 | `test_gfmc_matches_tenpy` | `spinhalf_ladderL50_fm_sign_isotropic-cont_time` | TeNPy DMRG | 100 | `z_tot` | - | 0.05 / site |
+| 65 | `test_gfmc_matches_tenpy` | `bosehubbard_ladderL50_superfluid-multi_step` | TeNPy DMRG | 100 | `n_tot`, `n2_tot` | - | 0.05 / site |
+| 66 | `test_gfmc_matches_tenpy` | `bosehubbard_ladderL50_eta_coverage-multi_step` | TeNPy DMRG | 100 | `n_tot`, `n2_tot` | - | 0.05 / site |
 
 GFMC settings per model (λ, step size, steps, walkers, p grid, walker
 initialization) are in `helpers/models.py`.  Per-model overrides of the shared
