@@ -39,3 +39,33 @@ jobs:
         with:
           name: validation-${{ matrix.suite }}
           path: tests/validation-*.xml
+
+  notebooks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        nb: [bose_hubbard_chain, transverse_field_ising_chain, xxz_chain,
+             n_body_model, kagome_xxz, toric_code, ring_model_pyrochlore]
+    env:
+      NETKET_EXPERIMENTAL_SHARDING: '0'
+      NETKET_SHARDING: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install including training and notebook dependencies
+        run: pip install -c .github/constraints.txt -e './codes[netket]' matplotlib nbconvert ipykernel
+      - name: Execute ${{ matrix.nb }}
+        working-directory: notebooks
+        run: >
+          jupyter nbconvert --to notebook --execute
+          --ExecutePreprocessor.timeout=-1
+          --output-dir executed ${{ matrix.nb }}.ipynb
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-${{ matrix.nb }}
+          path: notebooks/executed/${{ matrix.nb }}.ipynb
