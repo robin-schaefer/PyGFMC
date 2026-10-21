@@ -759,7 +759,7 @@ The quality of a simulation, especially for systems that are difficult to equili
 A good variational ansatz is the key to tackling challenging problems, and effort should be invested in optimizing it before undertaking large-scale simulations.
 
 \paragraph{Projection depth.}
-The projection depth $\tau$ is determined by the product of the branching interval ($\nbra$ in the discrete method or $\beta$ in the continuous method) and the number of branching steps $p$:
+The projection depth $\tau$ is determined by the product of the branching interval ($\nbra$ in the discrete method or $\beta$ in the continuous method) and the number of branching steps $p$ divided by $2$:
 \begin{align}
 	\tau = \frac{p}{2}\nbra \quad \text{(discrete)}, \qquad \tau = \frac{p}{2}\beta \quad \text{(continuous)}.
 \end{align}
@@ -947,7 +947,7 @@ These data are obtained for fewer walkers and shorter projection depths because 
 %
 Consequently, convergence is lost earlier than in the diagonal calculations in panels (b) and (c).
 %
-In the transverse-field Ising model, the transverse magnetization can be computed from the energy and the $\sigma^z\sigma^z$ correlator, which is shown in red for the largest step size $\beta=1.5$.
+However, the transverse magnetization can also be computed from the energy, panel (b), and the $\sigma^z\sigma^z$ correlator, panel (c), and is shown in red for the largest step size $\beta=1.5$.
 %
 This shows that a larger walker ensemble is capable of resolving the transverse magnetization more reliably.
 
@@ -956,7 +956,7 @@ This shows that a larger walker ensemble is capable of resolving the transverse 
 
 
 
-\autoref{fig:tfim_zz_xtot} shows the averaged nearest-neighbor correlator and the total transverse magnetization at increasing projection depths $\tau$ for different $h_x$ values.
+\autoref{fig:tfim_zz_xtot} shows the averaged nearest-neighbor correlator and the total transverse magnetization per site at increasing projection depths $\tau$ for different $h_x$ values.
 Away from the critical point ($h_x < 0.9$ or $h_x > 1.1$), both observables converge rapidly for $\tau \leq 10$.
 %
 At and near the critical point, comparable convergence requires larger projection depths, $\tau \sim 50$.
@@ -1059,7 +1059,7 @@ To resolve the transition into the ferromagnet, we measure the transverse struct
 \end{align}
 $S^{\pm}(\bm{q}=0)$ is extensive in the ferromagnetic phase and intensive in the spin liquid, such that the order parameter $S^{\pm}(\bm{q}=0)/N$ remains finite in the ferromagnet and vanishes in the spin liquid as $N\rightarrow \infty$.
 %
-\autoref{fig:pyro_Spm} shows the correlator as a function of $J_{xy}$ for different system sizes.
+\autoref{fig:pyro_Spm} shows the structure factor as a function of $J_{xy}$ for different system sizes.
 %
 The inset zooms into the transition region $J_{xy}/J_z\in[-0.11,-0.10]$ and highlights the transition at
 \begin{align}
