@@ -32,21 +32,24 @@ pip install "pygfmc[netket]"        # + training guides with NetKet
 ## Quick start
 
 ```python
+import numpy as np
 import jax
 from pygfmc import run
 from pygfmc.walkers import prepare_walkers_sz
-from pygfmc.hamiltonian import SpinHalf, chain, exact_diagonalization
+from pygfmc.hamiltonian import SpinHalf, chain
 from pygfmc.wavefunction import JastrowSpinHalf
 
-lat = chain(8)
+L = 100
+lat = chain(L)
 H = SpinHalf.create(lat.edges, J_x=-1.0, J_y=-1.0, J_z=1.0)   # Heisenberg ring, sign-free frame
 guide = JastrowSpinHalf(H.N, H.edges, beta=0.3)
-walkers = prepare_walkers_sz(512, H.N, jax.random.PRNGKey(0), sz=0)
+walkers = prepare_walkers_sz(1024, H.N, jax.random.PRNGKey(0), sz=0)
 
 walkers, energy, obs, stats, raw = run(
-    walkers, 2000, H, step_size=0.2, guide=guide, p_array=[2, 4, 8, 16],
-    rng_key=jax.random.PRNGKey(1), warmup_steps=500, verbosity=10)
-print(energy, exact_diagonalization(H)[0][0])              # ≈ -3.65 (stochastic), -3.6511 (exact)
+    walkers, 3000, H, step_size=0.2, guide=guide, p_array=[4, 16, 64, 128],
+    rng_key=jax.random.PRNGKey(1), warmup_steps=2000, verbosity=10)
+print(energy[128] / L, 0.25 - np.log(2))   # ≈ -0.44324 (stochastic), -0.44315 (L → ∞)
+# exact for L = 100 (Bethe ansatz): -0.4432296
 ```
 
 ## License

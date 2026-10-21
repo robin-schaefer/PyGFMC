@@ -82,36 +82,38 @@ pygfmc/
 ## Quick start
 
 ```python
+import numpy as np
 import jax
 from pygfmc import run, evaluate_observables
 from pygfmc.walkers import prepare_walkers_sz
-from pygfmc.hamiltonian import SpinHalf, chain, exact_diagonalization
+from pygfmc.hamiltonian import SpinHalf, chain
 from pygfmc.wavefunction import JastrowSpinHalf
 
-# L=8 Heisenberg antiferromagnet on a ring, in the sublattice-rotated
+# L=100 Heisenberg antiferromagnet on a ring, in the sublattice-rotated
 # (sign-problem-free) form J_x = J_y = -1, J_z = +1.
-lat = chain(8)
+L = 100
+lat = chain(L)
 H = SpinHalf.create(lat.edges, J_x=-1.0, J_y=-1.0, J_z=1.0)
 guide = JastrowSpinHalf(H.N, H.edges, beta=0.3)
-walkers = prepare_walkers_sz(512, H.N, jax.random.PRNGKey(0), sz=0)
+walkers = prepare_walkers_sz(1024, H.N, jax.random.PRNGKey(0), sz=0)
 
-# fresh, unequilibrated walkers: a warm-up (1000 steps by default without avg_log_weight; here 500)
+# fresh, unequilibrated walkers: a warm-up (1000 steps by default without avg_log_weight; here 2000)
 walkers, energy, obs, stats, raw = run(
-    walkers, 2000, H, step_size=0.2, guide=guide,
-    p_array=[2, 4, 8, 16], method="cont_time",
-    rng_key=jax.random.PRNGKey(1), warmup_steps=500, verbosity=0)
-print(energy)                              # dict p -> energy: {2: -3.65148..., 4: -3.65151..., 8: -3.65153..., 16: -3.65157...}
-print(exact_diagonalization(H)[0][0])      # -3.6510934...
+    walkers, 3000, H, step_size=0.2, guide=guide,
+    p_array=[4, 16, 64, 128], method="cont_time",
+    rng_key=jax.random.PRNGKey(1), warmup_steps=2000, verbosity=0)
+print(energy[128] / L)                     # ≈ -0.44324 (stochastic)
+print(0.25 - np.log(2))                    # -0.44315 for L → ∞; exact for L = 100 (Bethe ansatz): -0.4432296
 
 # continue the same Markov chain (bit-identical to one longer run); the
 # walkers are equilibrated now, so no warm-up, and the compiled scan is reused
 walkers, energy, obs, stats, raw = run(
-    walkers, 2000, H, 0.2, guide, [2, 4, 8, 16],
+    walkers, 3000, H, 0.2, guide, [4, 16, 64, 128],
     rng_key=stats["parameters/rng_key_next"],
     avg_log_weight=stats["avg_log_weight"], verbosity=0)
 
 # blocked-jackknife error bars from the returned raw series
-E, O, E_err, O_err = evaluate_observables(raw, n_blocks=20)   # E_err[p] ~ 0.0016
+E, O, E_err, O_err = evaluate_observables(raw, n_blocks=20)   # E_err[128] ~ 0.008
 ```
 
 **Warm-up is automatic without `avg_log_weight`.** By default
@@ -119,8 +121,8 @@ E, O, E_err, O_err = evaluate_observables(raw, n_blocks=20)   # E_err[p] ~ 0.001
 which equilibrates the walkers and measures `avg_log_weight`; a run with
 `avg_log_weight` (e.g. `stats['avg_log_weight']` of the run being continued)
 does not warm up. A fresh start of a large system may need more, e.g.
-`warmup_steps=10000` (the example uses 500 because the system is tiny). An
-explicit `warmup_steps=0` without `avg_log_weight` raises `ValueError`.
+`warmup_steps=10000`. An explicit `warmup_steps=0` without `avg_log_weight`
+raises `ValueError`.
 
 ## Example notebooks
 
